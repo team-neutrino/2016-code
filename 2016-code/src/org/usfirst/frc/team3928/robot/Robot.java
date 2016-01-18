@@ -80,6 +80,7 @@ public class Robot extends SampleRobot {
      * Runs the motors with arcade steering.
      */
     public void operatorControl() {
+    	try{
     	NIVision.IMAQdxStartAcquisition(session);
 
         /**
@@ -111,6 +112,11 @@ public class Robot extends SampleRobot {
             server.setImage(frame);
         }
         NIVision.IMAQdxStopAcquisition(session);
+    	}
+    	catch(VisionException e)
+    	{
+    		System.out.println("Camera?")
+    	}
     }
 
     /**
