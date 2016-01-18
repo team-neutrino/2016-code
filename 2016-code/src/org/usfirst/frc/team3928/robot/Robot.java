@@ -40,6 +40,7 @@ public class Robot extends SampleRobot {
     }
     
     public void robotInit() {
+    	try{
     	server = CameraServer.getInstance();
         server.setQuality(75);
         //the camera name (ex "cam0") can be found through the roborio web interface
@@ -49,6 +50,13 @@ public class Robot extends SampleRobot {
         session = NIVision.IMAQdxOpenCamera("cam0",
                 NIVision.IMAQdxCameraControlMode.CameraControlModeController);
         NIVision.IMAQdxConfigureGrab(session);
+    	}
+    	catch(VisionException e)
+    	{
+    		System.out.println(Camera?);
+    	}
+       
+        
     }
     public void disabled(){
     	
