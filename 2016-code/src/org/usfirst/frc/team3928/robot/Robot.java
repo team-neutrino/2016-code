@@ -2,12 +2,14 @@
 package org.usfirst.frc.team3928.robot;
 
 
-import edu.wpi.first.wpilibj.SampleRobot;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
+import com.ni.vision.VisionException;
+
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.SampleRobot;
 //import edu.wpi.first.wpilibj.RobotDrive;
 //import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -53,7 +55,7 @@ public class Robot extends SampleRobot {
     	}
     	catch(VisionException e)
     	{
-    		System.out.println(Camera?);
+    		System.out.println("Camera?");
     	}
        
         
@@ -115,7 +117,7 @@ public class Robot extends SampleRobot {
     	}
     	catch(VisionException e)
     	{
-    		System.out.println("Camera?")
+    		System.out.println("Camera?");
     	}
     }
 
