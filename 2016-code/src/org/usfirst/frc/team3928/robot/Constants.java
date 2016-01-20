@@ -2,8 +2,10 @@ package org.usfirst.frc.team3928.robot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Scanner;
+
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Constants
 {
@@ -13,11 +15,11 @@ public class Constants
 	
 	// Controllers
 	public static final Constant JOY_LEFT = new Constant("Left Joystick", 1);
-	public static final Constant JOY_RIGHT = new Constant("Right Joystick", 1);
-	public static final Constant GAMEPAD = new Constant("Gamepad", 1);
-	// Button Mapping - Joysticks
+	public static final Constant JOY_RIGHT = new Constant("Right Joystick", 2);
+	public static final Constant GAMEPAD = new Constant("Gamepad", 3);
+	// Button Mapping - Joy sticks
 
-	// Button Mapping - Gamepad
+	// Button Mapping - Game pad
 	
 	// Drive Constants
 	public static final Constant DRIVE_LEFT_1_CHANNEL = new Constant("DriveLeft1Channel", 1);
@@ -68,7 +70,7 @@ public class Constants
 			in.close();
 		} catch (FileNotFoundException e)
 		{
-			Utils.sendDSError("No Constants File Found");
+			DriverStation.reportError("No Constants File Found", true);
 		}
 	}
 
@@ -78,14 +80,14 @@ public class Constants
 
 		if (constant == null)
 		{
-			Utils.sendDSError("Can not override not existent constant [" + name
-					+ "]");
+			DriverStation.reportError("Can not override not existent constant [" + name
+					+ "]", true);
 			return;
 		}
 
 		constant.updateValue(value);
-		Utils.sendDSError("Overriding constant [" + name + "] with [" + value
-				+ "]");
+		DriverStation.reportError("Overriding constant [" + name + "] with [" + value
+				+ "]", true);
 	}
 
 	private static void overrideConst(String name, boolean value)
@@ -94,14 +96,14 @@ public class Constants
 
 		if (constant == null)
 		{
-			Utils.sendDSError("Can not override not existent constant [" + name
-					+ "]");
+			DriverStation.reportError("Can not override not existent constant [" + name
+					+ "]", true);
 			return;
 		}
 
 		constant.updateValue(value);
-		Utils.sendDSError("Overriding constant [" + name + "] with [" + value
-				+ "]");
+		DriverStation.reportError(("Overriding constant [" + name + "] with [" + value
+				+ "]"), true);
 	}
 
 	private static Constant getConstByName(String name)
@@ -169,7 +171,15 @@ public class Constants
 
 		public boolean getBoolean()
 		{
-			return (value ? 1 : 0);
+			if(value == 1)
+				return true;
+			else if(value == 0)
+				return false;
+			else
+			{
+				DriverStation.reportError("Not a boolean.", true);
+				return false;
+			}
 		}
 	}
 }

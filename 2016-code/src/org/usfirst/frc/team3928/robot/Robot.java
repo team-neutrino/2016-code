@@ -4,6 +4,7 @@ package org.usfirst.frc.team3928.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Talon;
 //import edu.wpi.first.wpilibj.RobotDrive;
 //import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -29,10 +30,14 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends SampleRobot {
     
 	Joystick joy1;
-
+	Joystick joy2;
+	Joystick game;
+	
     public Robot() {
-    	joy1 = new Joystick(1);
-    	joy2 = new Joystick(0);
+    	joy1 = new Joystick(Constants.JOY_LEFT.getInt());
+		joy2 = new Joystick(Constants.JOY_RIGHT.getInt());
+		game = new Joystick(Constants.GAMEPAD.getInt());
+		Drive drive = new Drive();
     }
     
     public void robotInit() {
@@ -62,6 +67,7 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
         
     	while (isOperatorControl() && isEnabled()) {
+    		
             
             Timer.delay(0.005);		// wait for a motor update time
         }
