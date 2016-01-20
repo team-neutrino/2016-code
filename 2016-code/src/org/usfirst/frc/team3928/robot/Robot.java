@@ -29,15 +29,16 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class Robot extends SampleRobot {
     
-	Joystick joy1;
-	Joystick joy2;
+	Joystick joyLeft;
+	Joystick joyRight;
 	Joystick game;
+	Drive driver;
 	
     public Robot() {
-    	joy1 = new Joystick(Constants.JOY_LEFT.getInt());
-		joy2 = new Joystick(Constants.JOY_RIGHT.getInt());
+    	joyLeft = new Joystick(Constants.JOY_LEFT.getInt());
+		joyRight = new Joystick(Constants.JOY_RIGHT.getInt());
 		game = new Joystick(Constants.GAMEPAD.getInt());
-		Drive drive = new Drive();
+		driver = new Drive();
     }
     
     public void robotInit() {
@@ -67,7 +68,10 @@ public class Robot extends SampleRobot {
     public void operatorControl() {
         
     	while (isOperatorControl() && isEnabled()) {
-    		
+    		double leftSpeed = joyLeft.getY();
+			double rightSpeed = joyRight.getY();
+			driver.setLeftSpeed(Math.abs(leftSpeed));
+			driver.setRightSpeed(Math.abs(rightSpeed));
             
             Timer.delay(0.005);		// wait for a motor update time
         }

@@ -16,13 +16,13 @@ public class Drive {
 		tal4 = new Talon(Constants.DRIVE_LEFT_2_CHANNEL.getInt());
 	}
 	
-	public void setRightSpeed(int speed)
+	public void setRightSpeed(double speed)
 	{
 		tal1.set(speed);
 		tal3.set(speed);
 	}
 	
-	public void setLeftSpeed(int speed)
+	public void setLeftSpeed(double speed)
 	{
 		tal2.set(speed);
 		tal4.set(speed);
