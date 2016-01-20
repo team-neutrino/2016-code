@@ -2,6 +2,7 @@
 package org.usfirst.frc.team3928.robot;
 
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 //import edu.wpi.first.wpilibj.RobotDrive;
 //import edu.wpi.first.wpilibj.Joystick;
@@ -27,9 +28,11 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class Robot extends SampleRobot {
     
+	Joystick joy1;
 
     public Robot() {
-        
+    	joy1 = new Joystick(1);
+    	joy2 = new Joystick(0);
     }
     
     public void robotInit() {
@@ -58,7 +61,7 @@ public class Robot extends SampleRobot {
      */
     public void operatorControl() {
         
-        while (isOperatorControl() && isEnabled()) {
+    	while (isOperatorControl() && isEnabled()) {
             
             Timer.delay(0.005);		// wait for a motor update time
         }
@@ -67,7 +70,8 @@ public class Robot extends SampleRobot {
     /**
      * Runs during test mode
      */
-    public void test() {
+    public void test()
+    {
     	
     }
 }

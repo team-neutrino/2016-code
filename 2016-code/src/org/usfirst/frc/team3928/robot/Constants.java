@@ -12,11 +12,11 @@ public class Constants
 	// Autonomous Constants
 	
 	// Controllers
-	public static final Constant JOYSTICK_LEFT = new Constant("Left Joystick", 1);
-	public static final Constant JOYSTICK_RIGHT = new Constant("Right Joystick", 1);
+	public static final Constant JOY_LEFT = new Constant("Left Joystick", 1);
+	public static final Constant JOY_RIGHT = new Constant("Right Joystick", 1);
 	public static final Constant GAMEPAD = new Constant("Gamepad", 1);
 	// Button Mapping - Joysticks
-	
+
 	// Button Mapping - Gamepad
 	
 	// Drive Constants
