@@ -2,19 +2,12 @@
 package org.usfirst.frc.team3928.robot;
 
 
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.DrawMode;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ShapeMode;
-import com.ni.vision.VisionException;
-
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
-//import edu.wpi.first.wpilibj.RobotDrive;
-//import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
-//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This is a demo program showing the use of the RobotDrive class.
@@ -32,38 +25,36 @@ import edu.wpi.first.wpilibj.Timer;
  * don't. Unless you know what you are doing, complex code will be much more difficult under
  * this system. Use IterativeRobot or Command-Based instead if you're new.
  */
-public class Robot extends SampleRobot {
-	int session;
-    Image frame;
-    CameraServer server;
+public class Robot extends SampleRobot 
+{
+    Talon t1;
+    Talon t2;
+    int sum1;
+    int sum2;
+    int total;
+    Joystick joy1;
+    Joystick joy2;
+    
+    DigitalInput break1;
+    DigitalInput break2;
+    
 
-    public Robot() {
-        
+    public Robot() 
+    {
+        t1 = new Talon(0);
+        t2 = new Talon(1);
+        joy1 = new Joystick(0);
+        joy2 = new Joystick(1);
+        break1 = new DigitalInput(1);
+        break2 = new DigitalInput(2);
     }
     
-    public void robotInit() {
-    	try{
-    	server = CameraServer.getInstance();
-        server.setQuality(75);
-        //the camera name (ex "cam0") can be found through the roborio web interface
-        frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_U8, 0);
-
-        // the camera name (ex "cam0") can be found through the roborio web interface
-        session = NIVision.IMAQdxOpenCamera("cam0",
-                NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-        NIVision.IMAQdxConfigureGrab(session);
-    	}
-    	catch(VisionException e)
-    	{
-    		System.out.println("Camera?");
-    	}
-       
+    public void robotInit() 
+    {
+        
         
     }
-    public void disabled(){
-    	
-    	
-    }
+
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select between different autonomous modes
 	 * using the dashboard. The sendable chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
@@ -73,7 +64,8 @@ public class Robot extends SampleRobot {
 	 * You can add additional auto modes by adding additional comparisons to the if-else structure below with additional strings.
 	 * If using the SendableChooser make sure to add them to the chooser code above as well.
 	 */
-    public void autonomous() {
+    public void autonomous() 
+    {
     	
     	
     }
@@ -81,50 +73,71 @@ public class Robot extends SampleRobot {
     /**
      * Runs the motors with arcade steering.
      */
-    public void operatorControl() {
-    	try{
-    	NIVision.IMAQdxStartAcquisition(session);
-
-        /**
-         * grab an image, draw the circle, and provide it for the camera server
-         * which will in turn send it to the dashboard.
-         */
-        NIVision.IMAQdxGrab(session, frame, 1);
-        int Width = NIVision.imaqGetImageSize(frame).width;
-        int Height = NIVision.imaqGetImageSize(frame).height;
-        NIVision.Rect rect = new NIVision.Rect(Height/3, Width/3, Height/3, Width/3);
-        NIVision.Rect rect2 = new NIVision.Rect(Height*3/8, Width*3/8, Height/4, Width/4);
-        
-        while (isOperatorControl() && isEnabled()) {
-
-            NIVision.IMAQdxGrab(session, frame, 1);
-            NIVision.imaqDrawShapeOnImage(frame, frame, rect,
-                    DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 10f);
-            NIVision.imaqDrawShapeOnImage(frame, frame, rect2,
-                    DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
-//            NIVision.BestLine(new NIVision.PointFloat(0,0), new NIVision.PointFloat(0,0),
-//            		new NIVision.LineEquation(1, 1, 1), 1, 12, 100);
-            NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_INVERT, new NIVision.Point(Width/2, Height/3), new NIVision.Point(Width/2, Height*2/3), 0.1f);
-            NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_INVERT, new NIVision.Point(Width/3, Height/2), new NIVision.Point(Width*2/3, Height/2), 0.1f);
+    public void operatorControl() 
+    {
+    	boolean beamBreak1Val = false;
+    	boolean beamBreak2Val = false;
+    	
+    	boolean beamBreak1Prev = false;
+    	boolean beamBreak2Prev = false;
+    	
+    	int ctr1 = 0;
+    	int ctr2 = 0;
+    	
+    	long currTime = System.currentTimeMillis();
+    	long startTime = System.currentTimeMillis();
+    	
+        while (isOperatorControl() && isEnabled()) 
+        {
+//            t1.set(joy1.getRawAxis(2));
+//            t2.set(-(joy2.getRawAxis(2)));
+        	beamBreak1Prev = beamBreak1Val;
+//        	System.out.println(beamBreak1Prev);
+        	beamBreak2Prev = beamBreak2Val;
+        	beamBreak1Val = break1.get();
+        	
+        	beamBreak2Val = break2.get();
+        	if ((beamBreak1Val == true) && (beamBreak1Prev == false))
+        	{
+        		ctr1++;
+        		
+        		
+        	}
+        	if ((beamBreak2Val == true) && (beamBreak2Prev == false))
+        	{
+        		ctr2++;
+        	}
+        	
+            t1.set(.5);
+            t2.set(-.5);
             
-            
-
-            /** robot code here! **/
             Timer.delay(0.005);		// wait for a motor update time
-            server.setImage(frame);
+            currTime = System.currentTimeMillis();
+            long timePassed = currTime - startTime;
+            if (timePassed >= 1000)
+            {
+            	long rPS1 = (ctr1 / (timePassed/1000));
+            	long rPS2 = (ctr2 / (timePassed/1000));
+            	
+            	total++;
+            	sum1 += rPS1;
+            	sum2 += rPS2;
+            	ctr1 = 0; 
+            	ctr2 = 0;
+            	startTime = currTime;
+            }
+            
+            
         }
-        NIVision.IMAQdxStopAcquisition(session);
-    	}
-    	catch(VisionException e)
-    	{
-    		System.out.println("Camera?");
-    	}
+        System.out.println("Average for 1 " + sum1/total);
+        System.out.println("Average for 2 " + sum2/total);
     }
 
     /**
      * Runs during test mode
      */
-    public void test() {
+    public void test() 
+    {
     	
     }
 }
