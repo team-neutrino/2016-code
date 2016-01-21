@@ -36,6 +36,12 @@ public class Robot extends SampleRobot
     Joystick joy2;
     
     long time;
+    
+    long RPM1;
+    long RPM2;
+    
+    long maxRPM1;
+    long maxRPM2;
 
     Counter count2;
     Counter count1;
@@ -84,7 +90,8 @@ public class Robot extends SampleRobot
     public void operatorControl() 
     {
     	
-    	
+    	maxRPM1 = 0;
+    	maxRPM2 = 0;
     	count1 = new Counter(break1);
     	count2 = new Counter(break2);
     	t1.set(-1);
@@ -96,7 +103,7 @@ public class Robot extends SampleRobot
         	
         	time = System.currentTimeMillis();
         	
-        	while((System.currentTimeMillis() - time < 60000))
+        	while((System.currentTimeMillis() - time < 1000))
         	{
         		if(count1.get() > count2.get())
             	{
@@ -112,16 +119,28 @@ public class Robot extends SampleRobot
             
             counter1 = count1.get();
             counter2 = count2.get();
-            System.out.println(counter1);
-            System.out.println(counter2);
+            
+            RPM1 = counter1*60;
+            RPM2 = counter2*60;
+            
+            if (RPM1 > maxRPM1)
+            {
+            	maxRPM1 = RPM1;
+            }
+            if (RPM2 > maxRPM2)
+            {
+            	maxRPM2 = RPM2;
+            }
+            
+            System.out.println(RPM1);
+            System.out.println(RPM2);
             count1.reset();
             count2.reset();
             Timer.delay(0.005);		// wait for a motor update time
         }
         
-        
-        
-     
+        System.out.println("Max 1: " + maxRPM1);
+        System.out.println("Max 2: " + maxRPM2);
     }
 
     /**
