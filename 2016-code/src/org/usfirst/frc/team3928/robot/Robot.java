@@ -84,17 +84,20 @@ public class Robot extends SampleRobot
     public void operatorControl() 
     {
     	
-    	time = System.currentTimeMillis();
+    	
     	count1 = new Counter(break1);
     	count2 = new Counter(break2);
     	t1.set(-1);
     	t2.set(1);
-    	Timer.delay(.005);
+    	Timer.delay(.5);
     	
         while (isOperatorControl() && isEnabled()) 
         {
         	
-        	while(!(System.currentTimeMillis() - time < 60000))
+        	time = System.currentTimeMillis();
+        	
+        	while((System.currentTimeMillis() - time < 60000))
+        	{
         		if(count1.get() > count2.get())
             	{
             		 t1.set(-(count2.get()/count1.get()));
@@ -105,23 +108,18 @@ public class Robot extends SampleRobot
             		 t2.set((count1.get()/count2.get()));
                      t1.set(-1);
             	}
+        	}
+            
+            counter1 = count1.get();
+            counter2 = count2.get();
+            System.out.println(counter1);
+            System.out.println(counter2);
+            count1.reset();
+            count2.reset();
             Timer.delay(0.005);		// wait for a motor update time
         }
         
-        counter1 = count1.get();
-        counter2 = count2.get();
-//        if(counter1 > counter2)
-//    	{
-//    		 t1.set(counter2/counter1);
-//             t2.set(1);
-//    	}
-//    	if(counter2 > counter1)
-//    	{
-//    		 t2.set(counter1/counter2);
-//             t1.set(1);
-//    	}
-        count1.reset();
-        count2.reset();
+        
         
      
     }
