@@ -2,8 +2,8 @@
 package org.usfirst.frc.team3928.robot;
 
 
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Talon;
@@ -34,6 +34,14 @@ public class Robot extends SampleRobot
     int total;
     Joystick joy1;
     Joystick joy2;
+    
+    long time;
+
+    Counter count2;
+    Counter count1;
+    
+    int counter1;
+    int counter2;
     
     DigitalInput break1;
     DigitalInput break2;
@@ -75,62 +83,49 @@ public class Robot extends SampleRobot
      */
     public void operatorControl() 
     {
-    	boolean beamBreak1Val = false;
-    	boolean beamBreak2Val = false;
     	
-    	boolean beamBreak1Prev = false;
-    	boolean beamBreak2Prev = false;
-    	
-    	int ctr1 = 0;
-    	int ctr2 = 0;
-    	
-    	long currTime = System.currentTimeMillis();
-    	long startTime = System.currentTimeMillis();
+    	time = System.currentTimeMillis();
+    	count1 = new Counter(break1);
+    	count2 = new Counter(break2);
+    	t1.set(1);
+    	t2.set(-1);
     	
         while (isOperatorControl() && isEnabled()) 
         {
-//            t1.set(joy1.getRawAxis(2));
-//            t2.set(-(joy2.getRawAxis(2)));
-        	beamBreak1Prev = beamBreak1Val;
-//        	System.out.println(beamBreak1Prev);
-        	beamBreak2Prev = beamBreak2Val;
-        	beamBreak1Val = break1.get();
         	
-        	beamBreak2Val = break2.get();
-        	if ((beamBreak1Val == true) && (beamBreak1Prev == false))
-        	{
-        		ctr1++;
-        		
-        		
-        	}
-        	if ((beamBreak2Val == true) && (beamBreak2Prev == false))
-        	{
-        		ctr2++;
-        	}
-        	
-            t1.set(.5);
-            t2.set(-.5);
-            
+        	while(!(System.currentTimeMillis() - time < 60000))
+        		if(count1.get() > count2.get())
+            	{
+            		 t1.set(-(count2.get()/count1.get()));
+                     t2.set(1);
+                     
+            	}
+            	if(count2.get() > count1.get())
+            	{
+            		 t2.set((count1.get()/count2.get()));
+                     t1.set(-1);
+                     
+            	}
             Timer.delay(0.005);		// wait for a motor update time
-            currTime = System.currentTimeMillis();
-            long timePassed = currTime - startTime;
-            if (timePassed >= 1000)
-            {
-            	long rPS1 = (ctr1 / (timePassed/1000));
-            	long rPS2 = (ctr2 / (timePassed/1000));
-            	
-            	total++;
-            	sum1 += rPS1;
-            	sum2 += rPS2;
-            	ctr1 = 0; 
-            	ctr2 = 0;
-            	startTime = currTime;
-            }
-            
-            
         }
-        System.out.println("Average for 1 " + sum1/total);
-        System.out.println("Average for 2 " + sum2/total);
+        
+        counter1 = count1.get();
+        counter2 = count2.get();
+        if(counter1 > counter2)
+    	{
+    		 t1.set(counter2/counter1);
+             t2.set(1);
+             
+    	}
+    	if(counter2 > counter1)
+    	{
+    		 t2.set(counter1/counter2);
+             t1.set(1);
+    	}
+        count1.reset();
+        count2.reset();
+        
+     
     }
 
     /**
