@@ -35,13 +35,18 @@ public class Robot extends SampleRobot
     Joystick joy1;
     Joystick joy2;
     
-    long time;
+    double time;
     
-    long RPM1;
-    long RPM2;
+    double RPM1;
+    double RPM2;
     
-    long maxRPM1;
-    long maxRPM2;
+    double maxRPM1;
+    double maxRPM2;
+    
+    double tgtRPM;
+    
+    double tgtSpd1;
+    double tgtSpd2;
 
     Counter count2;
     Counter count1;
@@ -92,10 +97,13 @@ public class Robot extends SampleRobot
     	
     	maxRPM1 = 0;
     	maxRPM2 = 0;
+    	tgtRPM = 3000;
+    	tgtSpd1 = .5;
+    	tgtSpd2 = .5;
     	count1 = new Counter(break1);
     	count2 = new Counter(break2);
-    	t1.set(-1);
-    	t2.set(1);
+    	t1.set(-tgtSpd1);
+    	t2.set(tgtSpd2);
     	Timer.delay(.5);
     	
         while (isOperatorControl() && isEnabled()) 
@@ -103,25 +111,11 @@ public class Robot extends SampleRobot
         	
         	time = System.currentTimeMillis();
         	
-        	while((System.currentTimeMillis() - time < 1000))
-        	{
-        		if(count1.get() > count2.get())
-            	{
-            		 t1.set(-(count2.get()/count1.get()));
-                     t2.set(1);
-            	}
-            	if(count2.get() > count1.get())
-            	{
-            		 t2.set((count1.get()/count2.get()));
-                     t1.set(-1);
-            	}
-        	}
-            
-            counter1 = count1.get();
+        	counter1 = count1.get();
             counter2 = count2.get();
             
-            RPM1 = counter1*60;
-            RPM2 = counter2*60;
+            RPM1 = counter1*600;
+            RPM2 = counter2*600;
             
             if (RPM1 > maxRPM1)
             {
@@ -132,11 +126,35 @@ public class Robot extends SampleRobot
             	maxRPM2 = RPM2;
             }
             
-            System.out.println(RPM1);
-            System.out.println(RPM2);
+            System.out.println("RPM1: " + RPM1);
+            System.out.println("RPM2: " + RPM2);
             count1.reset();
             count2.reset();
-            Timer.delay(0.005);		// wait for a motor update time
+        	
+        	while((System.currentTimeMillis() - time < 100) && isOperatorControl() && isEnabled())
+        	{
+        		if(tgtRPM > RPM1)
+            	{
+        			tgtSpd1 = RPM1/tgtRPM;
+            	}
+        		else if (tgtRPM < RPM1)
+        		{
+        			tgtSpd1 = (2-(RPM1/tgtRPM));
+        		}
+            	if(tgtRPM > RPM2)
+            	{
+            		tgtSpd2 = RPM2/tgtRPM;
+            	}
+            	else if (tgtRPM < RPM2)
+            	{
+            		tgtSpd2 = (2-(RPM2/tgtRPM));
+            	}
+            	t1.set(-tgtSpd1);
+            	t2.set(tgtSpd2);
+        	}
+            
+        	Timer.delay(0.005);		// wait for a motor update time
+            
         }
         
         System.out.println("Max 1: " + maxRPM1);
