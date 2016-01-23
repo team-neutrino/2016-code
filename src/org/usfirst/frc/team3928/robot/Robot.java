@@ -37,12 +37,16 @@ public class Robot extends SampleRobot
     
     double time;
     
+    double RPS1;
+    double RPS2;
+    
     double RPM1;
     double RPM2;
     
     double maxRPM1;
     double maxRPM2;
     
+    double tgtRPS;
     double tgtRPM;
     
     double tgtSpd1;
@@ -53,6 +57,8 @@ public class Robot extends SampleRobot
     
     int counter1;
     int counter2;
+    
+    int waitTime;
     
     DigitalInput break1;
     DigitalInput break2;
@@ -94,72 +100,84 @@ public class Robot extends SampleRobot
      */
     public void operatorControl() 
     {
-    	
+    	waitTime = 100;
     	maxRPM1 = 0;
     	maxRPM2 = 0;
-    	tgtRPM = 3000;
+    	tgtRPM = joy1.getRawAxis(2)*10000;
+    	tgtRPS = tgtRPM/60;
     	tgtSpd1 = .5;
     	tgtSpd2 = .5;
     	count1 = new Counter(break1);
     	count2 = new Counter(break2);
     	t1.set(-tgtSpd1);
     	t2.set(tgtSpd2);
+    	count1.setDistancePerPulse(1);
+    	count2.setDistancePerPulse(1);
     	Timer.delay(.5);
+    	
     	
         while (isOperatorControl() && isEnabled()) 
         {
-        	
         	time = System.currentTimeMillis();
-        	
-        	counter1 = count1.get();
-            counter2 = count2.get();
             
-            RPM1 = counter1*100;
-            RPM2 = counter2*100;
+            RPS1 = count1.getRate();
+            RPS2 = count2.getRate();
             
-            if (RPM1 > maxRPM1)
-            {
-            	maxRPM1 = RPM1;
-            }
-            if (RPM2 > maxRPM2)
-            {
-            	maxRPM2 = RPM2;
-            }
-            
-            System.out.println("RPM1: " + RPM1);
-            System.out.println("RPM2: " + RPM2);
+            System.out.println(joy1.getRawAxis(2));
+    		System.out.println("Target RPM: " + tgtRPM);
+    		System.out.println("Joystick Setting: " + joy1.getRawAxis(2));
+            System.out.println("(RPS1, RPM1): " + RPS1 + ", " + RPS1*60);
+            System.out.println("(RPS1, RPM2): " + RPS2 + ", " + RPS2*60);
             count1.reset();
             count2.reset();
         	
-        	while((System.currentTimeMillis() - time < 600) && isOperatorControl() && isEnabled())
+        	while((System.currentTimeMillis() - time < waitTime) && isOperatorControl() && isEnabled())
         	{
-        		if (tgtRPM != RPM1)
+        		tgtRPM = joy1.getRawAxis(2)*10000;
+        		
+        		if (tgtRPS != RPS1)
         		{
-        			if(tgtRPM > RPM1)
+        			if(tgtRPS > RPS1)
         			{
-        				tgtSpd1 = RPM1/tgtRPM;
+        				tgtSpd1 = RPS1/tgtRPS;
         			}
-        			else if (tgtRPM < RPM1)
+        			else if (tgtRPS < RPS1)
         			{
-        				tgtSpd1 = (2-(RPM1/tgtRPM));
+        				tgtSpd1 = (2-(RPS1/tgtRPS));
         			}
         		}
-        		if (tgtRPM != RPM2)
+        		if (tgtRPS != RPS2)
         		{
-        			if(tgtRPM > RPM2)
+        			if(tgtRPS > RPS2)
         			{
-        				tgtSpd2 = RPM2/tgtRPM;
+        				tgtSpd2 = RPS2/tgtRPS;
         			}
-        			else if (tgtRPM < RPM2)
+        			else if (tgtRPS < RPS2)
         			{
-        				tgtSpd2 = (2-(RPM2/tgtRPM));
+        				tgtSpd2 = (2-(RPS2/tgtRPS));
         			}
         		}
-        		if (RPM1 == 0)
+        		if (RPS1 == 0)
         		{
         			tgtSpd1 = 1;
         		}
-            	if (RPM2 == 0)
+            	if (RPS2 == 0)
+            	{
+            		tgtSpd2 = 1;
+            	}
+            	if (tgtSpd1 < 0)
+            	{
+            		tgtSpd1 = 0;
+            	}
+            	if (tgtSpd2 < 0)
+            	{
+            		tgtSpd2 = 0;
+            	}
+            	if (tgtSpd1 > 1)
+            	{
+            		tgtSpd1 = 1;
+            	}
+            	if (tgtSpd2 > 1)
             	{
             		tgtSpd2 = 1;
             	}
