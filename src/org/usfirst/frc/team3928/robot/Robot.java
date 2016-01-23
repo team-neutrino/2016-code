@@ -104,7 +104,7 @@ public class Robot extends SampleRobot
     	maxRPM1 = 0;
     	maxRPM2 = 0;
 //    	tgtRPM = Math.abs((((-joy1.getRawAxis(1))+1)/2)*10000);
-    	tgtRPM = 2000;
+    	tgtRPM = 4500;
     	tgtRPS = tgtRPM/60;
     	tgtSpd1 = .5;
     	tgtSpd2 = .5;
