@@ -114,8 +114,8 @@ public class Robot extends SampleRobot
         	counter1 = count1.get();
             counter2 = count2.get();
             
-            RPM1 = counter1*600;
-            RPM2 = counter2*600;
+            RPM1 = counter1*100;
+            RPM2 = counter2*100;
             
             if (RPM1 > maxRPM1)
             {
@@ -131,23 +131,37 @@ public class Robot extends SampleRobot
             count1.reset();
             count2.reset();
         	
-        	while((System.currentTimeMillis() - time < 100) && isOperatorControl() && isEnabled())
+        	while((System.currentTimeMillis() - time < 600) && isOperatorControl() && isEnabled())
         	{
-        		if(tgtRPM > RPM1)
-            	{
-        			tgtSpd1 = RPM1/tgtRPM;
-            	}
-        		else if (tgtRPM < RPM1)
+        		if (tgtRPM != RPM1)
         		{
-        			tgtSpd1 = (2-(RPM1/tgtRPM));
+        			if(tgtRPM > RPM1)
+        			{
+        				tgtSpd1 = RPM1/tgtRPM;
+        			}
+        			else if (tgtRPM < RPM1)
+        			{
+        				tgtSpd1 = (2-(RPM1/tgtRPM));
+        			}
         		}
-            	if(tgtRPM > RPM2)
+        		if (tgtRPM != RPM2)
+        		{
+        			if(tgtRPM > RPM2)
+        			{
+        				tgtSpd2 = RPM2/tgtRPM;
+        			}
+        			else if (tgtRPM < RPM2)
+        			{
+        				tgtSpd2 = (2-(RPM2/tgtRPM));
+        			}
+        		}
+        		if (RPM1 == 0)
+        		{
+        			tgtSpd1 = 1;
+        		}
+            	if (RPM2 == 0)
             	{
-            		tgtSpd2 = RPM2/tgtRPM;
-            	}
-            	else if (tgtRPM < RPM2)
-            	{
-            		tgtSpd2 = (2-(RPM2/tgtRPM));
+            		tgtSpd2 = 1;
             	}
             	t1.set(-tgtSpd1);
             	t2.set(tgtSpd2);
