@@ -103,7 +103,7 @@ public class Robot extends SampleRobot
     	waitTime = 100;
     	maxRPM1 = 0;
     	maxRPM2 = 0;
-    	tgtRPM = joy1.getRawAxis(2)*10000;
+    	tgtRPM = Math.abs((((-joy1.getRawAxis(1))+1)/2)*10000);
     	tgtRPS = tgtRPM/60;
     	tgtSpd1 = .5;
     	tgtSpd2 = .5;
@@ -123,17 +123,17 @@ public class Robot extends SampleRobot
             RPS1 = count1.getRate();
             RPS2 = count2.getRate();
             
-            System.out.println(joy1.getRawAxis(2));
-    		System.out.println("Target RPM: " + tgtRPM);
-    		System.out.println("Joystick Setting: " + joy1.getRawAxis(2));
-            System.out.println("(RPS1, RPM1): " + RPS1 + ", " + RPS1*60);
-            System.out.println("(RPS1, RPM2): " + RPS2 + ", " + RPS2*60);
+            
+//            System.out.println("(RPS1, RPM1): " + RPS1 + ", " + RPS1*60);
+//            System.out.println("(RPS2, RPM2): " + RPS2 + ", " + RPS2*60);
+            System.out.println("Joystick RPM: " + tgtRPM);
             count1.reset();
             count2.reset();
         	
         	while((System.currentTimeMillis() - time < waitTime) && isOperatorControl() && isEnabled())
         	{
-        		tgtRPM = joy1.getRawAxis(2)*10000;
+        		
+        		tgtRPM = Math.abs((((-joy1.getRawAxis(1))+1)/2)*10000);
         		tgtRPS = tgtRPM/60;
         		
         		if (tgtRPS != RPS1)
