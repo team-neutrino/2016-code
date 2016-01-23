@@ -134,6 +134,7 @@ public class Robot extends SampleRobot
         	while((System.currentTimeMillis() - time < waitTime) && isOperatorControl() && isEnabled())
         	{
         		tgtRPM = joy1.getRawAxis(2)*10000;
+        		tgtRPS = tgtRPM/60;
         		
         		if (tgtRPS != RPS1)
         		{
