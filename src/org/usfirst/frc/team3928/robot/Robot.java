@@ -45,10 +45,10 @@ public class Robot extends SampleRobot
 		try
 		{
 			server = CameraServer.getInstance();
-			server.setQuality(75);
+			server.setQuality(100);
 			// the camera name (ex "cam0") can be found through the roborio web
 			// interface
-			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_U8, 0);
+			frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_U8, 1);
 
 			// the camera name (ex "cam0") can be found through the roborio web
 			// interface
@@ -96,24 +96,22 @@ public class Robot extends SampleRobot
 			 * server which will in turn send it to the dashboard.
 			 */
 			NIVision.IMAQdxGrab(session, frame, 1);
-			int Width = NIVision.imaqGetImageSize(frame).width;
-			int Height = NIVision.imaqGetImageSize(frame).height;
-			NIVision.Rect rect = new NIVision.Rect(Height / 3, Width / 3, Height / 3, Width / 3);
-			NIVision.Rect rect2 = new NIVision.Rect(Height * 3 / 8, Width * 3 / 8, Height / 4, Width / 4);
+//			int Width = NIVision.imaqGetImageSize(frame).width;
+//			int Height = NIVision.imaqGetImageSize(frame).height;
+//			NIVision.Rect rect = new NIVision.Rect(Height / 3, Width / 3, Height / 3, Width / 3);
+//			NIVision.Rect rect2 = new NIVision.Rect(Height * 3 / 8, Width * 3 / 8, Height / 4, Width / 4);
 
 			while (isOperatorControl() && isEnabled())
 			{
 
 				NIVision.IMAQdxGrab(session, frame, 1);
-				NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 10f);
-				NIVision.imaqDrawShapeOnImage(frame, frame, rect2, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
-				// NIVision.BestLine(new NIVision.PointFloat(0,0), new
-				// NIVision.PointFloat(0,0),
-				// new NIVision.LineEquation(1, 1, 1), 1, 12, 100);
-				NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_INVERT,
-						new NIVision.Point(Width / 2, Height / 3), new NIVision.Point(Width / 2, Height * 2 / 3), 0.1f);
-				NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_INVERT,
-						new NIVision.Point(Width / 3, Height / 2), new NIVision.Point(Width * 2 / 3, Height / 2), 0.1f);
+//				NIVision.imaqDrawShapeOnImage(frame, frame, rect, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 10f);
+//				NIVision.imaqDrawShapeOnImage(frame, frame, rect2, DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
+				
+//				NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_INVERT,
+//						new NIVision.Point(Width / 2, Height / 3), new NIVision.Point(Width / 2, Height * 2 / 3), 0.1f);
+//				NIVision.imaqDrawLineOnImage(frame, frame, DrawMode.DRAW_INVERT,
+//						new NIVision.Point(Width / 3, Height / 2), new NIVision.Point(Width * 2 / 3, Height / 2), 0.1f);
 
 				/** robot code here! **/
 				Timer.delay(0.005); // wait for a motor update time
