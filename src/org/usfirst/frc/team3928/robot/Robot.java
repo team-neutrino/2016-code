@@ -6,16 +6,11 @@ import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ShapeMode;
 import com.ni.vision.VisionException;
-
 import edu.wpi.first.wpilibj.CameraServer;
-//import edu.wpi.first.wpilibj.RobotDrive; 
-//import edu.wpi.first.wpilibj.Joystick; 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.HSLImage;
 import edu.wpi.first.wpilibj.vision.AxisCamera;
-//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser; 
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard; 
 
 
 public class Robot extends SampleRobot
@@ -48,7 +43,7 @@ public class Robot extends SampleRobot
 
 	public void disabled()
 	{
-
+		while(is)
 	}
 
 	public void autonomous()
