@@ -36,7 +36,7 @@ public class Robot extends SampleRobot
 		{
 			
 			server = CameraServer.getInstance();
-			server.setQuality(75);
+			server.setQuality(100);
 			cam.getImage(frame);
 			
 		} catch (Exception E)
