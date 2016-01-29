@@ -1,49 +1,41 @@
 package org.usfirst.frc.team3928.robot;
 
-import edu.wpi.first.wpilibj.SampleRobot;
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.DrawMode;
-import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ShapeMode;
-import com.ni.vision.VisionException;
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.image.ColorImage;
-import edu.wpi.first.wpilibj.image.HSLImage;
-import edu.wpi.first.wpilibj.vision.AxisCamera;
+import java.io.IOException;
 
+import com.ni.vision.NIVision;
+
+import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.tables.ITableListener;
 
 public class Robot extends SampleRobot
 {
-	int session;
-	Image frame;
-	CameraServer server;
-	AxisCamera cam;
+	NetworkTable cameraTable;
 
 	public Robot()
 	{
-		cam = new AxisCamera("10.39.28.29");
+		cameraTable = NetworkTable.getTable("GRIP/myContoursReport");
 	}
 
 	public void robotInit()
 	{
-		try
+		double[] def = new double[0];
+		while(true)
 		{
-			
-			server = CameraServer.getInstance();
-			server.setQuality(100);
-			cam.getImage(frame);
-			
-		} catch (Exception E)
-		{
-			System.out.println("Camera?");
+			double[] areas = cameraTable.getNumberArray("area", def);
+			System.out.println("areas");
+			for(double area: areas)
+			{
+				System.out.println(area);
+			}
+			Timer.delay(1);
 		}
-
 	}
 
 	public void disabled()
 	{
-		while(is)
+		
 	}
 
 	public void autonomous()
@@ -53,21 +45,13 @@ public class Robot extends SampleRobot
 
 	public void operatorControl()
 	{
-		try
-		{
+		
 			
 			while (isOperatorControl() && isEnabled())
 			{
-				
-				cam.getImage(frame);
-				server.setImage(frame);
-				
+
 			}
-			NIVision.IMAQdxStopAcquisition(session);
-		} catch (Exception E)
-		{
-			System.out.println("Camera?");
-		}
+		
 	}
 
 	/**
