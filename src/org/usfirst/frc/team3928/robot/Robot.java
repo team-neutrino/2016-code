@@ -12,6 +12,10 @@ import edu.wpi.first.wpilibj.tables.ITableListener;
 public class Robot extends SampleRobot
 {
 	NetworkTable cameraTable;
+	double[] centerX;
+	double[]centerY;
+	double[] width;
+	double[] height;
 
 	public Robot()
 	{
@@ -20,17 +24,7 @@ public class Robot extends SampleRobot
 
 	public void robotInit()
 	{
-		double[] def = new double[0];
-		while(true)
-		{
-			double[] areas = cameraTable.getNumberArray("area", def);
-			System.out.println("areas");
-			for(double area: areas)
-			{
-				System.out.println(area);
-			}
-			Timer.delay(1);
-		}
+		
 	}
 
 	public void disabled()
@@ -45,11 +39,34 @@ public class Robot extends SampleRobot
 
 	public void operatorControl()
 	{
-		
-			
 			while (isOperatorControl() && isEnabled())
 			{
-
+				double[] def = new double[0];
+				
+				double[] areas = cameraTable.getNumberArray("area", def);
+				System.out.println("areas");
+				for(double area: areas)
+				{
+					System.out.println(area);
+				}
+				
+				def = new double[0];
+				double[] centerX = cameraTable.getNumberArray("centerX", def);
+				System.out.println("centerX");
+				for(double centx: centerX)
+				{
+					System.out.println(centx);
+				}
+				
+				def = new double[0];
+				double[] centerY = cameraTable.getNumberArray("centerY", def);
+				System.out.println("centerY");
+				for(double centy: centerY)
+				{
+					System.out.println(centy);
+				}
+				Timer.delay(1);
+				
 			}
 		
 	}
