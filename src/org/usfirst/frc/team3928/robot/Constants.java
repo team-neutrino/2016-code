@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 public class Constants
 {
 	private static final ArrayList<Constant> constList = new ArrayList<Constant>();
-	
+	public static final Constant RealBot = new Constant("RealBot", false);
 	// Autonomous Constants
 	
 	// Controllers
@@ -26,11 +26,14 @@ public class Constants
 	public static final Constant DRIVE_LEFT_1_POWER_CHANNEL = new Constant("DriveLeft1PowerChannel", 2);
 	public static final Constant DRIVE_LEFT_2_CHANNEL = new Constant("DriveLeft2Channel", 3);
 	public static final Constant DRIVE_LEFT_2_POWER_CHANNEL = new Constant("DriveLeft2Powex≥≥hannel", 4);
+	public static final Constant DRIVE_LEFT_3_CHANNEL = new Constant("DriveLeft2Channel", 3);
+	public static final Constant DRIVE_LEFT_3_POWER_CHANNEL = new Constant("DriveLeft2Powex≥≥hannel", 4);
 	public static final Constant DRIVE_RIGHT_1_CHANNEL = new Constant("DriveRight1Channel", 5);
 	public static final Constant DRIVE_RIGHT_1_POWER_CHANNEL = new Constant("DriveRight1PowerChannel", 6);
 	public static final Constant DRIVE_RIGHT_2_CHANNEL = new Constant("DriveRight2Channel", 7);
 	public static final Constant DRIVE_RIGHT_2_POWER_CHANNEL = new Constant("DriveRight2PowerChannel", 8);
-
+	public static final Constant DRIVE_RIGHT_3_CHANNEL = new Constant("DriveRight3Channel", 7);
+	public static final Constant DRIVE_RIGHT_3_POWER_CHANNEL = new Constant("DriveRight3PowerChannel", 8);
 	
 	// Intake Constants
 	
