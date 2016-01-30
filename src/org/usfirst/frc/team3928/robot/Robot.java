@@ -35,9 +35,9 @@ public class Robot extends SampleRobot {
 	Drive driver;
 	
     public Robot() {
-    	joyLeft = new Joystick(Constants.JOY_LEFT.getInt());
-		joyRight = new Joystick(Constants.JOY_RIGHT.getInt());
-		game = new Joystick(Constants.GAMEPAD.getInt());
+    	joyLeft = new Joystick(Constants.JOY_LEFT);
+		joyRight = new Joystick(Constants.JOY_RIGHT);
+		game = new Joystick(Constants.GAMEPAD);
 		driver = new Drive();
     }
     
@@ -70,8 +70,8 @@ public class Robot extends SampleRobot {
     	while (isOperatorControl() && isEnabled()) {
     		double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();
-			driver.setLeftSpeed(Math.abs(leftSpeed));
-			driver.setRightSpeed(Math.abs(rightSpeed));
+			driver.setLeftSpeed(leftSpeed);
+			driver.setRightSpeed(-rightSpeed);
             
             Timer.delay(0.005);		// wait for a motor update time
         }
