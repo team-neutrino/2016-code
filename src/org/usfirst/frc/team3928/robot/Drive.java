@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.Victor;
 public class Drive {
 	Joystick joyLeft;
 	Joystick joyRight;
-	SpeedController tal1;
-	SpeedController tal2; 
-	SpeedController tal3;
-	SpeedController tal4;
-	SpeedController tal5;
-	SpeedController tal6;
+	SpeedController right1;
+	SpeedController left1; 
+	SpeedController right2;
+	SpeedController left2;
+	SpeedController right3;
+	SpeedController left3;
 	
 	public Drive()
 	{
@@ -22,56 +22,44 @@ public class Drive {
 		
 		if(Constants.RealBot)
 		{
-			tal1 = new TalonSRX(Constants.DRIVE_RIGHT_1_CHANNEL);
-			tal2 = new TalonSRX(Constants.DRIVE_LEFT_1_CHANNEL);
-			tal3 = new TalonSRX(Constants.DRIVE_RIGHT_2_CHANNEL);
-			tal4 = new TalonSRX(Constants.DRIVE_LEFT_2_CHANNEL);
-			tal5 = new TalonSRX(Constants.DRIVE_RIGHT_3_CHANNEL);
-			tal6 = new TalonSRX(Constants.DRIVE_LEFT_3_CHANNEL);
+			right1 = new TalonSRX(Constants.DRIVE_RIGHT_1_CHANNEL);
+			left1 = new TalonSRX(Constants.DRIVE_LEFT_1_CHANNEL);
+			right2 = new TalonSRX(Constants.DRIVE_RIGHT_2_CHANNEL);
+			left2 = new TalonSRX(Constants.DRIVE_LEFT_2_CHANNEL);
+			right3 = new TalonSRX(Constants.DRIVE_RIGHT_3_CHANNEL);
+			left3 = new TalonSRX(Constants.DRIVE_LEFT_3_CHANNEL);
 		}
 		else
 		{
-			tal1 = new Victor(Constants.DRIVE_RIGHT_1_CHANNEL);
-			tal2 = new Victor(Constants.DRIVE_LEFT_1_CHANNEL);
-			tal3 = new Victor(Constants.DRIVE_RIGHT_2_CHANNEL);
-			tal4 = new Victor(Constants.DRIVE_LEFT_2_CHANNEL);
-			tal5 = new Victor(Constants.DRIVE_RIGHT_3_CHANNEL);
-			tal6 = new Victor(Constants.DRIVE_LEFT_3_CHANNEL);
+			right1 = new Victor(Constants.DRIVE_RIGHT_1_CHANNEL);
+			left1 = new Victor(Constants.DRIVE_LEFT_1_CHANNEL);
+			right2 = new Victor(Constants.DRIVE_RIGHT_2_CHANNEL);
+			left2 = new Victor(Constants.DRIVE_LEFT_2_CHANNEL);
+			right3 = new Victor(Constants.DRIVE_RIGHT_3_CHANNEL);
+			left3 = new Victor(Constants.DRIVE_LEFT_3_CHANNEL);
 		}
 	}
 	
-	public void setRightSpeed(double speed)
+	public void setRightSpeed(double speed, boolean operatorControl)
 	{
-		if(joyLeft.getRawButton(1) || joyRight.getRawButton(1))
+		if(operatorControl && (!(joyLeft.getRawButton(1) || joyRight.getRawButton(1))))
 		{
-			tal1.set(speed);
-			tal3.set(speed);
-			tal5.set(speed);
+			speed = speed*.5;
 		}
-		else
-		{
-			tal1.set(speed * .5);
-			tal3.set(speed * .5);
-			tal5.set(speed * .5);
-		}
-		
+		right1.set(speed);
+		right2.set(speed);
+		right3.set(speed);
 	}
 	
-	public void setLeftSpeed(double speed)
+	public void setLeftSpeed(double speed, boolean operatorControl)
 	{
-		if(joyLeft.getRawButton(1) || joyRight.getRawButton(1))
+		if(operatorControl && (!(joyLeft.getRawButton(1) || joyRight.getRawButton(1))))
 		{
-			tal2.set(speed);
-			tal4.set(speed);
-			tal6.set(speed);
+			speed = speed*.5;
 		}
-		else
-		{
-			tal2.set(speed * .5);
-			tal4.set(speed * .5);
-			tal6.set(speed * .5);
-		}
-		
+		left1.set(speed);
+		left2.set(speed);
+		left3.set(speed);
 		
 	}
 
