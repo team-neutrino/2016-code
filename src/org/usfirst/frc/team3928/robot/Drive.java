@@ -42,6 +42,8 @@ public class Drive {
 	
 	public void setRightSpeed(double speed, boolean operatorControl)
 	{
+		// This sets the speed to half only if the robot is enabled AND the triggers are not pressed
+		// allowing for the same function to be used for autonomous driving
 		if(operatorControl && (!(joyLeft.getRawButton(1) || joyRight.getRawButton(1))))
 		{
 			speed = speed*.5;
@@ -53,6 +55,8 @@ public class Drive {
 	
 	public void setLeftSpeed(double speed, boolean operatorControl)
 	{
+		// This sets the speed to half only if the robot is enabled AND the triggers are not pressed
+		// allowing for the same function to be used for autonomous driving
 		if(operatorControl && (!(joyLeft.getRawButton(1) || joyRight.getRawButton(1))))
 		{
 			speed = speed*.5;
