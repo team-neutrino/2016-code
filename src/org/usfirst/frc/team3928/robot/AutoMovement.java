@@ -14,7 +14,7 @@ public class AutoMovement
 	public AutoMovement()
 	{
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
-		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL, true);
+		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		drive = new Drive();
 
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
@@ -27,41 +27,19 @@ public class AutoMovement
 		encRight.reset();
 		if (distance > 0)
 		{
-			if (distance > encLeft.get())
+			while(distance > encLeft.getDistance())
 			{
-				drive.setLeftSpeed(Constants.AUTON_MOVE_SPEED, false);
+					drive.setLeftSpeed(Constants.AUTON_MOVE_SPEED);
 			}
-			else
-			{
-				drive.setLeftSpeed(0, false);
-			}
-			if (distance > encRight.get())
-			{
-				drive.setRightSpeed(Constants.AUTON_MOVE_SPEED, false);
-			}
-			else
-			{
-				drive.setRightSpeed(0, false);
-			}
+			drive.setLeftSpeed(0);
 		}
 		else if (distance < 0)
 		{
-			if (distance < encLeft.get())
+			while(distance < encLeft.getDistance())
 			{
-				drive.setLeftSpeed(-Constants.AUTON_MOVE_SPEED, false);
+					drive.setLeftSpeed(-Constants.AUTON_MOVE_SPEED);
 			}
-			else
-			{
-				drive.setLeftSpeed(0, false);
-			}
-			if (distance < encRight.get())
-			{
-				drive.setRightSpeed(-Constants.AUTON_MOVE_SPEED, false);
-			}
-			else
-			{
-				drive.setRightSpeed(0, false);
-			}
+			drive.setLeftSpeed(0);
 		}
 
 	}

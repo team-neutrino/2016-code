@@ -44,9 +44,8 @@ public class Robot extends SampleRobot
 		{
 			double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();
-			driver.setLeftSpeed(leftSpeed, isOperatorControl());
-			driver.setRightSpeed(-rightSpeed, isOperatorControl());
-
+			driver.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
+			driver.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
 			Timer.delay(0.005); // wait for a motor update time
 		}
 	}

@@ -21,7 +21,7 @@ public class Drive
 		joyLeft = new Joystick(Constants.JOY_LEFT);
 		joyRight = new Joystick(Constants.JOY_RIGHT);
 
-		if (Constants.REAL_BOT)
+		if(Constants.REAL_BOT)
 		{
 			right1 = new TalonSRX(Constants.DRIVE_RIGHT_1_CHANNEL);
 			left1 = new TalonSRX(Constants.DRIVE_LEFT_1_CHANNEL);
@@ -41,29 +41,15 @@ public class Drive
 		}
 	}
 
-	public void setRightSpeed(double speed, boolean operatorControl)
+	public void setRightSpeed(double speed)
 	{
-		// This sets the speed to half only if the robot is enabled AND the
-		// triggers are not pressed
-		// allowing for the same function to be used for autonomous driving
-		if (operatorControl && (!(joyLeft.getRawButton(1) || joyRight.getRawButton(1))))
-		{
-			speed = speed * .5;
-		}
 		right1.set(speed);
 		right2.set(speed);
 		right3.set(speed);
 	}
 
-	public void setLeftSpeed(double speed, boolean operatorControl)
+	public void setLeftSpeed(double speed)
 	{
-		// This sets the speed to half only if the robot is enabled AND the
-		// triggers are not pressed
-		// allowing for the same function to be used for autonomous driving
-		if (operatorControl && (!(joyLeft.getRawButton(1) || joyRight.getRawButton(1))))
-		{
-			speed = speed * .5;
-		}
 		left1.set(speed);
 		left2.set(speed);
 		left3.set(speed);
