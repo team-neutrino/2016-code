@@ -23,7 +23,7 @@ public class Constants
 	public static final int ENCODER_LEFT_B_CHANNEL = 1;
 	public static final int ENCODER_RIGHT_A_CHANNEL = 2;
 	public static final int ENCODER_RIGHT_B_CHANNEL = 3;
-	public static final double ENCODER_DISTANCE_PER_PULSE = 1;
+	public static final double ENCODER_DISTANCE_PER_PULSE = 1.57079632;
 	
 	// Drive Constants
 	public static final int DRIVE_LEFT_1_CHANNEL = 0;

@@ -26,32 +26,29 @@ public class AutoMovement
 		encLeft.reset();
 		encRight.reset();
 		double speed = Constants.AUTON_MOVE_SPEED;
-		
+
 		if (distance > 0)
 		{
-			while((distance > encLeft.getDistance()) || (distance > encRight.getDistance()))
+			while ((distance > encLeft.getDistance()) || (distance > encRight.getDistance()))
 			{
 				if (distance > encLeft.getDistance())
 				{
 					drive.setLeftSpeed(speed);
-				}
-				else if (distance > encRight.getDistance())
+				} else if (distance > encRight.getDistance())
 				{
 					drive.setRightSpeed(-speed);
 				}
 			}
 			drive.setLeftSpeed(0);
 			drive.setRightSpeed(0);
-		}
-		else if (distance < 0)
+		} else if (distance < 0)
 		{
-			while((distance < encLeft.getDistance()) || (distance < encLeft.getDistance()))
+			while ((distance < encLeft.getDistance()) || (distance < encLeft.getDistance()))
 			{
 				if (distance < encLeft.getDistance())
 				{
 					drive.setLeftSpeed(-speed);
-				}
-				else if (distance < encRight.getDistance())
+				} else if (distance < encRight.getDistance())
 				{
 					drive.setRightSpeed(speed);
 				}
@@ -66,9 +63,8 @@ public class AutoMovement
 	{
 		if (useGyro)
 		{
-			
-		}
-		else
+
+		} else
 		{
 
 		}
