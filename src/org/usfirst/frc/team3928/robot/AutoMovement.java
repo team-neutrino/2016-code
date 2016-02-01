@@ -70,11 +70,11 @@ public class AutoMovement
 	{
 		if (useGyro)
 		{
-			
+
 		}
 		else
 		{
-			
+
 		}
 	}
 }

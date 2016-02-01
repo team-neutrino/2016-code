@@ -1,27 +1,33 @@
 package org.usfirst.frc.team3928.robot;
 
-public class Auto {
+public class Auto
+{
 	AutoMovement autonMove;
-	
+
 	public Auto()
 	{
 		autonMove = new AutoMovement();
 	}
+
 	public void autonMode0()
 	{
 		// Do Nothing Autonomous
 	}
+
 	public void autonMode1()
 	{
 		// Move Forward Autonomous (and can be used for testing)
 		autonMove.moveDistance(5);
 	}
+
 	public void autonMode2()
 	{
-		//TODO: Some kind of camera-driven autonomous 
-		// maybe make a new class called "VisionTracking" to tell whether we are aimed at the
+		// TODO: Some kind of camera-driven autonomous
+		// maybe make a new class called "VisionTracking" to tell whether we are
+		// aimed at the
 		// goal or not, so we can re-use code for auton and drive code
 	}
+
 	public void runAutonMode()
 	{
 		int mode = Constants.AUTON_MODE;
@@ -38,5 +44,5 @@ public class Auto {
 			autonMode0();
 		}
 	}
-	
+
 }
