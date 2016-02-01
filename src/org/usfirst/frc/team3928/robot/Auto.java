@@ -38,13 +38,9 @@ public class Auto
 		int mode = Constants.AUTON_MODE;
 		switch (mode)
 		{
-		case 0:
-			autonMode0();
-			break;
-		case 1:
-			autonMode1();
-			break;
-
+		case 0: autonMode0(); break;
+		case 1: autonMode1(); break;
+		default: throw new IllegalArgumentException("Invalid auton mode.");
 		}
 
 	}
