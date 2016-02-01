@@ -53,7 +53,6 @@ public class Drive
 		left1.set(speed);
 		left2.set(speed);
 		left3.set(speed);
-
 	}
 
 }

@@ -36,18 +36,12 @@ public class Auto
 	public void runAutonMode()
 	{
 		int mode = Constants.AUTON_MODE;
-		if (mode == 1)
-		{
-			autonMode1();
-		}
-		else if (mode == 2)
-		{
-			autonMode2();
-		}
-		else
-		{
-			autonMode0();
-		}
+		 switch (mode)
+		    {
+		      case 1
+		      
+		    }
+
 	}
 
 }

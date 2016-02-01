@@ -30,6 +30,7 @@ public class AutoMovement
 			while(distance > encLeft.getDistance())
 			{
 					drive.setLeftSpeed(Constants.AUTON_MOVE_SPEED);
+					drive.setRightSpeed(-Constants.AUTON_MOVE_SPEED);
 			}
 			drive.setLeftSpeed(0);
 		}
@@ -38,6 +39,7 @@ public class AutoMovement
 			while(distance < encLeft.getDistance())
 			{
 					drive.setLeftSpeed(-Constants.AUTON_MOVE_SPEED);
+					drive.setRightSpeed(Constants.AUTON_MOVE_SPEED);
 			}
 			drive.setLeftSpeed(0);
 		}
