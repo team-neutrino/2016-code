@@ -12,7 +12,7 @@ public class Robot extends SampleRobot
 	Joystick joyRight;
 	Joystick game;
 	Drive driver;
-	Auton auto;
+	Auto auto;
 
 	public Robot()
 	{
@@ -20,7 +20,7 @@ public class Robot extends SampleRobot
 		joyRight = new Joystick(Constants.JOY_RIGHT);
 		game = new Joystick(Constants.GAMEPAD);
 		driver = new Drive();
-		auto = new Auton();
+		auto = new Auto();
 	}
 
 	public void robotInit()

@@ -1,11 +1,11 @@
 package org.usfirst.frc.team3928.robot;
 
-public class Auton {
-	AutonMovement autonMove;
+public class Auto {
+	AutoMovement autonMove;
 	
-	public Auton()
+	public Auto()
 	{
-		autonMove = new AutonMovement();
+		autonMove = new AutoMovement();
 	}
 	public void autonMode0()
 	{
