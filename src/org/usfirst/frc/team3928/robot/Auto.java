@@ -9,14 +9,19 @@ public class Auto
 		autonMove = new AutoMovement();
 	}
 
+	/**
+	 * Do Nothing Autonomous
+	 */
 	public void autonMode0()
 	{
-		// Do Nothing Autonomous
+
 	}
 
+	/**
+	 * Move Forward Autonomous (and can be used for testing)
+	 */
 	public void autonMode1()
 	{
-		// Move Forward Autonomous (and can be used for testing)
 		autonMove.moveDistance(5);
 	}
 
