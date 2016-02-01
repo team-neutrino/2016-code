@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3928.robot;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class AutoMovement
@@ -38,6 +39,7 @@ public class AutoMovement
 				{
 					drive.setRightSpeed(-speed);
 				}
+				Timer.delay(0.005);
 			}
 			drive.setLeftSpeed(0);
 			drive.setRightSpeed(0);
@@ -52,6 +54,7 @@ public class AutoMovement
 				{
 					drive.setRightSpeed(speed);
 				}
+				Timer.delay(0.005);
 			}
 			drive.setLeftSpeed(0);
 			drive.setRightSpeed(0);
