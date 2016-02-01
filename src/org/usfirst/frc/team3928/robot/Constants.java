@@ -1,12 +1,5 @@
 package org.usfirst.frc.team3928.robot;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
-
-import edu.wpi.first.wpilibj.DriverStation;
-
 public class Constants
 {
 	public static final boolean RealBot = false;
