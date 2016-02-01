@@ -27,7 +27,7 @@ public class AutoMovement
 		encRight.reset();
 		if (distance > 0)
 		{
-			while(distance > encLeft.getDistance())
+			while((distance > encLeft.getDistance()) || ())
 			{
 					drive.setLeftSpeed(Constants.AUTON_MOVE_SPEED);
 					drive.setRightSpeed(-Constants.AUTON_MOVE_SPEED);

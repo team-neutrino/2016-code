@@ -38,7 +38,12 @@ public class Auto
 		int mode = Constants.AUTON_MODE;
 		 switch (mode)
 		    {
-		      case 1
+		 case 0:
+			 autonMode0();
+			 break;
+		 case 1:
+			 autonMode1();
+			 break;
 		      
 		    }
 
