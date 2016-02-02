@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3928.robot;
 
-import org.usfirst.frc.team3928.robot.autonomous.Auto;
-import org.usfirst.frc.team3928.robot.autonomous.AutoMovement;
+import org.usfirst.frc.team3928.robot.autonomous.AutoController;
+import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,18 +14,18 @@ public class Robot extends SampleRobot
 	Joystick joyLeft;
 	Joystick joyRight;
 	Joystick game;
-	Drive driver;
-	Auto auto;
-	AutoMovement autoMove;
+	Drive drive;
+	AutoController auto;
+	AutoDriver autoDriver;
 	
 	public Robot()
 	{
 		joyLeft = new Joystick(Constants.JOY_LEFT);
 		joyRight = new Joystick(Constants.JOY_RIGHT);
 		game = new Joystick(Constants.GAMEPAD);
-		driver = new Drive();
-		autoMove = new AutoMovement();
-		auto = new Auto();
+		drive = new Drive();
+		autoDriver = new AutoDriver();
+		auto = new AutoController();
 	}
 
 	public void robotInit()
@@ -50,8 +50,8 @@ public class Robot extends SampleRobot
 		{
 			double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();
-			driver.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
-			driver.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
+			drive.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
+			drive.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
 			Timer.delay(0.005); // wait for a motor update time
 		}
 	}
@@ -63,13 +63,13 @@ public class Robot extends SampleRobot
 	{
 		while (isTest())
 		{
-			double leftDist = autoMove.encLeft.getDistance();
-			double rightDist = autoMove.encRight.getDistance();
+			double leftDist = autoDriver.encLeft.getDistance();
+			double rightDist = autoDriver.encRight.getDistance();
 			
 			double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();
-			driver.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
-			driver.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
+			drive.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
+			drive.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
 			
 			
 			

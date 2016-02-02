@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
-public class AutoMovement
+public class AutoDriver
 {
 	// TODO change this to private after access is no longer needed in Robot.java
 	public Encoder encLeft;
@@ -16,7 +16,7 @@ public class AutoMovement
 
 	Drive drive;
 
-	public AutoMovement()
+	public AutoDriver()
 	{
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
