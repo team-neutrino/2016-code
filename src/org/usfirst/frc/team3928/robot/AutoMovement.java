@@ -26,7 +26,7 @@ public class AutoMovement
 	{
 		encLeft.reset();
 		encRight.reset();
-		double speed = Constants.AUTON_MOVE_SPEED;
+		double speed = Constants.AUTO_MOVE_SPEED;
 
 		if (distance > 0)
 		{

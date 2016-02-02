@@ -36,7 +36,7 @@ public class Robot extends SampleRobot
 
 	public void autonomous()
 	{
-		auto.runAutonMode();
+		auto.runAutoMode();
 	}
 
 	public void operatorControl()

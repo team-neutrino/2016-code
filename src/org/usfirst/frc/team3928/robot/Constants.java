@@ -5,8 +5,8 @@ public class Constants
 	public static final boolean REAL_BOT = false;
 	
 	// Autonomous Constants
-	public static final int AUTON_MODE = 1;
-	public static final double AUTON_MOVE_SPEED = .5;
+	public static final int AUTO_MODE = 1;
+	public static final double AUTO_MOVE_SPEED = .5;
 	
 	// Controllers
 	public static final int JOY_LEFT = 0;
