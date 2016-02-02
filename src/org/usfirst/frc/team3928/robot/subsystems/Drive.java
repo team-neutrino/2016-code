@@ -3,14 +3,11 @@ package org.usfirst.frc.team3928.robot.subsystems;
 import org.usfirst.frc.team3928.robot.Constants;
 
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Drive
 {
-	private Joystick joyLeft;
-	private Joystick joyRight;
 	private SpeedController right1;
 	private SpeedController left1;
 	private SpeedController right2;
@@ -20,9 +17,6 @@ public class Drive
 
 	public Drive()
 	{
-		joyLeft = new Joystick(Constants.JOY_LEFT);
-		joyRight = new Joystick(Constants.JOY_RIGHT);
-
 		if(Constants.REAL_BOT)
 		{
 			right1 = new CANTalon(Constants.DRIVE_RIGHT_1_CHANNEL);
