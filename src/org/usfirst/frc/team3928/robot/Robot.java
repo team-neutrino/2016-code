@@ -16,7 +16,7 @@ public class Robot extends SampleRobot
 	Joystick game;
 	Drive drive;
 	AutoController auto;
-	AutoDriver autoDriver;
+	AutoDriver driver;
 	
 	public Robot()
 	{
@@ -24,8 +24,8 @@ public class Robot extends SampleRobot
 		joyRight = new Joystick(Constants.JOY_RIGHT);
 		game = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
-		autoDriver = new AutoDriver();
-		auto = new AutoController();
+		driver = new AutoDriver(drive);
+		auto = new AutoController(driver);
 	}
 
 	public void robotInit()
@@ -63,8 +63,8 @@ public class Robot extends SampleRobot
 	{
 		while (isTest())
 		{
-			double leftDist = autoDriver.encLeft.getDistance();
-			double rightDist = autoDriver.encRight.getDistance();
+			double leftDist = driver.encLeft.getDistance();
+			double rightDist = driver.encRight.getDistance();
 			
 			double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();

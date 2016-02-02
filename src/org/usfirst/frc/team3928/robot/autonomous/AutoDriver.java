@@ -16,11 +16,11 @@ public class AutoDriver
 
 	Drive drive;
 
-	public AutoDriver()
+	public AutoDriver(Drive drive)
 	{
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
-		drive = new Drive();
+		this.drive = drive;
 
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);

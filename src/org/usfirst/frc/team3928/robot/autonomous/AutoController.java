@@ -6,9 +6,9 @@ public class AutoController
 {
 	AutoDriver driver;
 
-	public AutoController()
+	public AutoController(AutoDriver driver)
 	{
-		driver = new AutoDriver();
+		this.driver = driver;
 	}
 
 	/**
