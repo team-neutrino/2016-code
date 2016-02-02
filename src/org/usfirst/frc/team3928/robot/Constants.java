@@ -14,7 +14,6 @@ public class Constants
 	public static final int GAMEPAD = 2;
 
 	// Button Mapping - Joy sticks
-	public static final int SPEED_BOOST = 1;
 
 	// Button Mapping - Game pad
 
