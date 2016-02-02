@@ -1,5 +1,9 @@
 package org.usfirst.frc.team3928.robot;
 
+import org.usfirst.frc.team3928.robot.autonomous.Auto;
+import org.usfirst.frc.team3928.robot.autonomous.AutoMovement;
+import org.usfirst.frc.team3928.robot.subsystems.Drive;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;

@@ -1,4 +1,6 @@
-package org.usfirst.frc.team3928.robot;
+package org.usfirst.frc.team3928.robot.subsystems;
+
+import org.usfirst.frc.team3928.robot.Constants;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Joystick;

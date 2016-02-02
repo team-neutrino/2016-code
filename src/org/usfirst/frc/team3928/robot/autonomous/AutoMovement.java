@@ -1,4 +1,7 @@
-package org.usfirst.frc.team3928.robot;
+package org.usfirst.frc.team3928.robot.autonomous;
+
+import org.usfirst.frc.team3928.robot.Constants;
+import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
@@ -6,8 +9,9 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class AutoMovement
 {
-	Encoder encLeft;
-	Encoder encRight;
+	// TODO change this to private after access is no longer needed in Robot.java
+	public Encoder encLeft;
+	public Encoder encRight;
 	Gyro gyro;
 
 	Drive drive;

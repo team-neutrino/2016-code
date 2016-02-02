@@ -1,4 +1,6 @@
-package org.usfirst.frc.team3928.robot;
+package org.usfirst.frc.team3928.robot.autonomous;
+
+import org.usfirst.frc.team3928.robot.Constants;
 
 public class Auto
 {
