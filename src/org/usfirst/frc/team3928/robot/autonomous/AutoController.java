@@ -2,52 +2,66 @@ package org.usfirst.frc.team3928.robot.autonomous;
 
 import org.usfirst.frc.team3928.robot.Constants;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 public class AutoController
 {
-	private AutoDriver driver;
+	private AutoMode[] modes;
 
-	public AutoController(AutoDriver driver)
+	private static final int MAX_MODES = 16;
+
+	public AutoController()
 	{
-		this.driver = driver;
+		modes = new AutoMode[MAX_MODES];
 	}
+
+	// TODO: Some kind of camera-driven autonomous
+	// maybe make a new class called "VisionTracking" to tell whether we are
+	// aimed at the
+	// goal or not, so we can re-use code for auto and drive code
 
 	/**
-	 * Do Nothing Autonomous
+	 * Assign an autonomous mode to a particular number
+	 * 
+	 * @param num
+	 *            number to assign mode to
+	 * @param mode
+	 *            mode to assign
 	 */
-	private void autoMode0()
+	public void assignMode(int num, AutoMode mode)
 	{
-
-	}
-
-	/**
-	 * Move Forward Autonomous (and can be used for testing)
-	 */
-	private void autoMode1()
-	{
-		driver.moveDistance(5);
-	}
-
-	private void autoMode2()
-	{
-		// TODO: Some kind of camera-driven autonomous
-		// maybe make a new class called "VisionTracking" to tell whether we are
-		// aimed at the
-		// goal or not, so we can re-use code for auto and drive code
-	}
-
-	public void run()
-	{
-		int mode = Constants.AUTO_MODE;
-		switch (mode)
+		if (num < 0 || num > MAX_MODES)
 		{
-		case 0:
-			autoMode0();
-			break;
-		case 1:
-			autoMode1();
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid auto mode.");
+			DriverStation.reportError("Can not assign [" + mode.getName() + "] to [" + num + "], out of bounds",
+					false);
+		}
+		else
+		{
+			modes[num] = mode;
 		}
 	}
+
+	/**
+	 * Run autonomous
+	 */
+	public void run()
+	{
+		// TODO get mode from limit switch
+		int modeNum = Constants.AUTO_MODE;
+
+		AutoMode mode = modes[modeNum];
+
+		if (mode != null)
+		{
+			System.out.println("Running auto [" + mode.getName() + "] assigned to [" + modeNum + "]");
+			mode.run();
+			System.out.println("Auto [" + mode.getName() + "] Done!");
+		}
+		else
+		{
+			DriverStation.reportError("No auto mode assigned to [" + modeNum + "]", false);
+		}
+	}
+	
+	// TODO add smartdashboard override
 }
