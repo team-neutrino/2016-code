@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class AutoDriver
 {
-	// TODO change this to private after access is no longer needed in Robot.java
+	// TODO change this to private after access is no longer needed in
+	// Robot.java
 	public Encoder encLeft;
 	public Encoder encRight;
 	private Gyro gyro;
@@ -39,7 +40,8 @@ public class AutoDriver
 				if (distance > encLeft.getDistance())
 				{
 					drive.setLeftSpeed(speed);
-				} else if (distance > encRight.getDistance())
+				}
+				else if (distance > encRight.getDistance())
 				{
 					drive.setRightSpeed(-speed);
 				}
@@ -47,14 +49,16 @@ public class AutoDriver
 			}
 			drive.setLeftSpeed(0);
 			drive.setRightSpeed(0);
-		} else if (distance < 0)
+		}
+		else if (distance < 0)
 		{
 			while ((distance < encLeft.getDistance()) || (distance < encLeft.getDistance()))
 			{
 				if (distance < encLeft.getDistance())
 				{
 					drive.setLeftSpeed(-speed);
-				} else if (distance < encRight.getDistance())
+				}
+				else if (distance < encRight.getDistance())
 				{
 					drive.setRightSpeed(speed);
 				}
@@ -63,7 +67,6 @@ public class AutoDriver
 			drive.setLeftSpeed(0);
 			drive.setRightSpeed(0);
 		}
-
 	}
 
 	public void turnDegrees(double degrees, boolean useGyro)
@@ -71,7 +74,8 @@ public class AutoDriver
 		if (useGyro)
 		{
 
-		} else
+		}
+		else
 		{
 
 		}

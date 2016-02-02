@@ -40,11 +40,14 @@ public class AutoController
 		int mode = Constants.AUTO_MODE;
 		switch (mode)
 		{
-		case 0: autoMode0(); break;
-		case 1: autoMode1(); break;
-		default: throw new IllegalArgumentException("Invalid auto mode.");
+		case 0:
+			autoMode0();
+			break;
+		case 1:
+			autoMode1();
+			break;
+		default:
+			throw new IllegalArgumentException("Invalid auto mode.");
 		}
-
 	}
-
 }

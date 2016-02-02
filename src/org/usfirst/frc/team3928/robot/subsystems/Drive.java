@@ -17,7 +17,7 @@ public class Drive
 
 	public Drive()
 	{
-		if(Constants.REAL_BOT)
+		if (Constants.REAL_BOT)
 		{
 			right1 = new CANTalon(Constants.DRIVE_RIGHT_1_CHANNEL);
 			left1 = new CANTalon(Constants.DRIVE_LEFT_1_CHANNEL);

@@ -3,19 +3,19 @@ package org.usfirst.frc.team3928.robot;
 public class Constants
 {
 	public static final boolean REAL_BOT = false;
-	
+
 	// Autonomous Constants
 	public static final int AUTO_MODE = 1;
 	public static final double AUTO_MOVE_SPEED = .5;
-	
+
 	// Controllers
 	public static final int JOY_LEFT = 0;
 	public static final int JOY_RIGHT = 1;
 	public static final int GAMEPAD = 2;
-	
+
 	// Button Mapping - Joy sticks
 	public static final int SPEED_BOOST = 1;
-	
+
 	// Button Mapping - Game pad
 
 	// Sensor Constants
@@ -24,7 +24,7 @@ public class Constants
 	public static final int ENCODER_RIGHT_A_CHANNEL = 2;
 	public static final int ENCODER_RIGHT_B_CHANNEL = 3;
 	public static final double ENCODER_DISTANCE_PER_PULSE = 1.57079632;
-	
+
 	// Drive Constants
 	public static final int DRIVE_LEFT_1_CHANNEL = 0;
 	public static final int DRIVE_LEFT_1_POWER_CHANNEL = 10;
