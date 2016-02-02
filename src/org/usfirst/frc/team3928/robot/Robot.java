@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.Timer;
 public class Robot extends SampleRobot
 {
 
-	Joystick joyLeft;
-	Joystick joyRight;
-	Joystick game;
-	Drive drive;
-	AutoController auto;
-	AutoDriver driver;
+	private Joystick joyLeft;
+	private Joystick joyRight;
+	private Joystick game;
+	private Drive drive;
+	private AutoController auto;
+	private AutoDriver driver;
 	
 	public Robot()
 	{

@@ -12,9 +12,9 @@ public class AutoDriver
 	// TODO change this to private after access is no longer needed in Robot.java
 	public Encoder encLeft;
 	public Encoder encRight;
-	Gyro gyro;
+	private Gyro gyro;
 
-	Drive drive;
+	private Drive drive;
 
 	public AutoDriver(Drive drive)
 	{

@@ -9,14 +9,14 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Drive
 {
-	Joystick joyLeft;
-	Joystick joyRight;
-	SpeedController right1;
-	SpeedController left1;
-	SpeedController right2;
-	SpeedController left2;
-	SpeedController right3;
-	SpeedController left3;
+	private Joystick joyLeft;
+	private Joystick joyRight;
+	private SpeedController right1;
+	private SpeedController left1;
+	private SpeedController right2;
+	private SpeedController left2;
+	private SpeedController right3;
+	private SpeedController left3;
 
 	public Drive()
 	{
