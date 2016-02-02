@@ -35,7 +35,7 @@ public class AutoController
 		// goal or not, so we can re-use code for auto and drive code
 	}
 
-	public void runAutoMode()
+	public void run()
 	{
 		int mode = Constants.AUTO_MODE;
 		switch (mode)

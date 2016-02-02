@@ -13,7 +13,7 @@ public class Robot extends SampleRobot
 
 	private Joystick joyLeft;
 	private Joystick joyRight;
-	private Joystick game;
+	private Joystick gamepad;
 	private Drive drive;
 	private AutoController auto;
 	private AutoDriver driver;
@@ -22,7 +22,7 @@ public class Robot extends SampleRobot
 	{
 		joyLeft = new Joystick(Constants.JOY_LEFT);
 		joyRight = new Joystick(Constants.JOY_RIGHT);
-		game = new Joystick(Constants.GAMEPAD);
+		gamepad = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
 		driver = new AutoDriver(drive);
 		auto = new AutoController(driver);
@@ -40,7 +40,7 @@ public class Robot extends SampleRobot
 
 	public void autonomous()
 	{
-		auto.runAutoMode();
+		auto.run();
 	}
 
 	public void operatorControl()
