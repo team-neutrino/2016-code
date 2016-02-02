@@ -2,6 +2,8 @@ package org.usfirst.frc.team3928.robot;
 
 import org.usfirst.frc.team3928.robot.autonomous.AutoController;
 import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
+import org.usfirst.frc.team3928.robot.autonomous.modes.DoNothing;
+import org.usfirst.frc.team3928.robot.autonomous.modes.MoveForward;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,7 +16,7 @@ public class Robot extends SampleRobot
 	private Joystick joyRight;
 	private Joystick gamepad;
 	private Drive drive;
-	private AutoController auto;
+	private AutoController autoController;
 	private AutoDriver driver;
 
 	public Robot()
@@ -24,24 +26,32 @@ public class Robot extends SampleRobot
 		gamepad = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
 		driver = new AutoDriver(drive);
-		auto = new AutoController(driver);
+		
+		// set up auto modes
+		autoController = new AutoController();
+		autoController.assignMode(0, new DoNothing());
+		autoController.assignMode(1, new MoveForward(driver));
 	}
 
+	@Override
 	public void robotInit()
 	{
 
 	}
 
+	@Override
 	public void disabled()
 	{
 
 	}
 
+	@Override
 	public void autonomous()
 	{
-		auto.run();
+		autoController.run();
 	}
 
+	@Override
 	public void operatorControl()
 	{
 
@@ -55,9 +65,7 @@ public class Robot extends SampleRobot
 		}
 	}
 
-	/**
-	 * Runs during test mode
-	 */
+	@Override
 	public void test()
 	{
 		while (isTest())

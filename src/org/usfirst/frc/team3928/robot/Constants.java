@@ -14,7 +14,6 @@ public class Constants
 	public static final int GAMEPAD = 2;
 
 	// Button Mapping - Joy sticks
-	public static final int SPEED_BOOST = 1;
 
 	// Button Mapping - Game pad
 
@@ -24,6 +23,10 @@ public class Constants
 	public static final int ENCODER_RIGHT_A_CHANNEL = 2;
 	public static final int ENCODER_RIGHT_B_CHANNEL = 3;
 	public static final double ENCODER_DISTANCE_PER_PULSE = 1.57079632;
+	public static final int THUMBWHEEL_SWITCH_BIT_1_CHANNEL = 4;
+	public static final int THUMBWHEEL_SWITCH_BIT_2_CHANNEL = 5;
+	public static final int THUMBWHEEL_SWITCH_BIT_4_CHANNEL = 6;
+	public static final int THUMBWHEEL_SWITCH_BIT_8_CHANNEL = 7;
 
 	// Drive Constants
 	public static final int DRIVE_LEFT_1_CHANNEL = 0;
