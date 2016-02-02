@@ -27,21 +27,25 @@ public class Robot extends SampleRobot
 		auto = new AutoController(driver);
 	}
 
+	@Override
 	public void robotInit()
 	{
 
 	}
 
+	@Override
 	public void disabled()
 	{
 
 	}
 
+	@Override
 	public void autonomous()
 	{
 		auto.run();
 	}
 
+	@Override
 	public void operatorControl()
 	{
 
@@ -55,9 +59,7 @@ public class Robot extends SampleRobot
 		}
 	}
 
-	/**
-	 * Runs during test mode
-	 */
+	@Override
 	public void test()
 	{
 		while (isTest())
