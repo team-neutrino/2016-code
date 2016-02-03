@@ -8,7 +8,7 @@ import org.usfirst.frc.team3928.robot.autonomous.AutoMode;
  */
 public class MoveForward implements AutoMode
 {
-	
+
 	private AutoDriver driver;
 
 	public MoveForward(AutoDriver driver)
