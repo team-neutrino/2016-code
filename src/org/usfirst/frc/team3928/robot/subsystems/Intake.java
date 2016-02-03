@@ -28,14 +28,14 @@ public class Intake
 		}
 	}
 	
-	public void raiseIntake(double speed)
+	public void rotate(double speed)
 	{
 		updwn.set(speed);
 	}
 	
-	public void intake(double speed)
+	public void setOn()
 	{
-		intk0.set(speed);
-		intk1.set(speed);
+		intk0.set(1);
+		intk1.set(1);
 	}
 }
