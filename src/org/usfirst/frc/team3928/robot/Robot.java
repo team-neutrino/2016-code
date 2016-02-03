@@ -6,6 +6,7 @@ import org.usfirst.frc.team3928.robot.autonomous.modes.DoNothing;
 import org.usfirst.frc.team3928.robot.autonomous.modes.MoveForward;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -68,16 +69,26 @@ public class Robot extends SampleRobot
 	@Override
 	public void test()
 	{
+		double ctr = 0;
+		boolean count = false;
 		while (isTest())
 		{
-			double leftDist = driver.encLeft.getDistance();
-			double rightDist = driver.encRight.getDistance();
-
+			ctr++;
+			
+			if (ctr == 200)
+			{
+				ctr = 0;
+				count = true;
+			}
+			
 			double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();
 			drive.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
 			drive.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
-
+			
+			DriverStation.reportError("Left Distance:" + driver.encLeft.getDistance(), count);
+			DriverStation.reportError("Right Distance:" + driver.encRight.getDistance(), count);
+			
 			Timer.delay(0.005); // wait for a motor update time
 		}
 	}
