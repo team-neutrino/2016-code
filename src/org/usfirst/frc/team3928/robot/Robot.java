@@ -27,7 +27,7 @@ public class Robot extends SampleRobot
 		gamepad = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
 		driver = new AutoDriver(drive);
-		
+
 		// set up auto modes
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());
@@ -74,21 +74,21 @@ public class Robot extends SampleRobot
 		while (isTest())
 		{
 			ctr++;
-			
+
 			if (ctr == 200)
 			{
 				ctr = 0;
 				count = true;
 			}
-			
+
 			double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();
 			drive.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
 			drive.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
-			
+
 			DriverStation.reportError("Left Distance:" + driver.encLeft.getDistance(), count);
 			DriverStation.reportError("Right Distance:" + driver.encRight.getDistance(), count);
-			
+
 			Timer.delay(0.005); // wait for a motor update time
 		}
 	}
