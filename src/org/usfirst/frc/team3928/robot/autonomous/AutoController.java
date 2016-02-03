@@ -24,7 +24,7 @@ public class AutoController
 	}
 
 	// TODO: Some kind of camera-driven autonomous
-	// maybe make a new class called "VisionTracking" to tell whether we are
+	// maybe make a new method called "VisionTracking" to tell whether we are
 	// aimed at the
 	// goal or not, so we can re-use code for auto and drive code
 
