@@ -92,8 +92,8 @@ public class Camera
 		double area = getLargestArea();
 		double centerX = getMostCenterX();
 		double centerY = getMostCenterY();
-		int imageCenterX = Constants.IMAGE_CENTER_X;
-		int imageCenterY = Constants.IMAGE_CENTER_Y;
+		double imageCenterX = Constants.IMAGE_CENTER_X;
+		double imageCenterY = Constants.IMAGE_CENTER_Y;
 		
 		double heightWidthRatio = height/width;
 		

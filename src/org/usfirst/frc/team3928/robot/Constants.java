@@ -16,17 +16,16 @@ public class Constants
 	// Button Mapping - Joy sticks
 
 	// Button Mapping - Game pad
-
+	
 	// Camera Constants
-	public static final int IMAGE_CENTER_X = 100;
-	public static final int IMAGE_CENTER_Y = 100;
-	
-	
+	public static final double IMAGE_CENTER_X = 100;
+	public static final double IMAGE_CENTER_Y = 100;
+
 	// Sensor Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
-	public static final int ENCODER_LEFT_B_CHANNEL = 8;
-	public static final int ENCODER_RIGHT_A_CHANNEL = 1;
-	public static final int ENCODER_RIGHT_B_CHANNEL = 9;
+	public static final int ENCODER_LEFT_B_CHANNEL = 1;
+	public static final int ENCODER_RIGHT_A_CHANNEL = 2;
+	public static final int ENCODER_RIGHT_B_CHANNEL = 3;
 	public static final double ENCODER_DISTANCE_PER_PULSE = 1.57079632;
 	public static final int THUMBWHEEL_SWITCH_BIT_1_CHANNEL = 4;
 	public static final int THUMBWHEEL_SWITCH_BIT_2_CHANNEL = 5;
