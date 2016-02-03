@@ -8,6 +8,7 @@ import org.usfirst.frc.team3928.robot.autonomous.modes.TestMode;
 import org.usfirst.frc.team3928.robot.sensors.Camera;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 import org.usfirst.frc.team3928.robot.subsystems.Intake;
+import org.usfirst.frc.team3928.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
@@ -25,6 +26,7 @@ public class Robot extends SampleRobot
 	private AutoDriver driver;
 	private Camera cam;
 	private Intake intake;
+	private Shooter shooter;
 	private Encoder encLeft;
 	private Encoder encRight;
 
@@ -44,7 +46,7 @@ public class Robot extends SampleRobot
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());
 		autoController.assignMode(1, new MoveForward(driver));
-		autoController.assignMode(2, new TestMode(driver));
+		autoController.assignMode(2, new TestMode(driver, shooter));
 	}
 
 	@Override
