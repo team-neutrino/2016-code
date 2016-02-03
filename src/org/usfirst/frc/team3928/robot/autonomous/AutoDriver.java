@@ -85,8 +85,32 @@ public class AutoDriver
 		
 	}
 
-	public void moveToGoal()
+	public void rotateTowardGoal()
 	{
+		double temp;
+		double temp1;
+
+		temp = cam.getLargestArea();
+		this.turnDegrees(1, false);
+		temp1 = cam.getLargestArea();
+		if(temp1 > temp)
+		{
+			while(temp1 > temp)
+			{
+				temp = cam.getLargestArea();
+				this.turnDegrees(1, false);
+				temp1 = cam.getLargestArea();
+			}
+		}
+		else
+		{
+			while(temp1 > temp)
+			{
+				temp = cam.getLargestArea();
+				this.turnDegrees(-1, false);
+				temp1 = cam.getLargestArea();
+			}
+		}
 		
 	}
 }

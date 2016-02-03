@@ -17,6 +17,6 @@ public class DoNothing implements AutoMode
 	@Override
 	public void run()
 	{
-
+		
 	}
 }
