@@ -4,6 +4,7 @@ import org.usfirst.frc.team3928.robot.autonomous.AutoController;
 import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
 import org.usfirst.frc.team3928.robot.autonomous.modes.DoNothing;
 import org.usfirst.frc.team3928.robot.autonomous.modes.MoveForward;
+import org.usfirst.frc.team3928.robot.sensors.Camera;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,6 +20,7 @@ public class Robot extends SampleRobot
 	private Drive drive;
 	private AutoController autoController;
 	private AutoDriver driver;
+	private Camera cam;
 
 	public Robot()
 	{
@@ -26,8 +28,9 @@ public class Robot extends SampleRobot
 		joyRight = new Joystick(Constants.JOY_RIGHT);
 		gamepad = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
-		driver = new AutoDriver(drive);
-
+		driver = new AutoDriver(drive, cam);
+		cam = new Camera();
+		
 		// set up auto modes
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());

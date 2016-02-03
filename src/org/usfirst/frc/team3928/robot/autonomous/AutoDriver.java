@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3928.robot.autonomous;
 
 import org.usfirst.frc.team3928.robot.Constants;
+import org.usfirst.frc.team3928.robot.sensors.Camera;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -16,12 +17,14 @@ public class AutoDriver
 	private Gyro gyro;
 
 	private Drive drive;
+	private Camera cam;
 
-	public AutoDriver(Drive drive)
+	public AutoDriver(Drive drive, Camera cam)
 	{
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		this.drive = drive;
+		this.cam = cam;
 
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
@@ -40,8 +43,7 @@ public class AutoDriver
 				if (distance > encLeft.getDistance())
 				{
 					drive.setLeftSpeed(speed);
-				}
-				else if (distance > encRight.getDistance())
+				} else if (distance > encRight.getDistance())
 				{
 					drive.setRightSpeed(-speed);
 				}
@@ -49,16 +51,14 @@ public class AutoDriver
 			}
 			drive.setLeftSpeed(0);
 			drive.setRightSpeed(0);
-		}
-		else if (distance < 0)
+		} else if (distance < 0)
 		{
 			while ((distance < encLeft.getDistance()) || (distance < encLeft.getDistance()))
 			{
 				if (distance < encLeft.getDistance())
 				{
 					drive.setLeftSpeed(-speed);
-				}
-				else if (distance < encRight.getDistance())
+				} else if (distance < encRight.getDistance())
 				{
 					drive.setRightSpeed(speed);
 				}
@@ -73,11 +73,20 @@ public class AutoDriver
 	{
 		if (useGyro)
 		{
-			
-		}
-		else
+
+		} else
 		{
 
 		}
+	}
+
+	public void turnToGoal()
+	{
+
+	}
+
+	public void moveToGoal()
+	{
+
 	}
 }
