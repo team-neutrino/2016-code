@@ -12,19 +12,19 @@ public class AutoDriver
 {
 	// TODO change this to private after access is no longer needed in
 	// Robot.java
-	public Encoder encLeft;
-	public Encoder encRight;
+	private Encoder encLeft;
+	private Encoder encRight;
 	private Gyro gyro;
 
 	private Drive drive;
 	private Camera cam;
 
-	public AutoDriver(Drive drive, Camera cam)
+	public AutoDriver(Drive drive, Camera cam, Encoder encLeft, Encoder encRight)
 	{
-		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
-		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		this.drive = drive;
 		this.cam = cam;
+		this.encLeft = encLeft;
+		this.encRight = encRight;
 
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
@@ -82,11 +82,11 @@ public class AutoDriver
 
 	public void turnToGoal()
 	{
-
+		
 	}
 
 	public void moveToGoal()
 	{
-
+		
 	}
 }

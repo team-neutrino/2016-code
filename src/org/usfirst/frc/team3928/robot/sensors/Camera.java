@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3928.robot.sensors;
 
+import org.usfirst.frc.team3928.robot.Constants;
+
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class Camera 
@@ -82,5 +84,21 @@ public class Camera
 		}
 		return temp;
 	}
-	
+	public boolean isAimed()
+	{
+		boolean aimed = false;
+		double height = getHighestHeight();
+		double width = getWidestWidth();
+		double area = getLargestArea();
+		double centerX = getMostCenterX();
+		double centerY = getMostCenterY();
+		int imageCenterX = Constants.IMAGE_CENTER_X;
+		int imageCenterY = Constants.IMAGE_CENTER_Y;
+		
+		double heightWidthRatio = height/width;
+		
+		
+		
+		return aimed;
+	}
 }
