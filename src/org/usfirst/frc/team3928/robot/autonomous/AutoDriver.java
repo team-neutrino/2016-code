@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class AutoDriver
 {
-	// TODO change this to private after access is no longer needed in
-	// Robot.java
 	private Encoder encLeft;
 	private Encoder encRight;
 	private Gyro gyro;
