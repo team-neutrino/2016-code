@@ -1,8 +1,5 @@
 package org.usfirst.frc.team3928.robot.sensors;
 
-import edu.wpi.first.wpilibj.SampleRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class Camera 
