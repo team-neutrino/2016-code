@@ -73,7 +73,7 @@ public class AutoDriver
 	{
 		if (useGyro)
 		{
-
+			
 		}
 		else
 		{
