@@ -41,4 +41,9 @@ public class Constants
 	public static final int DRIVE_RIGHT_2_POWER_CHANNEL = 10;
 	public static final int DRIVE_RIGHT_3_CHANNEL = 5;
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 10;
+	
+	//Intake Constants
+	public static final int INTAKE_UP_DOWN = 10;
+	public static final int INTAKE0 = 11;
+	public static final int INTAKE1 = 12;
 }
