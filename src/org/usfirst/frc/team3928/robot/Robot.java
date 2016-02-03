@@ -44,7 +44,7 @@ public class Robot extends SampleRobot
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());
 		autoController.assignMode(1, new MoveForward(driver));
-		autoController.assignMode(1, new TestMode(driver));
+		autoController.assignMode(2, new TestMode(driver));
 	}
 
 	@Override
