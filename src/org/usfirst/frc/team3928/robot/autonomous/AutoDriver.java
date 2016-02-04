@@ -118,8 +118,9 @@ public class AutoDriver
 			}
 		} else
 		{
-			double turnRadius = .88;
-			double dist = degrees*turnRadius;
+			double turnCirc = Math.PI * .88;
+			double degreePercent = degrees/360;
+			double dist = degreePercent*turnCirc;
 			if (degrees < 180)
 			{
 				moveLeftDistance(dist);
