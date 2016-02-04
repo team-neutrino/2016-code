@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class Robot extends SampleRobot
 {
@@ -29,6 +30,7 @@ public class Robot extends SampleRobot
 	private Shooter shooter;
 	private Encoder encLeft;
 	private Encoder encRight;
+	private Gyro gyro;
 
 	public Robot()
 	{
@@ -40,7 +42,7 @@ public class Robot extends SampleRobot
 		drive = new Drive();
 		cam = new Camera();
 		intake = new Intake();
-		driver = new AutoDriver(drive, cam, encLeft, encRight);
+		driver = new AutoDriver(drive, cam, encLeft, encRight, gyro);
 		
 		// set up auto modes
 		autoController = new AutoController();
@@ -52,7 +54,7 @@ public class Robot extends SampleRobot
 	@Override
 	public void robotInit()
 	{
-
+		gyro.calibrate();
 	}
 
 	@Override
@@ -76,7 +78,7 @@ public class Robot extends SampleRobot
 			double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();
 			drive.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
-			drive.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
+			drive.setRightSpeed(rightSpeed * Math.abs(rightSpeed));
 			Timer.delay(0.005); // wait for a motor update time
 		}
 	}

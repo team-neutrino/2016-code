@@ -17,13 +17,15 @@ public class AutoDriver
 	private Drive drive;
 	private Camera cam;
 
-	public AutoDriver(Drive drive, Camera cam, Encoder encLeft, Encoder encRight)
+	public AutoDriver(Drive drive, Camera cam, Encoder encLeft, Encoder encRight, Gyro gyro)
 	{
 		this.drive = drive;
 		this.cam = cam;
 		this.encLeft = encLeft;
 		this.encRight = encRight;
-
+		this.gyro = gyro;
+		
+		
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 	}
@@ -43,7 +45,7 @@ public class AutoDriver
 					drive.setLeftSpeed(speed);
 				} else if (distance > encRight.getDistance())
 				{
-					drive.setRightSpeed(-speed);
+					drive.setRightSpeed(speed);
 				}
 				Timer.delay(0.005);
 			}
@@ -58,7 +60,7 @@ public class AutoDriver
 					drive.setLeftSpeed(-speed);
 				} else if (distance < encRight.getDistance())
 				{
-					drive.setRightSpeed(speed);
+					drive.setRightSpeed(-speed);
 				}
 				Timer.delay(0.005);
 			}
@@ -69,9 +71,28 @@ public class AutoDriver
 
 	public void turnDegrees(double degrees, boolean useGyro)
 	{
+		double speed = Constants.AUTO_MOVE_SPEED;
+		
 		if (useGyro)
 		{
-
+			gyro.reset();
+			
+			/*
+			 * In order to negate the effects of gyro drift, the gyro will be reset every time
+			 * the code is run.
+			 * This code is also based off of a 360 degree circle, so left is between 180 and 360,
+			 * while right is between 0 and 180.
+			 */
+			if (degrees < 180)
+			{
+				drive.setLeftSpeed(speed);
+				drive.setRightSpeed(speed);
+			}
+			else if ((degrees > 180) && (degrees < 360))
+			{
+				drive.setLeftSpeed(speed);
+				drive.setRightSpeed(speed);
+			}
 		} else
 		{
 

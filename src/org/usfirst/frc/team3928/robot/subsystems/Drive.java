@@ -39,9 +39,9 @@ public class Drive
 
 	public void setRightSpeed(double speed)
 	{
-		right1.set(speed);
-		right2.set(speed);
-		right3.set(speed);
+		right1.set(-speed);
+		right2.set(-speed);
+		right3.set(-speed);
 	}
 
 	public void setLeftSpeed(double speed)
