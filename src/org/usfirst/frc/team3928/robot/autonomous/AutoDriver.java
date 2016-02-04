@@ -83,6 +83,10 @@ public class AutoDriver
 
 	public void turnDegrees(double degrees)
 	{
+		/*
+		 * COUNTERCLOCKWISE = NEGATIVE
+		 * CLOCKWISE = POSITIVE
+		 */
 		double speed = Constants.AUTO_MOVE_SPEED;
 
 		if (Constants.AUTO_USE_GYRO)
@@ -91,11 +95,9 @@ public class AutoDriver
 
 			/*
 			 * In order to negate the effects of gyro drift, the gyro will be
-			 * reset every time the code is run. This code is also based off of
-			 * a 360 degree circle, so left is between 180 and 360, while right
-			 * is between 0 and 180.
+			 * reset every time the code is run.
 			 */
-			if (degrees < 180)
+			if (degrees > 0)
 			{
 				while (gyro.getAngle() < degrees)
 				{
@@ -105,7 +107,7 @@ public class AutoDriver
 				}
 				drive.setLeftSpeed(0);
 				drive.setRightSpeed(0);
-			} else if ((degrees > 180) && (degrees < 360))
+			} else if (degrees < 0)
 			{
 				while (gyro.getAngle() > degrees)
 				{
@@ -119,18 +121,12 @@ public class AutoDriver
 		} else
 		{
 			double turnCirc = Math.PI * .88;
+			
 			double degreePercent = degrees/360;
 			double dist = degreePercent*turnCirc;
-			if (degrees < 180)
-			{
-				moveLeftDistance(dist);
-				moveRightDistance(-dist);
-			}
-			else if (degrees > 180)
-			{
-				moveLeftDistance(-dist);
-				moveRightDistance(dist);
-			}
+			
+			moveLeftDistance(dist);
+			moveRightDistance(-dist);
 		}
 	}
 
