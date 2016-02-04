@@ -120,7 +120,7 @@ public class AutoDriver
 			}
 		} else
 		{
-			double turnCirc = Math.PI * .88;
+			double turnCirc = Math.PI * 1.145;
 			
 			double degreePercent = degrees/360;
 			double dist = degreePercent*turnCirc;
