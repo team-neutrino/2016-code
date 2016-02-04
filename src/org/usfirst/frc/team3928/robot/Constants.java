@@ -8,6 +8,7 @@ public class Constants
 	public static final int AUTO_MODE = 1;
 	public static final double AUTO_MOVE_SPEED = .5;
 	public static final boolean AUTO_USE_GYRO = false;
+	public static final int GYRO_CHANNEL = 2;
 
 	// Controllers
 	public static final int JOY_LEFT = 0;

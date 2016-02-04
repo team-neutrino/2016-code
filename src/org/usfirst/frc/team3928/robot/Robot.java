@@ -10,6 +10,7 @@ import org.usfirst.frc.team3928.robot.subsystems.Drive;
 import org.usfirst.frc.team3928.robot.subsystems.Intake;
 import org.usfirst.frc.team3928.robot.subsystems.Shooter;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -42,8 +43,9 @@ public class Robot extends SampleRobot
 		drive = new Drive();
 		cam = new Camera();
 		intake = new Intake();
+		gyro = new AnalogGyro(Constants.GYRO_CHANNEL);
 		driver = new AutoDriver(drive, cam, encLeft, encRight, gyro);
-		
+
 		// set up auto modes
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());
