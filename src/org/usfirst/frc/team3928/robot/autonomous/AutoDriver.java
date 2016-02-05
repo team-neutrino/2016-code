@@ -77,15 +77,119 @@ public class AutoDriver
 
 	public void moveDistance(double distance)
 	{
-		moveLeftDistance(distance);
-		moveRightDistance(distance);
+		encLeft.reset();
+		encRight.reset();
+		double speed = Constants.AUTO_MOVE_SPEED;
+		if (distance > 0)
+		{
+			while (distance > encLeft.getDistance() || distance > encRight.getDistance())
+			{
+				if (distance > encLeft.getDistance())
+				{
+					drive.setLeftSpeed(speed);
+				} else if (distance > encRight.getDistance())
+				{
+					drive.setRightSpeed(speed);
+				}
+				Timer.delay(0.005); // wait for a motor update time
+			}
+			drive.setLeftSpeed(0);
+			drive.setRightSpeed(0);
+		} else if (distance < 0)
+		{
+			while (distance < encLeft.getDistance() || distance < encRight.getDistance())
+			{
+				if (distance < encLeft.getDistance())
+				{
+					drive.setLeftSpeed(-speed);
+				} else if (distance < encRight.getDistance())
+				{
+					drive.setRightSpeed(-speed);
+				}
+				Timer.delay(0.005); // wait for a motor update time
+			}
+			drive.setLeftSpeed(0);
+			drive.setRightSpeed(0);
+		}
+	}
+
+	public void moveSeparateDistance(double distanceL, double distanceR)
+	{
+		encLeft.reset();
+		encRight.reset();
+		double speed = Constants.AUTO_MOVE_SPEED;
+		if (distanceL > 0)
+		{
+			if (distanceR > 0)
+			{
+				while (distanceL > encLeft.getDistance() || distanceR > encRight.getDistance())
+				{
+					if (distanceL > encLeft.getDistance())
+					{
+						drive.setLeftSpeed(speed);
+					} else if (distanceR > encRight.getDistance())
+					{
+						drive.setRightSpeed(speed);
+					}
+					Timer.delay(0.005); // wait for a motor update time
+				}
+				drive.setLeftSpeed(0);
+			}
+			else if (distanceR < 0)
+			{
+				while (distanceL > encLeft.getDistance() || distanceR < encRight.getDistance())
+				{
+					if (distanceL > encLeft.getDistance())
+					{
+						drive.setLeftSpeed(speed);
+					} else if (distanceR < encRight.getDistance())
+					{
+						drive.setRightSpeed(-speed);
+					}
+					Timer.delay(0.005); // wait for a motor update time
+				}
+				drive.setLeftSpeed(0);
+			}
+		} else if (distanceL < 0)
+		{
+			if (distanceR < 0)
+			{
+				speed = -speed;
+				while (distanceL < encLeft.getDistance() || distanceR < encRight.getDistance())
+				{
+					if (distanceL < encLeft.getDistance())
+					{
+						drive.setLeftSpeed(speed);
+					} else if (distanceR < encRight.getDistance())
+					{
+						drive.setRightSpeed(speed);
+					}
+					Timer.delay(0.005); // wait for a motor update time
+				}
+				drive.setLeftSpeed(0);
+			}
+			else if (distanceR > 0)
+			{
+				while (distanceL < encLeft.getDistance() || distanceR > encRight.getDistance())
+				{
+					if (distanceL < encLeft.getDistance())
+					{
+						drive.setLeftSpeed(-speed);
+					} else if (distanceR > encRight.getDistance())
+					{
+						drive.setRightSpeed(speed);
+					}
+					Timer.delay(0.005); // wait for a motor update time
+				}
+				drive.setLeftSpeed(0);
+			}
+		}
 	}
 
 	public void turnDegrees(double degrees)
 	{
 		/*
-		 * COUNTERCLOCKWISE = NEGATIVE
-		 * CLOCKWISE = POSITIVE
+		 * COUNTERCLOCKWISE = NEGATIVE CLOCKWISE = POSITIVE
 		 */
 		double speed = Constants.AUTO_MOVE_SPEED;
 
@@ -121,12 +225,18 @@ public class AutoDriver
 		} else
 		{
 			double turnCirc = Math.PI * 1.145;
+
+			double degreePercent = degrees / 360;
+			double dist = degreePercent * turnCirc;
+			if (degrees > 0)
+			{
+			moveSeparateDistance(dist, -dist);
+			}
+			else if (degrees < 0)
+			{
+				moveSeparateDistance(-dist, dist);
+			}
 			
-			double degreePercent = degrees/360;
-			double dist = degreePercent*turnCirc;
-			
-			moveLeftDistance(dist);
-			moveRightDistance(-dist);
 		}
 	}
 

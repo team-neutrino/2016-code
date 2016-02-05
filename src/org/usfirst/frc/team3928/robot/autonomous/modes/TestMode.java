@@ -27,8 +27,8 @@ public class TestMode implements AutoMode
 	{
 		driver.moveDistance(2);
 		driver.turnDegrees(90);
-		driver.moveDistance(2);
 		driver.turnDegrees(-90);
+		driver.moveDistance(-2);
 	}
 
 }

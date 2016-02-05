@@ -38,8 +38,8 @@ public class Robot extends SampleRobot
 		joyLeft = new Joystick(Constants.JOY_LEFT);
 		joyRight = new Joystick(Constants.JOY_RIGHT);
 		gamepad = new Joystick(Constants.GAMEPAD);
-		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL, false);
-		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL, true);
+		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL, true);
+		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL, false);
 		drive = new Drive();
 		cam = new Camera();
 		intake = new Intake();
@@ -49,7 +49,7 @@ public class Robot extends SampleRobot
 		// set up auto modes
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());
-		autoController.assignMode(1, new MoveForward(driver));
+		autoController.assignMode(1, new MoveForward(driver, encLeft, encRight));
 		autoController.assignMode(2, new TestMode(driver, shooter));
 	}
 
@@ -89,7 +89,6 @@ public class Robot extends SampleRobot
 	public void test()
 	{
 		double ctr = 0;
-		boolean count = false;
 		while (isTest())
 		{
 			ctr++;
@@ -97,16 +96,15 @@ public class Robot extends SampleRobot
 			if (ctr == 200)
 			{
 				ctr = 0;
-				count = true;
+
+				DriverStation.reportError("Left Distance:" + encLeft.getDistance(), false);
+				DriverStation.reportError("Right Distance:" + encRight.getDistance(), false);
 			}
 
 			double leftSpeed = joyLeft.getY();
 			double rightSpeed = joyRight.getY();
 			drive.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
-			drive.setRightSpeed(-rightSpeed * Math.abs(rightSpeed));
-
-			DriverStation.reportError("Left Distance:" + encLeft.getDistance(), count);
-			DriverStation.reportError("Right Distance:" + encRight.getDistance(), count);
+			drive.setRightSpeed(rightSpeed * Math.abs(rightSpeed));
 
 			Timer.delay(0.005); // wait for a motor update time
 		}
