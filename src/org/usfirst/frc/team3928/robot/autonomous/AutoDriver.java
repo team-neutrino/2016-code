@@ -92,75 +92,15 @@ public class AutoDriver
 
 	public void moveSeparateDistance(double distanceL, double distanceR)
 	{
-		encLeft.reset();
-		encRight.reset();
-		double speed = Constants.AUTO_MOVE_SPEED;
-		if (distanceL > 0)
+		while(encRight.getDistance() < distanceR || encLeft.getDistance() < distanceL)
 		{
-			if (distanceR > 0)
+			if(encRight.getDistance() < distanceR)
 			{
-				while (distanceL > encLeft.getDistance() || distanceR > encRight.getDistance())
-				{
-					if (distanceL > encLeft.getDistance())
-					{
-						drive.setLeftSpeed(speed);
-					} else if (distanceR > encRight.getDistance())
-					{
-						drive.setRightSpeed(speed);
-					}
-					Timer.delay(0.005); // wait for a motor update time
-				}
-				drive.setLeftSpeed(0);
+				drive.setRightSpeed(Constants.AUTO_MOVE_SPEED);
 			}
-			else if (distanceR < 0)
+			if(encLeft.getDistance() < distanceL)
 			{
-				while (distanceL > encLeft.getDistance() || distanceR < encRight.getDistance())
-				{
-					if (distanceL > encLeft.getDistance())
-					{
-						drive.setLeftSpeed(speed);
-					} else if (distanceR < encRight.getDistance())
-					{
-						drive.setRightSpeed(-speed);
-					}
-					Timer.delay(0.005); // wait for a motor update time
-				}
-				drive.setLeftSpeed(0);
-			}
-		} else if (distanceL < 0)
-		{
-			if (distanceR < 0)
-			{
-				speed = -speed;
-				while (distanceL < encLeft.getDistance() || distanceR < encRight.getDistance())
-				{
-					if (distanceL < encLeft.getDistance())
-					{
-						drive.setLeftSpeed(speed);
-					} else if (distanceR < encRight.getDistance())
-					{
-						drive.setRightSpeed(speed);
-					}
-					Timer.delay(0.005); // wait for a motor update time
-				}
-				drive.setLeftSpeed(0);
-				drive.setRightSpeed(0);
-			}
-			else if (distanceR > 0)
-			{
-				while (distanceL < encLeft.getDistance() || distanceR > encRight.getDistance())
-				{
-					if (distanceL < encLeft.getDistance())
-					{
-						drive.setLeftSpeed(-speed);
-					} else if (distanceR > encRight.getDistance())
-					{
-						drive.setRightSpeed(speed);
-					}
-					Timer.delay(0.005); // wait for a motor update time
-				}
-				drive.setLeftSpeed(0);
-				drive.setRightSpeed(0);
+				drive.setLeftSpeed(Constants.AUTO_MOVE_SPEED);
 			}
 		}
 	}
