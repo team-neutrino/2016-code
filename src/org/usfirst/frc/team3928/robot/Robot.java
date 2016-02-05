@@ -49,7 +49,7 @@ public class Robot extends SampleRobot
 		// set up auto modes
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());
-		autoController.assignMode(1, new MoveForward(driver, encLeft, encRight));
+		autoController.assignMode(1, new MoveForward(driver, encLeft, encRight, drive));
 		autoController.assignMode(2, new TestMode(driver, shooter));
 	}
 

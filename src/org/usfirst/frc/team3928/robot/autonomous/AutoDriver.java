@@ -25,66 +25,73 @@ public class AutoDriver
 		this.encRight = encRight;
 		this.gyro = gyro;
 
-		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
-		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
+		encLeft.setDistancePerPulse(Constants.LEFT_ENCODER_DISTANCE_PER_PULSE);
+		encRight.setDistancePerPulse(Constants.RIGHT_ENCODER_DISTANCE_PER_PULSE);
 	}
 
 	public void moveDistance(double distance)
 	{	
-		if(distance > 0)
+		encLeft.reset();
+		encRight.reset();
+		double speedL = Constants.AUTO_MOVE_SPEED;
+		double speedR = Constants.AUTO_MOVE_SPEED;
+		double time = System.currentTimeMillis();
+		
+		if (distance > 0)
 		{
-			double leftSpeed = Constants.AUTO_MOVE_SPEED;
-			double rightSpeed = Constants.AUTO_MOVE_SPEED;
-			double time = System.currentTimeMillis();
-			while(distance > encRight.getDistance() || distance > encLeft.getDistance())
+			while (distance > encLeft.getDistance() || distance > encRight.getDistance() && ((time - System.currentTimeMillis())) > 5000)
 			{
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) > encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
-					rightSpeed -= .01;
+					speedL += .01;
+					speedR -= .01;
 				}
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) < encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
-					leftSpeed -= .01;
+					speedR += .01;
+					speedL -= .01;
 				}
-				if(encRight.getDistance() < distance)
+				if (distance > encLeft.getDistance())
 				{
-					drive.setRightSpeed(rightSpeed);
+					drive.setLeftSpeed(speedL);
 				}
-				if(encLeft.getDistance() < distance)
+				if (distance > encRight.getDistance())
 				{
-					drive.setLeftSpeed(leftSpeed);
+					drive.setRightSpeed(speedR);
 				}
 			}
 		}
 		else
 		{
-			double leftSpeed = -Constants.AUTO_MOVE_SPEED;
-			double rightSpeed = -Constants.AUTO_MOVE_SPEED;
-			double time = System.currentTimeMillis();
-			while(distance < encRight.getDistance() || distance < encLeft.getDistance())
+			while ((distance < encLeft.getDistance() || distance < encRight.getDistance()) && ((time - System.currentTimeMillis())) > 5000)
 			{
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) > encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
-					rightSpeed += .01;
+					speedL += .01;
+					speedR -= .01;
 				}
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) < encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
-					leftSpeed += .01;
+					speedR += .01;
+					speedL -= .01;
 				}
-				if(encRight.getDistance() > distance)
+				if (distance < encLeft.getDistance())
 				{
-					drive.setRightSpeed(rightSpeed);
+					drive.setLeftSpeed(speedL);
 				}
-				if(encLeft.getDistance() > distance)
+				if (distance < encRight.getDistance())
 				{
-					drive.setLeftSpeed(leftSpeed);
+					drive.setRightSpeed(speedR);
 				}
 			}
 		}
+		
 	}
 
 	public void moveSeparateDistance(double distanceL, double distanceR)
 	{
+		encLeft.reset();
+		encRight.reset();
 		if(distanceL < 0 && distanceR < 0)
 		{
 			double leftSpeed = -Constants.AUTO_MOVE_SPEED;
