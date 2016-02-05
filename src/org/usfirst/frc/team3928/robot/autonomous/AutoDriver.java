@@ -77,39 +77,16 @@ public class AutoDriver
 
 	public void moveDistance(double distance)
 	{
-		encLeft.reset();
-		encRight.reset();
-		double speed = Constants.AUTO_MOVE_SPEED;
-		if (distance > 0)
+		while(encRight.getDistance() < distance || encLeft.getDistance() < distance)
 		{
-			while (distance > encLeft.getDistance() || distance > encRight.getDistance())
+			if(encRight.getDistance() < distance)
 			{
-				if (distance > encLeft.getDistance())
-				{
-					drive.setLeftSpeed(speed);
-				} else if (distance > encRight.getDistance())
-				{
-					drive.setRightSpeed(speed);
-				}
-				Timer.delay(0.005); // wait for a motor update time
+				drive.setRightSpeed(Constants.AUTO_MOVE_SPEED);
 			}
-			drive.setLeftSpeed(0);
-			drive.setRightSpeed(0);
-		} else if (distance < 0)
-		{
-			while (distance < encLeft.getDistance() || distance < encRight.getDistance())
+			if(encLeft.getDistance() < distance)
 			{
-				if (distance < encLeft.getDistance())
-				{
-					drive.setLeftSpeed(-speed);
-				} else if (distance < encRight.getDistance())
-				{
-					drive.setRightSpeed(-speed);
-				}
-				Timer.delay(0.005); // wait for a motor update time
+				drive.setLeftSpeed(Constants.AUTO_MOVE_SPEED);
 			}
-			drive.setLeftSpeed(0);
-			drive.setRightSpeed(0);
 		}
 	}
 
