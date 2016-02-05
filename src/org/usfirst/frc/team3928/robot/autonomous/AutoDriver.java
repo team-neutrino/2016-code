@@ -167,6 +167,7 @@ public class AutoDriver
 					Timer.delay(0.005); // wait for a motor update time
 				}
 				drive.setLeftSpeed(0);
+				drive.setRightSpeed(0);
 			}
 			else if (distanceR > 0)
 			{
@@ -182,6 +183,7 @@ public class AutoDriver
 					Timer.delay(0.005); // wait for a motor update time
 				}
 				drive.setLeftSpeed(0);
+				drive.setRightSpeed(0);
 			}
 		}
 	}
