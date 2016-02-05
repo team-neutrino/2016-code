@@ -29,52 +29,6 @@ public class AutoDriver
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 	}
 
-	public void moveLeftDistance(double distance)
-	{
-		encLeft.reset();
-		double speed = Constants.AUTO_MOVE_SPEED;
-		if (distance > 0)
-		{
-			while (distance > encLeft.getDistance())
-			{
-				drive.setLeftSpeed(speed);
-				Timer.delay(0.005); // wait for a motor update time
-			}
-			drive.setLeftSpeed(0);
-		} else if (distance < 0)
-		{
-			while (distance < encLeft.getDistance())
-			{
-				drive.setLeftSpeed(-speed);
-				Timer.delay(0.005); // wait for a motor update time
-			}
-			drive.setLeftSpeed(0);
-		}
-	}
-
-	public void moveRightDistance(double distance)
-	{
-		encRight.reset();
-		double speed = Constants.AUTO_MOVE_SPEED;
-		if (distance > 0)
-		{
-			while (distance > encRight.getDistance())
-			{
-				drive.setRightSpeed(speed);
-				Timer.delay(0.005); // wait for a motor update time
-			}
-			drive.setRightSpeed(0);
-		} else if (distance < 0)
-		{
-			while (distance < encRight.getDistance())
-			{
-				drive.setRightSpeed(-speed);
-				Timer.delay(0.005); // wait for a motor update time
-			}
-			drive.setRightSpeed(0);
-		}
-	}
-
 	public void moveDistance(double distance)
 	{	
 		if(distance > 0)
