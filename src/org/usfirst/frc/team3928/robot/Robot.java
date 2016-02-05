@@ -31,7 +31,7 @@ public class Robot extends SampleRobot
 	private Shooter shooter;
 	private Encoder encLeft;
 	private Encoder encRight;
-	private Gyro gyro;
+	private AnalogGyro gyro;
 
 	public Robot()
 	{

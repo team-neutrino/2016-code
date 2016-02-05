@@ -4,20 +4,20 @@ import org.usfirst.frc.team3928.robot.Constants;
 import org.usfirst.frc.team3928.robot.sensors.Camera;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public class AutoDriver
 {
 	private Encoder encLeft;
 	private Encoder encRight;
-	private Gyro gyro;
+	private AnalogGyro gyro;
 
 	private Drive drive;
 	private Camera cam;
 
-	public AutoDriver(Drive drive, Camera cam, Encoder encLeft, Encoder encRight, Gyro gyro)
+	public AutoDriver(Drive drive, Camera cam, Encoder encLeft, Encoder encRight, AnalogGyro gyro)
 	{
 		this.drive = drive;
 		this.cam = cam;

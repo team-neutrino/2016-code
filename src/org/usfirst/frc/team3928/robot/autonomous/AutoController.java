@@ -20,7 +20,7 @@ public class AutoController
 		SmartDashboard.putNumber("Auto Switch Override Number", 0);
 
 		Thread smartDashboardThread = new Thread(new SmartDashboardThread());
-		smartDashboardThread.run();
+		smartDashboardThread.start();
 	}
 
 	// TODO: Some kind of camera-driven autonomous
