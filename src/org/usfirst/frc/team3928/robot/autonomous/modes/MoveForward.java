@@ -34,25 +34,8 @@ public class MoveForward implements AutoMode
 
 	@Override
 	public void run()
-	{
-//		encLeft.setDistancePerPulse(1.0/360/3);
-//		encRight.setDistancePerPulse(1.0/360);
-//		encLeft.reset();
-//		encRight.reset();
-//		int count = 0;
-//		drive.setLeftSpeed(.25);
-//		drive.setRightSpeed(.25);
-//		while (count < 10)
-//		{
-//			Timer.delay(1);
-//			System.out.println("Left: " + encLeft.getDistance());
-//			System.out.println("Right: " + encRight.getDistance());
-//			count += 1;
-//		}
-//		drive.setLeftSpeed(0);
-//		drive.setRightSpeed(0);
-		
-		driver.moveDistance(1);
+	{	
+		driver.moveDistance(3);
 		System.out.println("Left: " + encLeft.getDistance());
 		System.out.println("Right: " + encRight.getDistance());
 	}
