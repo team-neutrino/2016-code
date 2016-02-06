@@ -69,12 +69,10 @@ public class AutoDriver
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) > encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
 					speedL += .01;
-					speedR -= .01;
 				}
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) < encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
 					speedR += .01;
-					speedL -= .01;
 				}
 				if (distance < encLeft.getDistance())
 				{
