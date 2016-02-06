@@ -18,7 +18,7 @@ public class AutoDriver
 	private Drive drive;
 	private Camera cam;
 
-	private static final int TIMEOUT = 10000;
+	private static final int TIMEOUT = 100000;
 
 	// smaller number, more correction; bigger number, less correction
 	private static final double CORRECTION = .25;
@@ -109,42 +109,58 @@ public class AutoDriver
 		drive.setRightSpeed(0);
 	}
 
-	public void turnDegrees(double degrees)
+	public void turnDegrees(double degrees, double speed)
 	{
 		/*
 		 * COUNTERCLOCKWISE = NEGATIVE CLOCKWISE = POSITIVE
 		 */
-		double speed = Constants.AUTO_MOVE_SPEED;
 
 		if (Constants.AUTO_USE_GYRO)
 		{
-			gyro.reset();
-
+			
+			boolean terminate = false;
+			double startTime = System.currentTimeMillis();
 			/*
 			 * In order to negate the effects of gyro drift, the gyro will be
 			 * reset every time the code is run.
 			 */
 			if (degrees > 0)
 			{
-				while (gyro.getAngle() < degrees)
+				while (gyro.getAngle() < degrees && !terminate)
 				{
 					drive.setLeftSpeed(speed);
 					drive.setRightSpeed(-speed);
 					Timer.delay(0.005); // wait for a motor update time
+					if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
+							|| DriverStation.getInstance().isDisabled())
+					{
+						terminate = true;
+					}
 				}
+				System.out.println("Final Angle: " + gyro.getAngle());
 				drive.setLeftSpeed(0);
 				drive.setRightSpeed(0);
+				Timer.delay(.5);
+				System.out.println("Real Final Angle: " + gyro.getAngle());
 			}
 			else if (degrees < 0)
 			{
-				while (gyro.getAngle() > degrees)
+				while (gyro.getAngle() > degrees && !terminate)
 				{
 					drive.setLeftSpeed(-speed);
 					drive.setRightSpeed(speed);
 					Timer.delay(0.005); // wait for a motor update time
+					if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
+							|| DriverStation.getInstance().isDisabled())
+					{
+						terminate = true;
+					}
 				}
+				System.out.println("Final Angle: " + gyro.getAngle());
 				drive.setLeftSpeed(0);
 				drive.setRightSpeed(0);
+				Timer.delay(.5);
+				System.out.println("Real Final Angle: " + gyro.getAngle());
 			}
 		}
 		else
@@ -174,14 +190,14 @@ public class AutoDriver
 		double temp1;
 
 		temp = cam.getLargestArea();
-		this.turnDegrees(1);
+		this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
 		temp1 = cam.getLargestArea();
 		if (temp1 > temp)
 		{
 			while (temp1 > temp)
 			{
 				temp = cam.getLargestArea();
-				this.turnDegrees(1);
+				this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
 				temp1 = cam.getLargestArea();
 			}
 		}
@@ -190,7 +206,7 @@ public class AutoDriver
 			while (temp1 > temp)
 			{
 				temp = cam.getLargestArea();
-				this.turnDegrees(-1);
+				this.turnDegrees(-1, Constants.AUTO_MOVE_SPEED);
 				temp1 = cam.getLargestArea();
 			}
 		}
