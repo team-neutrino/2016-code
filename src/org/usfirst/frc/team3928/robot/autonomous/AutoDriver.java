@@ -36,10 +36,9 @@ public class AutoDriver
 		double speedL = Constants.AUTO_MOVE_SPEED;
 		double speedR = Constants.AUTO_MOVE_SPEED;
 		double time = System.currentTimeMillis();
-		
 		if (distance > 0)
 		{
-			while (distance > encLeft.getDistance() || distance > encRight.getDistance() && ((time - System.currentTimeMillis())) > 1000)
+			while (distance > encLeft.getDistance() || distance > encRight.getDistance())
 			{
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) > encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
@@ -59,11 +58,15 @@ public class AutoDriver
 				{
 					drive.setRightSpeed(speedR);
 				}
+				if (System.currentTimeMillis() - time > 5000)
+				{
+					break;
+				}
 			}
 		}
 		else
 		{
-			while ((distance < encLeft.getDistance() || distance < encRight.getDistance()) && ((time - System.currentTimeMillis())) > 1000)
+			while ((distance < encLeft.getDistance() || distance < encRight.getDistance()))
 			{
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) > encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
@@ -77,11 +80,15 @@ public class AutoDriver
 				}
 				if (distance < encLeft.getDistance())
 				{
-					drive.setLeftSpeed(speedL);
+					drive.setLeftSpeed(-speedL);
 				}
 				if (distance < encRight.getDistance())
 				{
-					drive.setRightSpeed(speedR);
+					drive.setRightSpeed(-speedR);
+				}
+				if (System.currentTimeMillis() - time > 5000)
+				{
+					break;
 				}
 			}
 		}
