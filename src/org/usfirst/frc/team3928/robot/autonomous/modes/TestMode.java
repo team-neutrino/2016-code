@@ -25,10 +25,10 @@ public class TestMode implements AutoMode
 	@Override
 	public void run()
 	{
-		driver.moveDistance(2);
+		driver.moveDistance(2, 1);
 		driver.turnDegrees(90);
 		driver.turnDegrees(-90);
-		driver.moveDistance(-2);
+		driver.moveDistance(-2, 1);
 	}
 
 }

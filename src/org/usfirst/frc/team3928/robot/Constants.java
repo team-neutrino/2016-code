@@ -11,8 +11,8 @@ public class Constants
 	public static final int GYRO_CHANNEL = 0;
 
 	// Controllers
-	public static final int JOY_LEFT = 0;
-	public static final int JOY_RIGHT = 1;
+	public static final int JOY_LEFT = 1;
+	public static final int JOY_RIGHT = 0;
 	public static final int GAMEPAD = 2;
 
 	// Button Mapping - Joy sticks
@@ -28,8 +28,7 @@ public class Constants
 	public static final int ENCODER_LEFT_B_CHANNEL = 1;
 	public static final int ENCODER_RIGHT_A_CHANNEL = 2;
 	public static final int ENCODER_RIGHT_B_CHANNEL = 3;
-	public static final double LEFT_ENCODER_DISTANCE_PER_PULSE = (.5 * Math.PI)*1.0/360/3;
-	public static final double RIGHT_ENCODER_DISTANCE_PER_PULSE = (.5 * Math.PI)*1.0/360;
+	public static final double ENCODER_DISTANCE_PER_PULSE = (.5 * Math.PI)*1.0/360/3;
 	public static final int THUMBWHEEL_SWITCH_BIT_1_CHANNEL = 4;
 	public static final int THUMBWHEEL_SWITCH_BIT_2_CHANNEL = 5;
 	public static final int THUMBWHEEL_SWITCH_BIT_4_CHANNEL = 6;
