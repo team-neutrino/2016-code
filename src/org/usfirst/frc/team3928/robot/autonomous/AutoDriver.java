@@ -39,7 +39,7 @@ public class AutoDriver
 		
 		if (distance > 0)
 		{
-			while (distance > encLeft.getDistance() || distance > encRight.getDistance() && ((time - System.currentTimeMillis())) > 5000)
+			while (distance > encLeft.getDistance() || distance > encRight.getDistance() && ((time - System.currentTimeMillis())) > 1000)
 			{
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) > encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
@@ -63,7 +63,7 @@ public class AutoDriver
 		}
 		else
 		{
-			while ((distance < encLeft.getDistance() || distance < encRight.getDistance()) && ((time - System.currentTimeMillis())) > 5000)
+			while ((distance < encLeft.getDistance() || distance < encRight.getDistance()) && ((time - System.currentTimeMillis())) > 1000)
 			{
 				if(encRight.getDistance()/(time - System.currentTimeMillis()) > encLeft.getDistance()/(time - System.currentTimeMillis()))
 				{
@@ -85,7 +85,8 @@ public class AutoDriver
 				}
 			}
 		}
-		
+		drive.setRightSpeed(0);
+		drive.setLeftSpeed(0);
 	}
 
 	public void moveSeparateDistance(double distanceL, double distanceR)
