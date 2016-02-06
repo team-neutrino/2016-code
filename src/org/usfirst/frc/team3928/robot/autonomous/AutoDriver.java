@@ -53,42 +53,44 @@ public class AutoDriver
 					speedR -= .01;
 				}
 
-				if (distance - encLeft.getDistance() > Constants.AUTON_SLOW_DISTANCE)
+				if (distance - encLeft.getDistance() > Constants.AUTON_SLOW_DISTANCE
+						|| distance - encRight.getDistance() > Constants.AUTON_SLOW_DISTANCE)
 				{
-					speedL = distance/encLeft.getDistance();
-					drive.setLeftSpeed(speedL);
-				} else if (distance - encRight.getDistance() > Constants.AUTON_SLOW_DISTANCE)
-				{
-					speedR = distance/encRight.getDistance();
-					drive.setLeftSpeed(speedR);
-				} else
-				{
-					if (distance > encLeft.getDistance())
+					if (distance - encLeft.getDistance() > Constants.AUTON_SLOW_DISTANCE)
 					{
-						drive.setLeftSpeed(speedL);
+						speedL = distance / encLeft.getDistance();
 					}
-					if (distance > encRight.getDistance())
+					if (distance - encRight.getDistance() > Constants.AUTON_SLOW_DISTANCE)
 					{
-						drive.setRightSpeed(speedR);
+						speedR = distance / encRight.getDistance();
 					}
-					shouldBreak = System.currentTimeMillis() - time > 5000
-							|| !DriverStation.getInstance().isAutonomous() || DriverStation.getInstance().isDisabled();
 				}
+
+				if (distance > encLeft.getDistance())
+				{
+					drive.setLeftSpeed(speedL);
+				}
+				if (distance > encRight.getDistance())
+				{
+					drive.setRightSpeed(speedR);
+				}
+				shouldBreak = System.currentTimeMillis() - time > 5000 || !DriverStation.getInstance().isAutonomous()
+						|| DriverStation.getInstance().isDisabled();
 			}
 		} else
+
 		{
 			while (((distance < encLeft.getDistance() || distance < encRight.getDistance())) && !shouldBreak)
 			{
-				if (distance + encLeft.getDistance() < -Constants.AUTON_SLOW_DISTANCE)
+
+				if (distance - encLeft.getDistance() < -Constants.AUTON_SLOW_DISTANCE)
 				{
-					speedL = -distance/encLeft.getDistance();
-					drive.setLeftSpeed(speedL);
-				} else if (distance + encRight.getDistance() < -Constants.AUTON_SLOW_DISTANCE)
+					speedL = -distance / encLeft.getDistance();
+				}
+				if (distance - encRight.getDistance() < -Constants.AUTON_SLOW_DISTANCE)
 				{
-					speedR = -distance/encRight.getDistance();
-					drive.setLeftSpeed(speedR);
-				} else
-				{
+					speedR = -distance / encRight.getDistance();
+				}
 				if (encRight.getDistance() / (time - System.currentTimeMillis()) > encLeft.getDistance()
 						/ (time - System.currentTimeMillis()))
 				{
@@ -109,11 +111,12 @@ public class AutoDriver
 				}
 				shouldBreak = System.currentTimeMillis() - time > 5000 || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled();
-				}
 			}
+
 		}
 		drive.setRightSpeed(0);
 		drive.setLeftSpeed(0);
+
 	}
 
 	/*
