@@ -9,6 +9,7 @@ public class Constants
 	public static final double AUTO_MOVE_SPEED = .25;
 	public static final boolean AUTO_USE_GYRO = false;
 	public static final int GYRO_CHANNEL = 0;
+	public static final double AUTON_SLOW_DISTANCE = 1; // IN FEET
 
 	// Controllers
 	public static final int JOY_LEFT = 1;
