@@ -34,8 +34,11 @@ public class MoveForward implements AutoMode
 
 	@Override
 	public void run()
-	{	
-		driver.moveDistance(3);
+	{
+		driver.moveDistance(10);
+		System.out.println("Left: " + encLeft.getDistance());
+		System.out.println("Right: " + encRight.getDistance());
+		Timer.delay(.5);
 		System.out.println("Left: " + encLeft.getDistance());
 		System.out.println("Right: " + encRight.getDistance());
 	}

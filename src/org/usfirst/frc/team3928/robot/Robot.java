@@ -101,8 +101,8 @@ public class Robot extends SampleRobot
 				DriverStation.reportError("Right Distance:" + encRight.getDistance(), false);
 			}
 
-			double leftSpeed = joyLeft.getY();
-			double rightSpeed = joyRight.getY();
+			double leftSpeed = -joyLeft.getY();
+			double rightSpeed = -joyRight.getY();
 			drive.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
 			drive.setRightSpeed(rightSpeed * Math.abs(rightSpeed));
 
