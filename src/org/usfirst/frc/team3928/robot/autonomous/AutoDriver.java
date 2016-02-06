@@ -38,6 +38,7 @@ public class AutoDriver
 		double speedR = Constants.AUTO_MOVE_SPEED;
 		double time = System.currentTimeMillis();
 		boolean shouldBreak = false;
+		double slowDistance = Constants.AUTON_SLOW_DISTANCE;
 		if (distance > 0)
 		{
 			while ((distance > encLeft.getDistance() || distance > encRight.getDistance()) && !shouldBreak)
@@ -53,8 +54,7 @@ public class AutoDriver
 					speedR -= .01;
 				}
 
-				if (distance - encLeft.getDistance() > Constants.AUTON_SLOW_DISTANCE
-						|| distance - encRight.getDistance() > Constants.AUTON_SLOW_DISTANCE)
+				if (distance - encLeft.getDistance() > slowDistance || distance - encRight.getDistance() > slowDistance)
 				{
 					if (distance - encLeft.getDistance() > Constants.AUTON_SLOW_DISTANCE)
 					{
@@ -83,14 +83,6 @@ public class AutoDriver
 			while (((distance < encLeft.getDistance() || distance < encRight.getDistance())) && !shouldBreak)
 			{
 
-				if (distance - encLeft.getDistance() < -Constants.AUTON_SLOW_DISTANCE)
-				{
-					speedL = -distance / encLeft.getDistance();
-				}
-				if (distance - encRight.getDistance() < -Constants.AUTON_SLOW_DISTANCE)
-				{
-					speedR = -distance / encRight.getDistance();
-				}
 				if (encRight.getDistance() / (time - System.currentTimeMillis()) > encLeft.getDistance()
 						/ (time - System.currentTimeMillis()))
 				{
@@ -100,6 +92,14 @@ public class AutoDriver
 						/ (time - System.currentTimeMillis()))
 				{
 					speedR += .01;
+				}
+				if (Math.abs(distance - encLeft.getDistance()) < Constants.AUTON_SLOW_DISTANCE)
+				{
+					speedL = -distance / encLeft.getDistance();
+				}
+				if (Math.abs(distance - encRight.getDistance()) < Constants.AUTON_SLOW_DISTANCE)
+				{
+					speedR = -distance / encRight.getDistance();
 				}
 				if (distance < encLeft.getDistance())
 				{
@@ -131,110 +131,52 @@ public class AutoDriver
 		double speedR = Constants.AUTO_MOVE_SPEED;
 		double time = System.currentTimeMillis();
 		boolean shouldBreak = false;
-
-		if (distanceL > 0 && distanceR > 0)
+		double slowDistance = Constants.AUTON_SLOW_DISTANCE;
+		boolean isLeftMoved = false;
+		boolean isRightMoved = true;
+		while ((!isLeftMoved || !isRightMoved) && !shouldBreak)
 		{
-			while ((distanceL > encLeft.getDistance() || distanceR > encRight.getDistance()) && !shouldBreak)
+			if (encRight.getDistance() / (time - System.currentTimeMillis()) > encLeft.getDistance()
+					/ (time - System.currentTimeMillis()))
 			{
-				if (encRight.getDistance() / (time - System.currentTimeMillis()) > encLeft.getDistance()
-						/ (time - System.currentTimeMillis()))
-				{
-					speedL -= .01;
-				}
-				if (encRight.getDistance() / (time - System.currentTimeMillis()) < encLeft.getDistance()
-						/ (time - System.currentTimeMillis()))
-				{
-					speedR -= .01;
-				}
-				if (distanceL > encLeft.getDistance())
-				{
-					drive.setLeftSpeed(speedL);
-				}
-				if (distanceR > encRight.getDistance())
-				{
-					drive.setRightSpeed(speedR);
-				}
-				shouldBreak = System.currentTimeMillis() - time > 5000 || !DriverStation.getInstance().isAutonomous()
-						|| !DriverStation.getInstance().isDisabled();
+				speedL -= .01;
 			}
-		}
-		if (distanceL > 0 && distanceR < 0)
-		{
-			while ((distanceL > encLeft.getDistance() || distanceR < encRight.getDistance()) && !shouldBreak)
+			if (encRight.getDistance() / (time - System.currentTimeMillis()) < encLeft.getDistance()
+					/ (time - System.currentTimeMillis()))
 			{
-				if (encRight.getDistance() / (time - System.currentTimeMillis()) > encLeft.getDistance()
-						/ (time - System.currentTimeMillis()))
-				{
-					speedL -= .01;
-				}
-				if (encRight.getDistance() / (time - System.currentTimeMillis()) < encLeft.getDistance()
-						/ (time - System.currentTimeMillis()))
-				{
-					speedR -= .01;
-				}
-				if (distanceL > encLeft.getDistance())
-				{
-					drive.setLeftSpeed(speedL);
-				}
-				if (distanceR < encRight.getDistance())
-				{
-					drive.setRightSpeed(-speedR);
-				}
-				shouldBreak = System.currentTimeMillis() - time > 5000 || !DriverStation.getInstance().isAutonomous()
-						|| !DriverStation.getInstance().isDisabled();
+				speedR -= .01;
 			}
-		}
-		if (distanceL < 0 && distanceR < 0)
-		{
-			while ((distanceL < encLeft.getDistance() || distanceR < encRight.getDistance()) && !shouldBreak)
+			if (Math.abs(distanceL - encLeft.getDistance()) < slowDistance)
 			{
-				if (encRight.getDistance() / (time - System.currentTimeMillis()) > encLeft.getDistance()
-						/ (time - System.currentTimeMillis()))
-				{
-					speedL -= .01;
-				}
-				if (encRight.getDistance() / (time - System.currentTimeMillis()) < encLeft.getDistance()
-						/ (time - System.currentTimeMillis()))
-				{
-					speedR -= .01;
-				}
-				if (distanceL < encLeft.getDistance())
-				{
-					drive.setLeftSpeed(-speedL);
-				}
-				if (distanceR < encRight.getDistance())
-				{
-					drive.setRightSpeed(-speedR);
-				}
-				shouldBreak = System.currentTimeMillis() - time > 5000 || !DriverStation.getInstance().isAutonomous()
-						|| !DriverStation.getInstance().isDisabled();
+				speedL = distanceL / encLeft.getDistance();
 			}
-		}
-		if (distanceL < 0 && distanceR > 0)
-		{
-			while ((distanceL < encLeft.getDistance() || distanceR > encRight.getDistance()) && !shouldBreak)
+			if (Math.abs(distanceR - encRight.getDistance()) < slowDistance)
 			{
-				if (encRight.getDistance() / (time - System.currentTimeMillis()) > encLeft.getDistance()
-						/ (time - System.currentTimeMillis()))
-				{
-					speedL -= .01;
-				}
-				if (encRight.getDistance() / (time - System.currentTimeMillis()) < encLeft.getDistance()
-						/ (time - System.currentTimeMillis()))
-				{
-					speedR -= .01;
-				}
-				if (distanceL < encLeft.getDistance())
-				{
-					drive.setLeftSpeed(-speedL);
-				}
-				if (distanceR > encRight.getDistance())
-				{
-					drive.setRightSpeed(speedR);
-				}
-				shouldBreak = System.currentTimeMillis() - time > 5000 || !DriverStation.getInstance().isAutonomous()
-						|| !DriverStation.getInstance().isDisabled();
+				speedR = distanceR / encRight.getDistance();
 			}
+			if (distanceL > 0 && (distanceL < encLeft.getDistance()))
+			{
+				drive.setLeftSpeed(speedL);
+				isLeftMoved = true;
+			}
+			if (distanceL < 0 && (distanceL > encLeft.getDistance()))
+			{
+				drive.setLeftSpeed(-speedL);
+				isLeftMoved = true;
+			}
+			if (distanceR < 0 && (distanceR > encRight.getDistance()))
+			{
+				drive.setRightSpeed(speedR);
+				isRightMoved = true;
+			}
+			if (distanceR > 0 && (distanceR < encRight.getDistance()))
+			{
+				drive.setRightSpeed(-speedR);
+				isRightMoved = true;
+			}
+			shouldBreak = (System.currentTimeMillis() - time > 5000) || !DriverStation.getInstance().isAutonomous()
+					|| DriverStation.getInstance().isDisabled();
+			Timer.delay(.005); // Wait for motor update time
 		}
 	}
 
