@@ -52,21 +52,43 @@ public class AutoDriver
 				{
 					speedR -= .01;
 				}
-				if (distance > encLeft.getDistance())
+
+				if (distance - encLeft.getDistance() > Constants.AUTON_SLOW_DISTANCE)
 				{
+					speedL = distance/encLeft.getDistance();
 					drive.setLeftSpeed(speedL);
-				}
-				if (distance > encRight.getDistance())
+				} else if (distance - encRight.getDistance() > Constants.AUTON_SLOW_DISTANCE)
 				{
-					drive.setRightSpeed(speedR);
+					speedR = distance/encRight.getDistance();
+					drive.setLeftSpeed(speedR);
+				} else
+				{
+					if (distance > encLeft.getDistance())
+					{
+						drive.setLeftSpeed(speedL);
+					}
+					if (distance > encRight.getDistance())
+					{
+						drive.setRightSpeed(speedR);
+					}
+					shouldBreak = System.currentTimeMillis() - time > 5000
+							|| !DriverStation.getInstance().isAutonomous() || DriverStation.getInstance().isDisabled();
 				}
-				shouldBreak = System.currentTimeMillis() - time > 5000 || !DriverStation.getInstance().isAutonomous()
-						|| DriverStation.getInstance().isDisabled();
 			}
 		} else
 		{
 			while (((distance < encLeft.getDistance() || distance < encRight.getDistance())) && !shouldBreak)
 			{
+				if (distance + encLeft.getDistance() < -Constants.AUTON_SLOW_DISTANCE)
+				{
+					speedL = -distance/encLeft.getDistance();
+					drive.setLeftSpeed(speedL);
+				} else if (distance + encRight.getDistance() < -Constants.AUTON_SLOW_DISTANCE)
+				{
+					speedR = -distance/encRight.getDistance();
+					drive.setLeftSpeed(speedR);
+				} else
+				{
 				if (encRight.getDistance() / (time - System.currentTimeMillis()) > encLeft.getDistance()
 						/ (time - System.currentTimeMillis()))
 				{
@@ -87,12 +109,16 @@ public class AutoDriver
 				}
 				shouldBreak = System.currentTimeMillis() - time > 5000 || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled();
+				}
 			}
 		}
 		drive.setRightSpeed(0);
 		drive.setLeftSpeed(0);
 	}
 
+	/*
+	 * moveSeparateDistance doesn't work!
+	 */
 	public void moveSeparateDistance(double distanceL, double distanceR)
 	{
 		encLeft.reset();
