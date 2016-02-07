@@ -139,7 +139,7 @@ public class AutoDriver
 		double degreesTurned = gyro.getAngle();
 		double slowDegrees = degrees / 8;
 		double slowSpeed;
-		while (Math.abs(degreesTurned) < Math.abs(slowDegrees))
+		while (Math.abs(degreesTurned) < Math.abs(slowDegrees) && !terminate)
 		{
 			degreesTurned = gyro.getAngle();
 			if (degrees < 0)
@@ -158,7 +158,7 @@ public class AutoDriver
 		}
 		if (degrees > 0)
 		{
-			while (degreesTurned < degrees)
+			while (degreesTurned < degrees && !terminate)
 			{
 				slowSpeed = speed * (degreesTurned / degrees);
 				drive.setLeftSpeed(slowSpeed);
@@ -174,7 +174,7 @@ public class AutoDriver
 		}
 		if (degrees < 0)
 		{
-			while (degreesTurned > degrees)
+			while (degreesTurned > degrees && !terminate)
 			{
 				slowSpeed = speed * (degreesTurned / degrees);
 				drive.setLeftSpeed(slowSpeed);
