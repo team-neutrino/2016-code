@@ -46,7 +46,7 @@ public class AutoDriver
 	{
 		encLeft.reset();
 		encRight.reset();
-		
+
 		int negitiveMultiplier = (speed >= 0 ? 1 : -1);
 		speed = Math.abs(speed);
 
@@ -72,8 +72,7 @@ public class AutoDriver
 			{
 				// ramp down
 				rampSpeed = speed * ((remainDistance / RAMP_UP_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
-			}
-			else if (minDistance < RAMP_DOWN_DISTANCE)
+			} else if (minDistance < RAMP_DOWN_DISTANCE)
 			{
 				rampSpeed = speed * ((minDistance / RAMP_DOWN_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
 			}
@@ -86,24 +85,21 @@ public class AutoDriver
 				rightSpeed = 0;
 				terminate = true;
 				msg = "done";
-			}
-			else if (diff > 0)
+			} else if (diff > 0)
 			{
 				msg = "veer right";
 				// veer right
 				leftSpeed = rampSpeed;
 				rightSpeed = Math.max(rampSpeed - rampSpeed * Math.min((diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
 						MIN_SPEED);
-			}
-			else if (diff < 0)
+			} else if (diff < 0)
 			{
 				msg = "veer left";
 				// veer right
 				leftSpeed = Math.max(rampSpeed - rampSpeed * Math.min((-diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
 						MIN_SPEED);
 				rightSpeed = rampSpeed;
-			}
-			else
+			} else
 			{
 				msg = "going straight";
 				// go straight
@@ -124,7 +120,7 @@ public class AutoDriver
 				terminate = true;
 				System.out.println("drive timeout");
 			}
-			
+
 			Thread.yield();
 		}
 
@@ -137,72 +133,60 @@ public class AutoDriver
 		/*
 		 * COUNTERCLOCKWISE = NEGATIVE CLOCKWISE = POSITIVE
 		 */
-
-		if (Constants.AUTO_USE_GYRO)
+		gyro.reset();
+		boolean terminate = false;
+		double startTime = System.currentTimeMillis();
+		double degreesTurned = gyro.getAngle();
+		double slowDegrees = degrees / 8;
+		double slowSpeed;
+		while (Math.abs(degreesTurned) < Math.abs(slowDegrees))
 		{
-			
-			boolean terminate = false;
-			double startTime = System.currentTimeMillis();
-			/*
-			 * In order to negate the effects of gyro drift, the gyro will be
-			 * reset every time the code is run.
-			 */
-			if (degrees > 0)
+			degreesTurned = gyro.getAngle();
+			if (degrees < 0)
 			{
-				while (gyro.getAngle() < degrees && !terminate)
-				{
-					drive.setLeftSpeed(speed);
-					drive.setRightSpeed(-speed);
-					Timer.delay(0.005); // wait for a motor update time
-					if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-							|| DriverStation.getInstance().isDisabled())
-					{
-						terminate = true;
-					}
-					
-					Thread.yield();
-				}
-				System.out.println("Final Angle: " + gyro.getAngle());
-				drive.setLeftSpeed(0);
-				drive.setRightSpeed(0);
-				Timer.delay(.5);
-				System.out.println("Real Final Angle: " + gyro.getAngle());
+				speed = -speed;
 			}
-			else if (degrees < 0)
+			drive.setLeftSpeed(speed);
+			drive.setRightSpeed(-speed);
+			if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
+					|| DriverStation.getInstance().isDisabled())
 			{
-				while (gyro.getAngle() > degrees && !terminate)
+				terminate = true;
+			}
+
+			Thread.yield();
+		}
+		if (degrees > 0)
+		{
+			while (degreesTurned < degrees)
+			{
+				slowSpeed = speed * (degreesTurned / degrees);
+				drive.setLeftSpeed(slowSpeed);
+				drive.setRightSpeed(-slowSpeed);
+				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
+						|| DriverStation.getInstance().isDisabled())
 				{
-					drive.setLeftSpeed(-speed);
-					drive.setRightSpeed(speed);
-					Timer.delay(0.005); // wait for a motor update time
-					if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-							|| DriverStation.getInstance().isDisabled())
-					{
-						terminate = true;
-					}
-					
-					Thread.yield();
+					terminate = true;
 				}
-				System.out.println("Final Angle: " + gyro.getAngle());
-				drive.setLeftSpeed(0);
-				drive.setRightSpeed(0);
-				Timer.delay(.5);
-				System.out.println("Real Final Angle: " + gyro.getAngle());
+
+				Thread.yield();
 			}
 		}
-		else
+		if (degrees < 0)
 		{
-			double turnCirc = Math.PI * 1.145;
-
-			double degreePercent = degrees / 360;
-			double dist = degreePercent * turnCirc;
-			if (degrees > 0)
+			while (degreesTurned > degrees)
 			{
-			}
-			else if (degrees < 0)
-			{
-			}
+				slowSpeed = speed * (degreesTurned / degrees);
+				drive.setLeftSpeed(slowSpeed);
+				drive.setRightSpeed(-slowSpeed);
+				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
+						|| DriverStation.getInstance().isDisabled())
+				{
+					terminate = true;
+				}
 
+				Thread.yield();
+			}
 		}
 	}
 
@@ -226,18 +210,17 @@ public class AutoDriver
 				temp = cam.getLargestArea();
 				this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
 				temp1 = cam.getLargestArea();
-				
+
 				Thread.yield();
 			}
-		}
-		else
+		} else
 		{
 			while (temp1 > temp)
 			{
 				temp = cam.getLargestArea();
 				this.turnDegrees(-1, Constants.AUTO_MOVE_SPEED);
 				temp1 = cam.getLargestArea();
-				
+
 				Thread.yield();
 			}
 		}
