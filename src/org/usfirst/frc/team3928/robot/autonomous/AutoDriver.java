@@ -26,8 +26,8 @@ public class AutoDriver
 	private static final double MIN_SPEED_MULTIPLIER = .25;
 	private static final double MIN_SPEED = .125;
 
-	private static final double RAMP_UP_DISTANCE = .5;
-	private static final double RAMP_DOWN_DISTANCE = 5;
+	private static final double RAMP_UP_DISTANCE = .25;
+	private static final double RAMP_DOWN_DISTANCE = 1;
 	private static final double MIN_RAMP_SPEED = .25;
 
 	public AutoDriver(Drive drive)
