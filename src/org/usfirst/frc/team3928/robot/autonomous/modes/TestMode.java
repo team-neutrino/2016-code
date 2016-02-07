@@ -26,8 +26,8 @@ public class TestMode implements AutoMode
 	public void run()
 	{
 		driver.moveDistance(2, 1);
-		driver.turnDegrees(90);
-		driver.turnDegrees(-90);
+		driver.turnDegrees(90, .5);
+		driver.turnDegrees(-90, .5);
 		driver.moveDistance(-2, 1);
 	}
 
