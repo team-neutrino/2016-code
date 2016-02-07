@@ -46,14 +46,17 @@ public class AutoDriver
 	{
 		encLeft.reset();
 		encRight.reset();
+		
+		int negitiveMultiplier = (speed >= 0 ? 1 : -1);
+		speed = Math.abs(speed);
 
 		boolean terminate = false;
 		double startTime = System.currentTimeMillis();
 
 		while (!terminate)
 		{
-			double rightDistance = encRight.getDistance();
-			double leftDistance = encLeft.getDistance();
+			double rightDistance = Math.abs(encRight.getDistance());
+			double leftDistance = Math.abs(encLeft.getDistance());
 			double maxDistance = Math.max(leftDistance, rightDistance);
 			double minDistance = Math.min(leftDistance, rightDistance);
 
@@ -108,8 +111,8 @@ public class AutoDriver
 				rightSpeed = rampSpeed;
 			}
 
-			drive.setLeftSpeed(leftSpeed);
-			drive.setRightSpeed(rightSpeed);
+			drive.setLeftSpeed(negitiveMultiplier * leftSpeed);
+			drive.setRightSpeed(negitiveMultiplier * rightSpeed);
 
 			System.out.println(msg + " Right Distance: " + rightDistance + " Right Speed: " + rightSpeed
 					+ " Left Distance: " + leftDistance + " Left Speed: " + leftSpeed);
