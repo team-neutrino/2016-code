@@ -7,7 +7,6 @@ import org.usfirst.frc.team3928.robot.subsystems.Drive;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Timer;
 
 public class AutoDriver
 {
@@ -29,6 +28,8 @@ public class AutoDriver
 	private static final double RAMP_UP_DISTANCE = .25;
 	private static final double RAMP_DOWN_DISTANCE = 1;
 	private static final double MIN_RAMP_SPEED = .25;
+	
+	private static final long TIMEOUT_REFRESH_RATE = 250;
 
 	public AutoDriver(Drive drive)
 	{
@@ -72,7 +73,8 @@ public class AutoDriver
 			{
 				// ramp down
 				rampSpeed = speed * ((remainDistance / RAMP_UP_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
-			} else if (minDistance < RAMP_DOWN_DISTANCE)
+			}
+			else if (minDistance < RAMP_DOWN_DISTANCE)
 			{
 				rampSpeed = speed * ((minDistance / RAMP_DOWN_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
 			}
@@ -85,21 +87,24 @@ public class AutoDriver
 				rightSpeed = 0;
 				terminate = true;
 				msg = "done";
-			} else if (diff > 0)
+			}
+			else if (diff > 0)
 			{
 				msg = "veer right";
 				// veer right
 				leftSpeed = rampSpeed;
 				rightSpeed = Math.max(rampSpeed - rampSpeed * Math.min((diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
 						MIN_SPEED);
-			} else if (diff < 0)
+			}
+			else if (diff < 0)
 			{
 				msg = "veer left";
 				// veer right
 				leftSpeed = Math.max(rampSpeed - rampSpeed * Math.min((-diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
 						MIN_SPEED);
 				rightSpeed = rampSpeed;
-			} else
+			}
+			else
 			{
 				msg = "going straight";
 				// go straight
@@ -124,6 +129,49 @@ public class AutoDriver
 			Thread.yield();
 		}
 
+		drive.setLeftSpeed(0);
+		drive.setRightSpeed(0);
+	}
+
+	public void moveTime(int time, double speed)
+	{
+		boolean terminate = false;
+		long startTime = System.currentTimeMillis();
+
+		drive.setLeftSpeed(speed);
+		drive.setRightSpeed(speed);
+		
+		long currTime = startTime;
+		long timeRemain = time;
+
+		while (!terminate)
+		{
+			try
+			{
+				Thread.sleep(Math.min(timeRemain, TIMEOUT_REFRESH_RATE));
+			}
+			catch (InterruptedException e)
+			{
+			}
+			
+			currTime = System.currentTimeMillis();
+			timeRemain = time - (currTime - startTime);
+			
+			// done
+			if (timeRemain <= 0)
+			{
+				terminate = true;
+			}
+			
+			// timeout
+			if ((currTime - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
+					|| DriverStation.getInstance().isDisabled())
+			{
+				terminate = true;
+				System.out.println("drive timeout");
+			}
+		}
+		
 		drive.setLeftSpeed(0);
 		drive.setRightSpeed(0);
 	}
@@ -201,7 +249,7 @@ public class AutoDriver
 		double postArea;
 		double startTime = System.currentTimeMillis();
 		boolean terminate = false;
-		
+
 		prevArea = cam.getLargestArea();
 		this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
 		postArea = cam.getLargestArea();
@@ -212,7 +260,7 @@ public class AutoDriver
 				prevArea = cam.getLargestArea();
 				this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
 				postArea = cam.getLargestArea();
-				
+
 				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled())
 				{
@@ -222,14 +270,15 @@ public class AutoDriver
 
 				Thread.yield();
 			}
-		} else
+		}
+		else
 		{
 			while (postArea > prevArea && !terminate)
 			{
 				prevArea = cam.getLargestArea();
 				this.turnDegrees(-1, Constants.AUTO_MOVE_SPEED);
 				postArea = cam.getLargestArea();
-				
+
 				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled())
 				{
