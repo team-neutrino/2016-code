@@ -112,8 +112,8 @@ public class AutoDriver
 				rightSpeed = rampSpeed;
 			}
 
-			drive.setLeftSpeed(negitiveMultiplier * leftSpeed);
-			drive.setRightSpeed(negitiveMultiplier * rightSpeed);
+			drive.setLeft(negitiveMultiplier * leftSpeed);
+			drive.setRight(negitiveMultiplier * rightSpeed);
 
 			System.out.println(msg + " Right Distance: " + rightDistance + " Right Speed: " + rightSpeed
 					+ " Left Distance: " + leftDistance + " Left Speed: " + leftSpeed);
@@ -129,8 +129,8 @@ public class AutoDriver
 			Thread.yield();
 		}
 
-		drive.setLeftSpeed(0);
-		drive.setRightSpeed(0);
+		drive.setLeft(0);
+		drive.setRight(0);
 	}
 
 	public void moveTime(int time, double speed)
@@ -138,8 +138,8 @@ public class AutoDriver
 		boolean terminate = false;
 		long startTime = System.currentTimeMillis();
 
-		drive.setLeftSpeed(speed);
-		drive.setRightSpeed(speed);
+		drive.setLeft(speed);
+		drive.setRight(speed);
 		
 		long currTime = startTime;
 		long timeRemain = time;
@@ -172,8 +172,8 @@ public class AutoDriver
 			}
 		}
 		
-		drive.setLeftSpeed(0);
-		drive.setRightSpeed(0);
+		drive.setLeft(0);
+		drive.setRight(0);
 	}
 
 	public void turnDegrees(double degrees, double speed)
@@ -194,8 +194,8 @@ public class AutoDriver
 			{
 				speed = -speed;
 			}
-			drive.setLeftSpeed(speed);
-			drive.setRightSpeed(-speed);
+			drive.setLeft(speed);
+			drive.setRight(-speed);
 			if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 					|| DriverStation.getInstance().isDisabled())
 			{
@@ -209,8 +209,8 @@ public class AutoDriver
 			while (degreesTurned < degrees && !terminate)
 			{
 				slowSpeed = speed * (degreesTurned / degrees);
-				drive.setLeftSpeed(slowSpeed);
-				drive.setRightSpeed(-slowSpeed);
+				drive.setLeft(slowSpeed);
+				drive.setRight(-slowSpeed);
 				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled())
 				{
@@ -225,8 +225,8 @@ public class AutoDriver
 			while (degreesTurned > degrees && !terminate)
 			{
 				slowSpeed = speed * (degreesTurned / degrees);
-				drive.setLeftSpeed(slowSpeed);
-				drive.setRightSpeed(-slowSpeed);
+				drive.setLeft(slowSpeed);
+				drive.setRight(-slowSpeed);
 				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled())
 				{

@@ -33,8 +33,8 @@ public class Constants
 	public static final int THUMBWHEEL_SWITCH_BIT_2_CHANNEL = 5;
 	public static final int THUMBWHEEL_SWITCH_BIT_4_CHANNEL = 6;
 	public static final int THUMBWHEEL_SWITCH_BIT_8_CHANNEL = 7;
-	public static final int BEAMBREAKER_0_CHANNEL = 8;
-	public static final int BEAMBREAKER_1_CHANNEL = 9;
+	public static final int SHOOTER_BEAMBREAKE_0_CHANNEL = 8;
+	public static final int SHOOTER_BEAMBREAKE_1_CHANNEL = 9;
 
 	// Drive Constants
 	public static final int DRIVE_LEFT_1_CHANNEL = 0;
@@ -51,11 +51,11 @@ public class Constants
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 10;
 	
 	//Intake Constants
-	public static final int INTAKE_UP_DOWN = 10;
-	public static final int INTAKE0 = 11;
-	public static final int INTAKE1 = 12;
+	public static final int INTAKE_POSITION_MOTOR_CHANNEL = 10;
+	public static final int INTAKE_CENTER_MOTOR_CHANNEL = 11;
+	public static final int INTAKE_SIDE_MOTOR_CHANNEL = 12;
 	
 	//Shooter Constants
-	public static final int SHOOTER_0 = 20;
-	public static final int SHOOTER_1 = 21;
+	public static final int SHOOTER_MOTOR_0 = 20;
+	public static final int SHOOTER_MOTOR_1 = 21;
 }

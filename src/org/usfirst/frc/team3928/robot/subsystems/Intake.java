@@ -8,34 +8,34 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Intake
 {
-	SpeedController updwn;
-	SpeedController intk0;
-	SpeedController intk1;
-	
+	SpeedController positionMotor;
+	SpeedController intakeCenterMotor;
+	SpeedController intakeSideMotor;
+
 	public Intake()
 	{
-		if(Constants.REAL_BOT)
+		if (Constants.REAL_BOT)
 		{
-			updwn = new CANTalon(Constants.INTAKE_UP_DOWN);
-			intk0 = new CANTalon(Constants.INTAKE0);
-			intk1 = new CANTalon(Constants.INTAKE1);
+			positionMotor = new CANTalon(Constants.INTAKE_POSITION_MOTOR_CHANNEL);
+			intakeCenterMotor = new CANTalon(Constants.INTAKE_CENTER_MOTOR_CHANNEL);
+			intakeSideMotor = new CANTalon(Constants.INTAKE_SIDE_MOTOR_CHANNEL);
 		}
 		else
 		{
-			updwn = new Victor(Constants.INTAKE_UP_DOWN);
-			intk0 = new Victor(Constants.INTAKE0);
-			intk1 = new Victor(Constants.INTAKE1);
+			positionMotor = new Victor(Constants.INTAKE_POSITION_MOTOR_CHANNEL);
+			intakeCenterMotor = new Victor(Constants.INTAKE_CENTER_MOTOR_CHANNEL);
+			intakeSideMotor = new Victor(Constants.INTAKE_SIDE_MOTOR_CHANNEL);
 		}
 	}
-	
-	public void rotate(double speed)
+
+	public void setPosition(double position)
 	{
-		updwn.set(speed);
+		// TODO
 	}
-	
-	public void setOn()
+
+	public void set(double speed)
 	{
-		intk0.set(1);
-		intk1.set(1);
+		intakeCenterMotor.set(speed);
+		intakeSideMotor.set(speed);
 	}
 }

@@ -37,14 +37,14 @@ public class Drive
 		}
 	}
 
-	public void setRightSpeed(double speed)
+	public void setRight(double speed)
 	{
 		right1.set(-speed);
 		right2.set(-speed);
 		right3.set(-speed);
 	}
 
-	public void setLeftSpeed(double speed)
+	public void setLeft(double speed)
 	{
 		left1.set(speed);
 		left2.set(speed);

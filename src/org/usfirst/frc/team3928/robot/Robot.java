@@ -64,8 +64,8 @@ public class Robot extends SampleRobot
 		{
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
-			drive.setLeftSpeed(leftSpeed * Math.abs(leftSpeed));
-			drive.setRightSpeed(rightSpeed * Math.abs(rightSpeed));
+			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
+			drive.setRight(rightSpeed * Math.abs(rightSpeed));
 			Thread.yield();
 		}
 	}
