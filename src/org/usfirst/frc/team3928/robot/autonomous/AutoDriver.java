@@ -121,6 +121,8 @@ public class AutoDriver
 				terminate = true;
 				System.out.println("drive timeout");
 			}
+			
+			Thread.yield();
 		}
 
 		drive.setLeftSpeed(0);
@@ -154,6 +156,8 @@ public class AutoDriver
 					{
 						terminate = true;
 					}
+					
+					Thread.yield();
 				}
 				System.out.println("Final Angle: " + gyro.getAngle());
 				drive.setLeftSpeed(0);
@@ -173,6 +177,8 @@ public class AutoDriver
 					{
 						terminate = true;
 					}
+					
+					Thread.yield();
 				}
 				System.out.println("Final Angle: " + gyro.getAngle());
 				drive.setLeftSpeed(0);
@@ -217,6 +223,8 @@ public class AutoDriver
 				temp = cam.getLargestArea();
 				this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
 				temp1 = cam.getLargestArea();
+				
+				Thread.yield();
 			}
 		}
 		else
@@ -226,6 +234,8 @@ public class AutoDriver
 				temp = cam.getLargestArea();
 				this.turnDegrees(-1, Constants.AUTO_MOVE_SPEED);
 				temp1 = cam.getLargestArea();
+				
+				Thread.yield();
 			}
 		}
 
