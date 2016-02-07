@@ -26,6 +26,10 @@ public class AutoDriver
 	private static final double MIN_SPEED_MULTIPLIER = .25;
 	private static final double MIN_SPEED = .125;
 
+	private static final double RAMP_UP_DISTANCE = .5;
+	private static final double RAMP_DOWN_DISTANCE = 5;
+	private static final double MIN_RAMP_SPEED = .25;
+
 	public AutoDriver(Drive drive)
 	{
 		this.drive = drive;
@@ -50,12 +54,26 @@ public class AutoDriver
 		{
 			double rightDistance = encRight.getDistance();
 			double leftDistance = encLeft.getDistance();
+			double maxDistance = Math.max(leftDistance, rightDistance);
+			double minDistance = Math.min(leftDistance, rightDistance);
 
 			double rightSpeed;
 			double leftSpeed;
 			String msg;
 
 			double diff = rightDistance - leftDistance;
+
+			double rampSpeed = speed;
+			double remainDistance = distance - maxDistance;
+			if (remainDistance < RAMP_UP_DISTANCE)
+			{
+				// ramp down
+				rampSpeed = speed * ((remainDistance / RAMP_UP_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
+			}
+			else if (minDistance < RAMP_DOWN_DISTANCE)
+			{
+				rampSpeed = speed * ((minDistance / RAMP_DOWN_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
+			}
 
 			if (rightDistance > distance || leftDistance > distance)
 			{
@@ -70,24 +88,24 @@ public class AutoDriver
 			{
 				msg = "veer right";
 				// veer right
-				leftSpeed = speed;
-				rightSpeed = Math.max(speed - speed * Math.min((diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
+				leftSpeed = rampSpeed;
+				rightSpeed = Math.max(rampSpeed - rampSpeed * Math.min((diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
 						MIN_SPEED);
 			}
 			else if (diff < 0)
 			{
 				msg = "veer left";
 				// veer right
-				leftSpeed = Math.max(speed - speed * Math.min((-diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
+				leftSpeed = Math.max(rampSpeed - rampSpeed * Math.min((-diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
 						MIN_SPEED);
-				rightSpeed = speed;
+				rightSpeed = rampSpeed;
 			}
 			else
 			{
 				msg = "going straight";
 				// go straight
-				leftSpeed = speed;
-				rightSpeed = speed;
+				leftSpeed = rampSpeed;
+				rightSpeed = rampSpeed;
 			}
 
 			drive.setLeftSpeed(leftSpeed);
