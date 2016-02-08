@@ -1,6 +1,6 @@
 package org.usfirst.frc.team3928.robot.autonomous;
 
-import org.usfirst.frc.team3928.robot.Constants;
+import org.usfirst.frc.team3928.robot.sensors.ThumbwheelSwitch;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class AutoController
 {
 	private AutoMode[] modes;
+	
+	private ThumbwheelSwitch thumbwheelSwitch;
 
 	private static final int MAX_MODES = 16;
 	private static final int SMARTDASHBOARD_REFRESH_RATE = 1000;
@@ -15,6 +17,8 @@ public class AutoController
 	public AutoController()
 	{
 		modes = new AutoMode[MAX_MODES];
+		
+		thumbwheelSwitch = new ThumbwheelSwitch();
 
 		SmartDashboard.putBoolean("Auto Switch Override", false);
 		SmartDashboard.putNumber("Auto Switch Override Number", 0);
@@ -22,11 +26,6 @@ public class AutoController
 		Thread smartDashboardThread = new Thread(new SmartDashboardThread());
 		smartDashboardThread.start();
 	}
-
-	// TODO: Some kind of camera-driven autonomous
-	// maybe make a new method called "VisionTracking" to tell whether we are
-	// aimed at the
-	// goal or not, so we can re-use code for auto and drive code
 
 	/**
 	 * Assign an autonomous mode to a particular number
@@ -88,8 +87,7 @@ public class AutoController
 		}
 		else
 		{
-			modeNum = Constants.AUTO_MODE;
-			// TODO get mode from limit switch
+			modeNum = thumbwheelSwitch.get();
 		}
 
 		return modeNum;
