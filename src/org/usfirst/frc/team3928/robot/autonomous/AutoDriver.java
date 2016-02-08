@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 
+/**
+ * This class autonomously drives and operates the robot using feed back from
+ * sensors.
+ */
 public class AutoDriver
 {
 	private Encoder encLeft;
@@ -28,7 +32,7 @@ public class AutoDriver
 	private static final double RAMP_UP_DISTANCE = .25;
 	private static final double RAMP_DOWN_DISTANCE = 1;
 	private static final double MIN_RAMP_SPEED = .25;
-	
+
 	private static final long TIMEOUT_REFRESH_RATE = 250;
 
 	public AutoDriver(Drive drive)
@@ -43,13 +47,32 @@ public class AutoDriver
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 	}
 
+	/**
+	 * Uses encoders to drive straight the given distance at the given speed.
+	 * 
+	 * @param distance
+	 *            the distance to travel in feet. A positive number will go
+	 *            forwards. A negative number will go backwards.
+	 * 
+	 * @param speed
+	 *            speed to travel. This number should be between 0.0 (exclusive)
+	 *            and 1.0 (inclusive). 1 is full speed. The closer to 0.0, the
+	 *            slower the robot will move.
+	 */
 	public void moveDistance(double distance, double speed)
 	{
 		encLeft.reset();
 		encRight.reset();
 
-		int negitiveMultiplier = (speed >= 0 ? 1 : -1);
-		speed = Math.abs(speed);
+		// multiply speed to motors by -1 if going backwards
+		int negitiveMultiplier = (distance >= 0 ? 1 : -1);
+
+		// make speed positive and less than 1
+		speed = Math.min(Math.abs(speed), 1);
+
+		// make distance positive, this class does all calculations using
+		// positive numbers and makes the output negative if going backwards
+		distance = Math.abs(distance);
 
 		boolean terminate = false;
 		double startTime = System.currentTimeMillis();
@@ -69,18 +92,20 @@ public class AutoDriver
 
 			double rampSpeed = speed;
 			double remainDistance = distance - maxDistance;
-			if (remainDistance < RAMP_UP_DISTANCE)
+			if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				rampSpeed = speed * ((remainDistance / RAMP_UP_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
 			}
-			else if (minDistance < RAMP_DOWN_DISTANCE)
+			else if (minDistance < RAMP_UP_DISTANCE)
 			{
+				// ramp up
 				rampSpeed = speed * ((minDistance / RAMP_DOWN_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
 			}
 
 			if (rightDistance > distance || leftDistance > distance)
 			{
+				// done
 				System.out.println("Left Distance Traveled: " + leftDistance);
 				System.out.println("Right Distance Traveled: " + rightDistance);
 				leftSpeed = 0;
@@ -133,14 +158,28 @@ public class AutoDriver
 		drive.setRight(0);
 	}
 
+	/**
+	 * Drives the robot in a straight line (without using encoders) for the
+	 * given time.
+	 * 
+	 * @param time
+	 *            The time to travel in milliseconds. The value should be
+	 *            positive.
+	 * @param speed
+	 *            The speed to drive. Value should be between -1.0 and 1.0. -1.0
+	 *            is full speed backward. 1.0 is full speed forward.
+	 */
 	public void moveTime(int time, double speed)
 	{
+		// if time is negitive make it 0
+		time = Math.max(0, time);
+
 		boolean terminate = false;
 		long startTime = System.currentTimeMillis();
 
 		drive.setLeft(speed);
 		drive.setRight(speed);
-		
+
 		long currTime = startTime;
 		long timeRemain = time;
 
@@ -153,16 +192,16 @@ public class AutoDriver
 			catch (InterruptedException e)
 			{
 			}
-			
+
 			currTime = System.currentTimeMillis();
 			timeRemain = time - (currTime - startTime);
-			
+
 			// done
 			if (timeRemain <= 0)
 			{
 				terminate = true;
 			}
-			
+
 			// timeout
 			if ((currTime - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 					|| DriverStation.getInstance().isDisabled())
@@ -171,16 +210,22 @@ public class AutoDriver
 				System.out.println("drive timeout");
 			}
 		}
-		
+
 		drive.setLeft(0);
 		drive.setRight(0);
 	}
 
+	/**
+	 * Rotates the robot by the given amount using the gyro.
+	 * 
+	 * @param degrees
+	 *            rotational distance to rotate the robot in degrees. A positive
+	 *            number will got clockwise. A negative number will go counter
+	 *            clockwise.
+	 * @param speed
+	 */
 	public void turnDegrees(double degrees, double speed)
 	{
-		/*
-		 * COUNTERCLOCKWISE = NEGATIVE CLOCKWISE = POSITIVE
-		 */
 		gyro.reset();
 		boolean terminate = false;
 		double startTime = System.currentTimeMillis();
@@ -238,11 +283,10 @@ public class AutoDriver
 		}
 	}
 
-	public void turnToGoal()
-	{
-
-	}
-
+	/**
+	 * Uses the camera to rotate the robot so that it is pointed toward the
+	 * goal.
+	 */
 	public void rotateTowardGoal()
 	{
 		double prevArea;
