@@ -17,6 +17,9 @@ public class AutoController
 	private static final int MAX_MODES = 16;
 	private static final int DRIVER_STATION_REFRESH_RATE = 1000;
 
+	/**
+	 * This class manages the auto mode selection and execution
+	 */
 	public AutoController()
 	{
 		modes = new AutoMode[MAX_MODES];
@@ -31,7 +34,7 @@ public class AutoController
 
 		Thread smartDashboardThread = new Thread(new SmartDashboardThread());
 		smartDashboardThread.start();
-		
+
 		Thread autoMonitorThread = new Thread(new AutoMonitorThread());
 		autoMonitorThread.start();
 	}
@@ -89,6 +92,12 @@ public class AutoController
 		}
 	}
 
+	/**
+	 * Returns the current auto mode. The mode is from the thumbwheel switch
+	 * unless it is overridden from the smartdashboard.
+	 * 
+	 * @return current auto mode
+	 */
 	private int getModeNum()
 	{
 		int modeNum;
@@ -105,6 +114,9 @@ public class AutoController
 		return modeNum;
 	}
 
+	/**
+	 * This thread reports the current auto mode to the smartdashboard.
+	 */
 	private class SmartDashboardThread implements Runnable
 	{
 		@Override
@@ -145,6 +157,10 @@ public class AutoController
 		}
 	}
 
+	/**
+	 * This thread reports a message to the driverstation auto does not
+	 * terminate after auto is finished.
+	 */
 	private class AutoMonitorThread implements Runnable
 	{
 
