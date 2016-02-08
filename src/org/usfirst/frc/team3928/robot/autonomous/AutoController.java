@@ -8,23 +8,32 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class AutoController
 {
 	private AutoMode[] modes;
-	
+
 	private ThumbwheelSwitch thumbwheelSwitch;
 
+	private boolean running;
+	private int runningMode;
+
 	private static final int MAX_MODES = 16;
-	private static final int SMARTDASHBOARD_REFRESH_RATE = 1000;
+	private static final int DRIVER_STATION_REFRESH_RATE = 1000;
 
 	public AutoController()
 	{
 		modes = new AutoMode[MAX_MODES];
-		
+
 		thumbwheelSwitch = new ThumbwheelSwitch();
+
+		running = false;
+		runningMode = 0;
 
 		SmartDashboard.putBoolean("Auto Switch Override", false);
 		SmartDashboard.putNumber("Auto Switch Override Number", 0);
 
 		Thread smartDashboardThread = new Thread(new SmartDashboardThread());
 		smartDashboardThread.start();
+		
+		Thread autoMonitorThread = new Thread(new AutoMonitorThread());
+		autoMonitorThread.start();
 	}
 
 	/**
@@ -68,7 +77,10 @@ public class AutoController
 		if (mode != null)
 		{
 			System.out.println("Running auto [" + mode.getName() + "] assigned to [" + modeNum + "]");
+			running = true;
+			runningMode = modeNum;
 			mode.run();
+			running = false;
 			System.out.println("Auto [" + mode.getName() + "] Done!");
 		}
 		else
@@ -102,7 +114,7 @@ public class AutoController
 			{
 				try
 				{
-					Thread.sleep(SMARTDASHBOARD_REFRESH_RATE);
+					Thread.sleep(DRIVER_STATION_REFRESH_RATE);
 				}
 				catch (InterruptedException e)
 				{
@@ -128,6 +140,46 @@ public class AutoController
 				else
 				{
 					SmartDashboard.putString("Autonomous Mode Description", "Auto [" + modeNum + "] not implemented");
+				}
+			}
+		}
+	}
+
+	private class AutoMonitorThread implements Runnable
+	{
+
+		@Override
+		public void run()
+		{
+			while (true)
+			{
+				try
+				{
+					Thread.sleep(DRIVER_STATION_REFRESH_RATE);
+				}
+				catch (InterruptedException e)
+				{
+				}
+
+				if (running && (DriverStation.getInstance().isDisabled())
+						|| !DriverStation.getInstance().isAutonomous())
+				{
+					try
+					{
+						Thread.sleep(DRIVER_STATION_REFRESH_RATE);
+					}
+					catch (InterruptedException e)
+					{
+					}
+
+					if (running)
+					{
+						DriverStation
+								.reportError(
+										"Auto Mode " + modes[runningMode].getName() + "] assigned to [" + runningMode
+												+ "] did not terminate at the end of autonomous! (restart robot code)",
+										false);
+					}
 				}
 			}
 		}
