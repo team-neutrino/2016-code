@@ -205,7 +205,7 @@ public class AutoDriver
 	 */
 	public void moveTime(int time, double speed)
 	{
-		// if time is negitive make it 0
+		// if time is negative make it 0
 		time = Math.max(0, time);
 
 		boolean terminate = false;
