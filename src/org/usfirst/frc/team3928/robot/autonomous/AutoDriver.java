@@ -119,8 +119,8 @@ public class AutoDriver
 					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
 				} else
 				{
-					DriverStation.reportError("Left is ahead of Right (left encoder unplugged)", false);
-					throw new EncoderUnpluggedException("Left is ahead of Right (left encoder unplugged)");
+					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
+					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
 				}
 			}
 			else if (diff > 0)
