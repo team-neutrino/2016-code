@@ -151,6 +151,7 @@ public class AutoDriver
 
 			if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance < RAMP_DOWN_DISTANCE))
 			{
+				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
 			}
 			else if (minDistance < RAMP_UP_DISTANCE)
@@ -171,11 +172,11 @@ public class AutoDriver
 			double rightSpeed = speed * ramp * rightCorrection;
 
 			// scale speed from between 0 and 1 to between MIN_SPEED and 1
-			leftSpeed = leftSpeed * (1 - MIN_SPEED) + MIN_SPEED;
-			rightSpeed = rightSpeed * (1 - MIN_SPEED) + MIN_SPEED;
+			leftSpeed = negitiveMultiplier * leftSpeed * (1 - MIN_SPEED) + MIN_SPEED;
+			rightSpeed = negitiveMultiplier * rightSpeed * (1 - MIN_SPEED) + MIN_SPEED;
 
-			drive.setLeft(negitiveMultiplier * leftCorrection);
-			drive.setRight(negitiveMultiplier * rightCorrection);
+			drive.setLeft(leftCorrection);
+			drive.setRight(rightCorrection);
 
 			if (count % 10 == 0)
 				System.out.println(msg + "    Right Distance: " + rightDistance + "    Right Speed: " + rightSpeed
