@@ -2,7 +2,7 @@ package org.usfirst.frc.team3928.robot.autonomous.modes;
 
 import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
 import org.usfirst.frc.team3928.robot.autonomous.AutoMode;
-import org.usfirst.frc.team3928.robot.excetions.EncoderUnpluggedException;
+import org.usfirst.frc.team3928.robot.exceptions.EncoderUnpluggedException;
 
 /**
  * Move Forward Autonomous (and can be used for testing)

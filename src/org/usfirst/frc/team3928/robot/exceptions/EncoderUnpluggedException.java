@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3928.robot.excetions;
+package org.usfirst.frc.team3928.robot.exceptions;
 
 public class EncoderUnpluggedException extends Exception
 {

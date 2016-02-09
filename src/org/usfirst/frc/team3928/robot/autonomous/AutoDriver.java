@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3928.robot.autonomous;
 
 import org.usfirst.frc.team3928.robot.Constants;
-import org.usfirst.frc.team3928.robot.excetions.EncoderUnpluggedException;
+import org.usfirst.frc.team3928.robot.exceptions.EncoderUnpluggedException;
 import org.usfirst.frc.team3928.robot.sensors.Camera;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
