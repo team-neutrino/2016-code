@@ -149,7 +149,11 @@ public class AutoDriver
 
 			double ramp = 1;
 
-			if (minDistance < RAMP_UP_DISTANCE)
+			if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance < RAMP_DOWN_DISTANCE))
+			{
+				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
+			}
+			else if (minDistance < RAMP_UP_DISTANCE)
 			{
 				// ramp up
 				ramp = (minDistance / RAMP_UP_DISTANCE);
