@@ -27,7 +27,9 @@ public class AutoDriver
 	// smaller number, more correction; bigger number, less correction
 	private static final double CORRECTION_DISTANCE = .25;
 
-	private static final double MIN_SPEED = .2;
+	private static final double MIN_SPEED = .175;
+	
+	private static final double MIN_RAMP = .25;
 
 	private static final double RAMP_UP_DISTANCE = 1;
 	private static final double RAMP_DOWN_DISTANCE = 2;
@@ -157,6 +159,9 @@ public class AutoDriver
 				// ramp up
 				ramp = (minDistance / RAMP_UP_DISTANCE);
 			}
+			
+			// scale the ramp from between 0 and 1 to between MIN_RAMP and 1
+			ramp = ramp * (1 - MIN_RAMP) + MIN_RAMP;
 
 			double leftSpeed = speed * ramp * leftCorrection;
 			double rightSpeed = speed * ramp * rightCorrection;
