@@ -24,14 +24,12 @@ public class AutoDriver
 	private static final int TIMEOUT = 100000;
 
 	// smaller number, more correction; bigger number, less correction
-	private static final double CORRECTION = .25;
+	private static final double CORRECTION_DISTANCE = .25;
 
-	private static final double MIN_SPEED_MULTIPLIER = .25;
-	private static final double MIN_SPEED = .125;
+	private static final double MIN_SPEED = .2;
 
-	private static final double RAMP_UP_DISTANCE = .25;
-	private static final double RAMP_DOWN_DISTANCE = 1;
-	private static final double MIN_RAMP_SPEED = .25;
+	private static final double RAMP_UP_DISTANCE = 1;
+	private static final double RAMP_DOWN_DISTANCE = 2;
 
 	private static final long TIMEOUT_REFRESH_RATE = 250;
 
@@ -77,39 +75,29 @@ public class AutoDriver
 		boolean terminate = false;
 		double startTime = System.currentTimeMillis();
 
+		int count = 0;
+
 		while (!terminate)
 		{
+			count++;
 			double rightDistance = Math.abs(encRight.getDistance());
 			double leftDistance = Math.abs(encLeft.getDistance());
 			double maxDistance = Math.max(leftDistance, rightDistance);
 			double minDistance = Math.min(leftDistance, rightDistance);
 
-			double rightSpeed;
-			double leftSpeed;
+			double rightCorrection;
+			double leftCorrection;
 			String msg;
 
 			double diff = rightDistance - leftDistance;
-
-			double rampSpeed = speed;
-			double remainDistance = distance - maxDistance;
-			if (remainDistance < RAMP_DOWN_DISTANCE)
-			{
-				// ramp down
-				rampSpeed = speed * ((remainDistance / RAMP_UP_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
-			}
-			else if (minDistance < RAMP_UP_DISTANCE)
-			{
-				// ramp up
-				rampSpeed = speed * ((minDistance / RAMP_DOWN_DISTANCE) * (1 - MIN_RAMP_SPEED) + MIN_RAMP_SPEED);
-			}
 
 			if (rightDistance > distance || leftDistance > distance)
 			{
 				// done
 				System.out.println("Left Distance Traveled: " + leftDistance);
 				System.out.println("Right Distance Traveled: " + rightDistance);
-				leftSpeed = 0;
-				rightSpeed = 0;
+				leftCorrection = 0;
+				rightCorrection = 0;
 				terminate = true;
 				msg = "done";
 			}
@@ -117,31 +105,53 @@ public class AutoDriver
 			{
 				msg = "veer right";
 				// veer right
-				leftSpeed = rampSpeed;
-				rightSpeed = Math.max(rampSpeed - rampSpeed * Math.min((diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
-						MIN_SPEED);
+				leftCorrection = 1;
+				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
 			}
 			else if (diff < 0)
 			{
 				msg = "veer left";
 				// veer right
-				leftSpeed = Math.max(rampSpeed - rampSpeed * Math.min((-diff / CORRECTION), 1 - MIN_SPEED_MULTIPLIER),
-						MIN_SPEED);
-				rightSpeed = rampSpeed;
+				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
+				rightCorrection = 1;
 			}
 			else
 			{
 				msg = "going straight";
 				// go straight
-				leftSpeed = rampSpeed;
-				rightSpeed = rampSpeed;
+				leftCorrection = 1;
+				rightCorrection = 1;
 			}
 
-			drive.setLeft(negitiveMultiplier * leftSpeed);
-			drive.setRight(negitiveMultiplier * rightSpeed);
+			double remainDistance = distance - maxDistance;
 
-			System.out.println(msg + " Right Distance: " + rightDistance + " Right Speed: " + rightSpeed
-					+ " Left Distance: " + leftDistance + " Left Speed: " + leftSpeed);
+			double ramp = 1;
+
+			if (remainDistance < RAMP_DOWN_DISTANCE)
+			{
+				// ramp down
+				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
+			}
+			else if (minDistance < RAMP_UP_DISTANCE)
+			{
+				// ramp up
+				ramp = (minDistance / RAMP_UP_DISTANCE);
+			}
+
+			double leftSpeed = speed * ramp * leftCorrection;
+			double rightSpeed = speed  * ramp * rightCorrection;
+
+			// scale speed from between 0 and 1 to between MIN_SPEED and 1
+			leftSpeed = leftSpeed * (1 - MIN_SPEED) + MIN_SPEED;
+			rightSpeed = rightSpeed * (1 - MIN_SPEED) + MIN_SPEED;
+
+			drive.setLeft(negitiveMultiplier * leftCorrection);
+			drive.setRight(negitiveMultiplier * rightCorrection);
+
+			if (count % 10 == 0)
+				System.out.println(msg + "    Right Distance: " + rightDistance + "    Right Speed: " + rightSpeed
+						+ "    Left Distance: " + leftDistance + "    Left Speed: " + leftSpeed
+						+ "    Ramp: " + ramp);
 
 			// timeout
 			if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()

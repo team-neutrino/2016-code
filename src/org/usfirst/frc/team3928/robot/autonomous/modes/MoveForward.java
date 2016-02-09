@@ -25,7 +25,7 @@ public class MoveForward implements AutoMode
 	@Override
 	public void run()
 	{	
-		driver.moveDistance(20, .75);
+		driver.moveDistance(-5, .25);
 	}
 
 }
