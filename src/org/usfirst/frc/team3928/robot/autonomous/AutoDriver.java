@@ -175,8 +175,8 @@ public class AutoDriver
 			leftSpeed = negitiveMultiplier * leftSpeed * (1 - MIN_SPEED) + MIN_SPEED;
 			rightSpeed = negitiveMultiplier * rightSpeed * (1 - MIN_SPEED) + MIN_SPEED;
 
-			drive.setLeft(leftCorrection);
-			drive.setRight(rightCorrection);
+			drive.setLeft(leftSpeed);
+			drive.setRight(rightSpeed);
 
 			if (count % 10 == 0)
 				System.out.println(msg + "    Right Distance: " + rightDistance + "    Right Speed: " + rightSpeed
