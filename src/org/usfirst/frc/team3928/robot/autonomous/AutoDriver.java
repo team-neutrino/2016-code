@@ -149,15 +149,15 @@ public class AutoDriver
 
 			double ramp = 1;
 
-			if (remainDistance < RAMP_DOWN_DISTANCE)
-			{
-				// ramp down
-				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
-			}
-			else if (minDistance < RAMP_UP_DISTANCE)
+			if (minDistance < RAMP_UP_DISTANCE)
 			{
 				// ramp up
 				ramp = (minDistance / RAMP_UP_DISTANCE);
+			}
+			else if (remainDistance < RAMP_DOWN_DISTANCE)
+			{
+				// ramp down
+				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
 			}
 			
 			// scale the ramp from between 0 and 1 to between MIN_RAMP and 1
