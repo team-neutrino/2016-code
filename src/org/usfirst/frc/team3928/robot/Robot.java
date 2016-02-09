@@ -5,6 +5,7 @@ import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
 import org.usfirst.frc.team3928.robot.autonomous.modes.DoNothing;
 import org.usfirst.frc.team3928.robot.autonomous.modes.MoveForward;
 import org.usfirst.frc.team3928.robot.autonomous.modes.TestMode;
+import org.usfirst.frc.team3928.robot.autonomous.modes.TurnTowardGoal;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 import org.usfirst.frc.team3928.robot.subsystems.Intake;
 import org.usfirst.frc.team3928.robot.subsystems.Shooter;
@@ -37,6 +38,7 @@ public class Robot extends SampleRobot
 		autoController.assignMode(0, new DoNothing());
 		autoController.assignMode(1, new MoveForward(driver));
 		autoController.assignMode(2, new TestMode(driver, shooter));
+		autoController.assignMode(3, new TurnTowardGoal(driver, shooter));
 	}
 
 	@Override
