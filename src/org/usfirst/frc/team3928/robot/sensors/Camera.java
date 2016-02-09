@@ -1,7 +1,9 @@
 package org.usfirst.frc.team3928.robot.sensors;
 
 import org.usfirst.frc.team3928.robot.Constants;
-
+import java.io.IOException;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class Camera 
@@ -12,6 +14,11 @@ public class Camera
 	public Camera()
 	{
 		cameraTable = NetworkTable.getTable("GRIP/myContoursReport");
+		try {
+            new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 	}
 	
 	
