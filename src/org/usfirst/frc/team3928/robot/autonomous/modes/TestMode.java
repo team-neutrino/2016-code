@@ -2,6 +2,7 @@ package org.usfirst.frc.team3928.robot.autonomous.modes;
 
 import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
 import org.usfirst.frc.team3928.robot.autonomous.AutoMode;
+import org.usfirst.frc.team3928.robot.excetions.EncoderUnpluggedException;
 import org.usfirst.frc.team3928.robot.subsystems.Shooter;
 
 public class TestMode implements AutoMode
@@ -25,10 +26,16 @@ public class TestMode implements AutoMode
 	@Override
 	public void run()
 	{
-		driver.moveDistance(2, 1);
-		driver.turnDegrees(90, .5);
-		driver.turnDegrees(-90, .5);
-		driver.moveDistance(-2, 1);
+		try
+		{
+			driver.moveDistance(2, 1);
+			driver.turnDegrees(90, .5);
+			driver.turnDegrees(-90, .5);
+			driver.moveDistance(-2, 1);
+		}
+		catch (EncoderUnpluggedException e)
+		{
+		}
 	}
 
 }

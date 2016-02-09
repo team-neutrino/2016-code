@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3928.robot.autonomous;
 
 import org.usfirst.frc.team3928.robot.Constants;
+import org.usfirst.frc.team3928.robot.excetions.EncoderUnpluggedException;
 import org.usfirst.frc.team3928.robot.sensors.Camera;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
@@ -30,6 +31,8 @@ public class AutoDriver
 
 	private static final double RAMP_UP_DISTANCE = 1;
 	private static final double RAMP_DOWN_DISTANCE = 2;
+	
+	private static final double ENCODER_UNPLUGGED_THRESHOLD = .5;
 
 	private static final long TIMEOUT_REFRESH_RATE = 250;
 
@@ -53,11 +56,12 @@ public class AutoDriver
 	 *            forwards. A negative number will go backwards.
 	 * 
 	 * @param speed
-	 *            speed to travel. This number should be between 0.0 (exclusive)
-	 *            and 1.0 (inclusive). 1 is full speed. The closer to 0.0, the
-	 *            slower the robot will move.
+	 *            speed to travel. This number should be between 0.0 and 1.0.
+	 *            1.0 is full speed. The closer to 0.0, the slower the robot
+	 *            will move.
+	 * @throws EncoderUnpluggedException  when a an encoder is unplugged
 	 */
-	public void moveDistance(double distance, double speed)
+	public void moveDistance(double distance, double speed) throws EncoderUnpluggedException
 	{
 		encLeft.reset();
 		encRight.reset();
@@ -101,6 +105,22 @@ public class AutoDriver
 				terminate = true;
 				msg = "done";
 			}
+			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			{
+				// encoder unplugged
+				drive.setLeft(0);
+				drive.setRight(0);
+				
+				if (diff >= 0)
+				{
+					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
+					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
+				} else
+				{
+					DriverStation.reportError("Left is ahead of Right (left encoder unplugged)", false);
+					throw new EncoderUnpluggedException("Left is ahead of Right (left encoder unplugged)");
+				}
+			}
 			else if (diff > 0)
 			{
 				msg = "veer right";
@@ -139,7 +159,7 @@ public class AutoDriver
 			}
 
 			double leftSpeed = speed * ramp * leftCorrection;
-			double rightSpeed = speed  * ramp * rightCorrection;
+			double rightSpeed = speed * ramp * rightCorrection;
 
 			// scale speed from between 0 and 1 to between MIN_SPEED and 1
 			leftSpeed = leftSpeed * (1 - MIN_SPEED) + MIN_SPEED;
@@ -150,8 +170,7 @@ public class AutoDriver
 
 			if (count % 10 == 0)
 				System.out.println(msg + "    Right Distance: " + rightDistance + "    Right Speed: " + rightSpeed
-						+ "    Left Distance: " + leftDistance + "    Left Speed: " + leftSpeed
-						+ "    Ramp: " + ramp);
+						+ "    Left Distance: " + leftDistance + "    Left Speed: " + leftSpeed + "    Ramp: " + ramp);
 
 			// timeout
 			if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
