@@ -25,23 +25,23 @@ public class AutoDriver
 	private static final int TIMEOUT = 100000;
 
 	// smaller number, more correction; bigger number, less correction
-	private static final double CORRECTION_DISTANCE = .05;
+	private static final double CORRECTION_DISTANCE = .25;
 
 	private static final double MIN_SPEED = .175;
-
+	
 	private static final double MIN_RAMP = .25;
 
-	private static final double RAMP_UP_DISTANCE = 3;
-	private static final double RAMP_DOWN_DISTANCE = 5;
-
+	private static final double RAMP_UP_DISTANCE = 1;
+	private static final double RAMP_DOWN_DISTANCE = 2;
+	
 	private static final double ENCODER_UNPLUGGED_THRESHOLD = .5;
 
-	private static final long TIMEOUT_REFRESH_RATE = 5;
+	private static final long TIMEOUT_REFRESH_RATE = 250;
 
-	public AutoDriver(Drive drive, Camera cam)
+	public AutoDriver(Drive drive)
 	{
 		this.drive = drive;
-		this.cam = cam;
+		cam = new Camera();
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		gyro = new AnalogGyro(Constants.GYRO_CHANNEL);
@@ -61,8 +61,7 @@ public class AutoDriver
 	 *            speed to travel. This number should be between 0.0 and 1.0.
 	 *            1.0 is full speed. The closer to 0.0, the slower the robot
 	 *            will move.
-	 * @throws EncoderUnpluggedException
-	 *             when a an encoder is unplugged
+	 * @throws EncoderUnpluggedException  when a an encoder is unplugged
 	 */
 	public void moveDistance(double distance, double speed) throws EncoderUnpluggedException
 	{
@@ -82,11 +81,11 @@ public class AutoDriver
 		boolean terminate = false;
 		double startTime = System.currentTimeMillis();
 
-		// int count = 0;
+		int count = 0;
 
 		while (!terminate)
 		{
-			// count++;
+			count++;
 			double rightDistance = Math.abs(encRight.getDistance());
 			double leftDistance = Math.abs(encLeft.getDistance());
 			double maxDistance = Math.max(leftDistance, rightDistance);
@@ -113,13 +112,12 @@ public class AutoDriver
 				// encoder unplugged
 				drive.setLeft(0);
 				drive.setRight(0);
-
+				
 				if (diff >= 0)
 				{
 					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				}
-				else
+				} else
 				{
 					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
@@ -166,7 +164,7 @@ public class AutoDriver
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
 			}
-
+			
 			// scale the ramp from between 0 and 1 to between MIN_RAMP and 1
 			ramp = ramp * (1 - MIN_RAMP) + MIN_RAMP;
 
@@ -174,17 +172,15 @@ public class AutoDriver
 			double rightSpeed = speed * ramp * rightCorrection;
 
 			// scale speed from between 0 and 1 to between MIN_SPEED and 1
-			leftSpeed = negitiveMultiplier * (leftSpeed * (1 - MIN_SPEED) + MIN_SPEED);
-			rightSpeed = negitiveMultiplier * (rightSpeed * (1 - MIN_SPEED) + MIN_SPEED);
+			leftSpeed = negitiveMultiplier * leftSpeed * (1 - MIN_SPEED) + MIN_SPEED;
+			rightSpeed = negitiveMultiplier * rightSpeed * (1 - MIN_SPEED) + MIN_SPEED;
 
 			drive.setLeft(leftSpeed);
 			drive.setRight(rightSpeed);
 
-			// if (count % 10 == 0)
-			// System.out.println(msg + " Right Distance: " + rightDistance + "
-			// Right Speed: " + rightSpeed
-			// + " Left Distance: " + leftDistance + " Left Speed: " + leftSpeed
-			// + " Ramp: " + ramp);
+			if (count % 10 == 0)
+				System.out.println(msg + "    Right Distance: " + rightDistance + "    Right Speed: " + rightSpeed
+						+ "    Left Distance: " + leftDistance + "    Left Speed: " + leftSpeed + "    Ramp: " + ramp);
 
 			// timeout
 			if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
@@ -217,29 +213,39 @@ public class AutoDriver
 		// if time is negative make it 0
 		time = Math.max(0, time);
 
-		boolean timeout = false;
+		boolean terminate = false;
 		long startTime = System.currentTimeMillis();
 
 		drive.setLeft(speed);
 		drive.setRight(speed);
 
 		long currTime = startTime;
+		long timeRemain = time;
 
-		while (System.currentTimeMillis() - startTime < time && !timeout)
+		while (!terminate)
 		{
 			try
 			{
-				Thread.sleep(TIMEOUT_REFRESH_RATE);
+				Thread.sleep(Math.min(timeRemain, TIMEOUT_REFRESH_RATE));
 			}
 			catch (InterruptedException e)
 			{
+			}
+
+			currTime = System.currentTimeMillis();
+			timeRemain = time - (currTime - startTime);
+
+			// done
+			if (timeRemain <= 0)
+			{
+				terminate = true;
 			}
 
 			// timeout
 			if ((currTime - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 					|| DriverStation.getInstance().isDisabled())
 			{
-				timeout = true;
+				terminate = true;
 				System.out.println("drive timeout");
 			}
 		}

@@ -24,7 +24,6 @@ public class Robot extends SampleRobot
 	private AutoDriver driver;
 	private Intake intake;
 	private Shooter shooter;
-	private Camera cam;
 
 	public Robot()
 	{
@@ -33,8 +32,7 @@ public class Robot extends SampleRobot
 		gamepad = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
 		intake = new Intake();
-		cam = new Camera();
-		driver = new AutoDriver(drive, cam);
+		driver = new AutoDriver(drive);
 
 		// set up auto modes
 		autoController = new AutoController();
