@@ -72,13 +72,7 @@ public class Camera implements Runnable
 
 			CameraServer.getInstance().setImage(camImage.image);
 
-			try
-			{
-				Thread.sleep(5);
-			}
-			catch (InterruptedException e)
-			{
-			}
+			Thread.yield();
 		}
 	}
 }
