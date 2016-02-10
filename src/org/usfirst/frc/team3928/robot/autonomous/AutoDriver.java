@@ -36,7 +36,7 @@ public class AutoDriver
 	
 	private static final double ENCODER_UNPLUGGED_THRESHOLD = .5;
 
-	private static final long TIMEOUT_REFRESH_RATE = 250;
+	private static final long TIMEOUT_REFRESH_RATE = 5;
 
 	public AutoDriver(Drive drive)
 	{
@@ -213,39 +213,29 @@ public class AutoDriver
 		// if time is negative make it 0
 		time = Math.max(0, time);
 
-		boolean terminate = false;
+		boolean timeout = false;
 		long startTime = System.currentTimeMillis();
 
 		drive.setLeft(speed);
 		drive.setRight(speed);
-
+		
 		long currTime = startTime;
-		long timeRemain = time;
 
-		while (!terminate)
+		while (System.currentTimeMillis() - startTime < time && !timeout)
 		{
 			try
 			{
-				Thread.sleep(Math.min(timeRemain, TIMEOUT_REFRESH_RATE));
+				Thread.sleep(TIMEOUT_REFRESH_RATE);
 			}
 			catch (InterruptedException e)
 			{
-			}
-
-			currTime = System.currentTimeMillis();
-			timeRemain = time - (currTime - startTime);
-
-			// done
-			if (timeRemain <= 0)
-			{
-				terminate = true;
 			}
 
 			// timeout
 			if ((currTime - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 					|| DriverStation.getInstance().isDisabled())
 			{
-				terminate = true;
+				timeout = true;
 				System.out.println("drive timeout");
 			}
 		}
