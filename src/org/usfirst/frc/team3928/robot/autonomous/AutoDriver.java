@@ -267,11 +267,16 @@ public class AutoDriver
 	{
 		double origDeg = gyro.getAngle();
 		double degreesTurned = 0;
-		if(degrees < 0)
+		if(degrees > 0)
 		{
 			while(degreesTurned < degrees)
 			{
-				if(degrees - degreesTurned < 5)
+				if(degrees - degreesTurned < .5)
+				{
+					drive.setLeft(0);
+					drive.setRight(0);
+				}
+				else if(degrees - degreesTurned < 5)
 				{
 					drive.setLeft(((degrees - degreesTurned)/5) * speed);
 					drive.setLeft(-((degrees - degreesTurned)/5) * speed);
@@ -284,12 +289,19 @@ public class AutoDriver
 				degreesTurned = (gyro.getAngle() - origDeg);
 				Thread.yield();
 			}
+			System.out.println(degrees);
+			System.out.println(degreesTurned);
 		}
 		else
 		{
 			while(degreesTurned > degrees)
 			{
-				if(degrees - degreesTurned < -5)
+				if(degrees - degreesTurned < .5)
+				{
+					drive.setLeft(0);
+					drive.setRight(0);
+				}
+				else if(degrees - degreesTurned < -5)
 				{
 					drive.setLeft(-((degrees - degreesTurned)/5) * speed);
 					drive.setLeft(((degrees - degreesTurned)/5) * speed);
