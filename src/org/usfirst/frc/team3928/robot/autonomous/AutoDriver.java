@@ -178,9 +178,9 @@ public class AutoDriver
 			drive.setLeft(leftSpeed);
 			drive.setRight(rightSpeed);
 
-			if (count % 10 == 0)
-				System.out.println(msg + "    Right Distance: " + rightDistance + "    Right Speed: " + rightSpeed
-						+ "    Left Distance: " + leftDistance + "    Left Speed: " + leftSpeed + "    Ramp: " + ramp);
+//			if (count % 10 == 0)
+//				System.out.println(msg + "    Right Distance: " + rightDistance + "    Right Speed: " + rightSpeed
+//						+ "    Left Distance: " + leftDistance + "    Left Speed: " + leftSpeed + "    Ramp: " + ramp);
 
 			// timeout
 			if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
