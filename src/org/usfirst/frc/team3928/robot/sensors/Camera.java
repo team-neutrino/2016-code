@@ -9,11 +9,10 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 public class Camera 
 {
 	
-	NetworkTable cameraTable;
+	private final NetworkTable grip = NetworkTable.getTable("grip");
 
 	public Camera()
 	{
-		cameraTable = NetworkTable.getTable("GRIP/myContoursReport");
 		try {
             new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
         } catch (IOException e) {
@@ -24,7 +23,7 @@ public class Camera
 	
 	public double getHighestHeight()
 	{
-		double[] height = cameraTable.getNumberArray("height", new double[0]);
+		double[] height = grip.getNumberArray("height", new double[0]);
 		double temp = 0;
 		for(double h : height)
 		{
@@ -38,7 +37,7 @@ public class Camera
 	
 	public double getWidestWidth()
 	{
-		double[] width = cameraTable.getNumberArray("width", new double[0]);
+		double[] width = grip.getNumberArray("width", new double[0]);
 		double temp = 0;
 		for(double w : width)
 		{
@@ -52,7 +51,7 @@ public class Camera
 	
 	public double getMostCenterX()
 	{
-		double[] centerX = cameraTable.getNumberArray("centerX", new double[0]);
+		double[] centerX = grip.getNumberArray("centerX", new double[0]);
 		double temp = 0;
 		for(double x : centerX)
 		{
@@ -66,7 +65,7 @@ public class Camera
 	
 	public double getMostCenterY()
 	{
-		double[] centerY = cameraTable.getNumberArray("centerY", new double[0]);
+		double[] centerY = grip.getNumberArray("centerY", new double[0]);
 		double temp = 0;
 		for(double y : centerY)
 		{
@@ -80,7 +79,7 @@ public class Camera
 	
 	public double getLargestArea()
 	{
-		double[] area = cameraTable.getNumberArray("area", new double[0]);
+		double[] area = grip.getNumberArray("area", new double[0]);
 		double temp = 0;
 		for(double a : area)
 		{
