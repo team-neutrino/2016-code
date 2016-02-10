@@ -1,110 +1,77 @@
 package org.usfirst.frc.team3928.robot.sensors;
 
-import java.io.IOException;
+import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.Image;
 
-import org.usfirst.frc.team3928.robot.Constants;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.vision.USBCamera;
 
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
-
-public class Camera 
+public class Camera implements Runnable
 {
+	USBCamera cam;
+	Image i;
 	
-	private final NetworkTable grip = NetworkTable.getTable("grip");
-
 	public Camera()
 	{
-		try {
-            new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		cam = new USBCamera("cam1");
+		cam.startCapture();
+		i = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		
+		new Thread(this).start();
 	}
-	
-	
+
 	public double getHighestHeight()
 	{
-		double[] height = grip.getNumberArray("height", new double[0]);
-		double temp = 0;
-		for(double h : height)
-		{
-			if(h > temp)
-			{
-				temp = h;
-			}
-		}
-		return temp;
+		// TODO
+		return 0.0;
 	}
-	
+
 	public double getWidestWidth()
 	{
-		double[] width = grip.getNumberArray("width", new double[0]);
-		double temp = 0;
-		for(double w : width)
-		{
-			if(w > temp)
-			{
-				temp = w;
-			}
-		}
-		return temp;
+		// TODO
+		return 0.0;
 	}
-	
+
 	public double getMostCenterX()
 	{
-		double[] centerX = grip.getNumberArray("centerX", new double[0]);
-		double temp = 0;
-		for(double x : centerX)
-		{
-			if(x > temp)
-			{
-				temp = x;
-			}
-		}
-		return temp;
+		// TODO
+		return 0.0;
 	}
-	
+
 	public double getMostCenterY()
 	{
-		double[] centerY = grip.getNumberArray("centerY", new double[0]);
-		double temp = 0;
-		for(double y : centerY)
-		{
-			if(y > temp)
-			{
-				temp = y;
-			}
-		}
-		return temp;
+		// TODO
+		return 0.0;
 	}
-	
+
 	public double getLargestArea()
 	{
-		double[] area = grip.getNumberArray("area", new double[0]);
-		double temp = 0;
-		for(double a : area)
-		{
-			if(a > temp)
-			{
-				temp = a;
-			}
-		}
-		return temp;
+		// TODO
+		return 0.0;
 	}
+
 	public boolean isAimed()
 	{
-		boolean aimed = false;
-		double height = getHighestHeight();
-		double width = getWidestWidth();
-		double area = getLargestArea();
-		double centerX = getMostCenterX();
-		double centerY = getMostCenterY();
-		double imageCenterX = Constants.IMAGE_CENTER_X;
-		double imageCenterY = Constants.IMAGE_CENTER_Y;
-		
-		double heightWidthRatio = height/width;
-		
-		
-		
-		return aimed;
+		// TODO
+		return false;
+	}
+
+	@Override
+	public void run()
+	{
+		while (true)
+		{
+			cam.getImage(i);
+
+			CameraServer.getInstance().setImage(i);
+			
+			try
+			{
+				Thread.sleep(5);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
 	}
 }

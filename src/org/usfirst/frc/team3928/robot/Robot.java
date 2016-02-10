@@ -6,6 +6,7 @@ import org.usfirst.frc.team3928.robot.autonomous.modes.DoNothing;
 import org.usfirst.frc.team3928.robot.autonomous.modes.MoveForward;
 import org.usfirst.frc.team3928.robot.autonomous.modes.TestMode;
 import org.usfirst.frc.team3928.robot.autonomous.modes.TurnTowardGoal;
+import org.usfirst.frc.team3928.robot.sensors.Camera;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 import org.usfirst.frc.team3928.robot.subsystems.Intake;
 import org.usfirst.frc.team3928.robot.subsystems.Shooter;
@@ -23,6 +24,7 @@ public class Robot extends SampleRobot
 	private AutoDriver driver;
 	private Intake intake;
 	private Shooter shooter;
+	private Camera cam;
 
 	public Robot()
 	{
@@ -31,7 +33,8 @@ public class Robot extends SampleRobot
 		gamepad = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
 		intake = new Intake();
-		driver = new AutoDriver(drive);
+		cam = new Camera();
+		driver = new AutoDriver(drive, cam);
 
 		// set up auto modes
 		autoController = new AutoController();

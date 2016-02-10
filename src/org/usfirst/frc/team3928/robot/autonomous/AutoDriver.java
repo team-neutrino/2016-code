@@ -38,10 +38,10 @@ public class AutoDriver
 
 	private static final long TIMEOUT_REFRESH_RATE = 5;
 
-	public AutoDriver(Drive drive)
+	public AutoDriver(Drive drive, Camera cam)
 	{
 		this.drive = drive;
-		cam = new Camera();
+		this.cam = cam;
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		gyro = new AnalogGyro(Constants.GYRO_CHANNEL);
