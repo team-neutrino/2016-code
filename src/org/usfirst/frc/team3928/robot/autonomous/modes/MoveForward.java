@@ -25,14 +25,8 @@ public class MoveForward implements AutoMode
 
 	@Override
 	public void run()
-	{	
-		try
-		{
-			driver.moveDistance(-5, .25);
-		}
-		catch (EncoderUnpluggedException e)
-		{
-		}
+	{
+		driver.moveTime(1, 1);
 	}
 
 }

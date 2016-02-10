@@ -25,14 +25,14 @@ public class AutoDriver
 	private static final int TIMEOUT = 100000;
 
 	// smaller number, more correction; bigger number, less correction
-	private static final double CORRECTION_DISTANCE = .25;
+	private static final double CORRECTION_DISTANCE = .05;
 
 	private static final double MIN_SPEED = .175;
 	
 	private static final double MIN_RAMP = .25;
 
-	private static final double RAMP_UP_DISTANCE = 1;
-	private static final double RAMP_DOWN_DISTANCE = 2;
+	private static final double RAMP_UP_DISTANCE = 3;
+	private static final double RAMP_DOWN_DISTANCE = 5;
 	
 	private static final double ENCODER_UNPLUGGED_THRESHOLD = .5;
 
@@ -172,8 +172,8 @@ public class AutoDriver
 			double rightSpeed = speed * ramp * rightCorrection;
 
 			// scale speed from between 0 and 1 to between MIN_SPEED and 1
-			leftSpeed = negitiveMultiplier * leftSpeed * (1 - MIN_SPEED) + MIN_SPEED;
-			rightSpeed = negitiveMultiplier * rightSpeed * (1 - MIN_SPEED) + MIN_SPEED;
+			leftSpeed = negitiveMultiplier * (leftSpeed * (1 - MIN_SPEED) + MIN_SPEED);
+			rightSpeed = negitiveMultiplier * (rightSpeed * (1 - MIN_SPEED) + MIN_SPEED);
 
 			drive.setLeft(leftSpeed);
 			drive.setRight(rightSpeed);
