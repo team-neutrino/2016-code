@@ -265,58 +265,41 @@ public class AutoDriver
 	 */
 	public void turnDegrees(double degrees, double speed)
 	{
-		gyro.reset();
-		boolean terminate = false;
-		double startTime = System.currentTimeMillis();
-		double degreesTurned = gyro.getAngle();
-		double slowDegrees = degrees / 8;
-		double slowSpeed;
-		while (Math.abs(degreesTurned) < Math.abs(slowDegrees) && !terminate)
+		double origDeg = gyro.getAngle();
+		double degreesTurned = 0;
+		if(degrees < 0)
 		{
-			degreesTurned = gyro.getAngle();
-			if (degrees < 0)
+			while(degreesTurned < degrees)
 			{
-				speed = -speed;
-			}
-			drive.setLeft(speed);
-			drive.setRight(-speed);
-			if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-					|| DriverStation.getInstance().isDisabled())
-			{
-				terminate = true;
-			}
-
-			Thread.yield();
-		}
-		if (degrees > 0)
-		{
-			while (degreesTurned < degrees && !terminate)
-			{
-				slowSpeed = speed * (degreesTurned / degrees);
-				drive.setLeft(slowSpeed);
-				drive.setRight(-slowSpeed);
-				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-						|| DriverStation.getInstance().isDisabled())
+				if(degrees - degreesTurned < 5)
 				{
-					terminate = true;
+					drive.setLeft(((degrees - degreesTurned)/5) * speed);
+					drive.setLeft(-((degrees - degreesTurned)/5) * speed);
 				}
-
+				else
+				{
+					drive.setRight(-speed);
+					drive.setLeft(speed);
+				}
+				degreesTurned = (gyro.getAngle() - origDeg);
 				Thread.yield();
 			}
 		}
-		if (degrees < 0)
+		else
 		{
-			while (degreesTurned > degrees && !terminate)
+			while(degreesTurned > degrees)
 			{
-				slowSpeed = speed * (degreesTurned / degrees);
-				drive.setLeft(slowSpeed);
-				drive.setRight(-slowSpeed);
-				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-						|| DriverStation.getInstance().isDisabled())
+				if(degrees - degreesTurned < -5)
 				{
-					terminate = true;
+					drive.setLeft(-((degrees - degreesTurned)/5) * speed);
+					drive.setLeft(((degrees - degreesTurned)/5) * speed);
 				}
-
+				else
+				{
+					drive.setRight(speed);
+					drive.setLeft(-speed);
+				}
+				degreesTurned = (gyro.getAngle() - origDeg);
 				Thread.yield();
 			}
 		}
