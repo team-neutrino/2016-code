@@ -1,22 +1,14 @@
 package org.usfirst.frc.team3928.robot.sensors;
 
-import com.ni.vision.NIVision;
-import com.ni.vision.NIVision.Image;
-
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.image.HSLImage;
+import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.vision.USBCamera;
 
 public class Camera implements Runnable
 {
-	USBCamera cam;
-	Image i;
-	
 	public Camera()
 	{
-		cam = new USBCamera("cam1");
-		cam.startCapture();
-		i = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		
 		new Thread(this).start();
 	}
 
@@ -59,12 +51,27 @@ public class Camera implements Runnable
 	@Override
 	public void run()
 	{
+		USBCamera cam = new USBCamera("cam1");
+		cam.startCapture();
+
+		HSLImage camImage;
+
+		try
+		{
+			camImage = new HSLImage();
+		}
+		catch (NIVisionException e)
+		{
+			camImage = null;
+			e.printStackTrace();
+		}
+
 		while (true)
 		{
-			cam.getImage(i);
+			cam.getImage(camImage.image);
 
-			CameraServer.getInstance().setImage(i);
-			
+			CameraServer.getInstance().setImage(camImage.image);
+
 			try
 			{
 				Thread.sleep(5);
