@@ -58,4 +58,5 @@ public class Constants
 	//Shooter Constants
 	public static final int SHOOTER_MOTOR_0 = 20;
 	public static final int SHOOTER_MOTOR_1 = 21;
+	public static final int RPM_OF_SHOOTER = 1500;
 }

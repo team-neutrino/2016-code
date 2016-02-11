@@ -40,10 +40,11 @@ public class Robot extends SampleRobot
 		autoController.assignMode(2, new TestMode(driver, shooter));
 		autoController.assignMode(3, new TurnTowardGoal(driver, shooter));
 	}
-
+	
 	@Override
 	public void robotInit()
 	{
+		
 	}
 
 	@Override
@@ -64,6 +65,14 @@ public class Robot extends SampleRobot
 
 		while (isOperatorControl() && isEnabled())
 		{
+			if (gamepad.getRawButton(4))
+			{
+				shooter.on = true;
+			}
+			else
+			{
+				shooter.on = false;
+			}
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
 			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
@@ -75,5 +84,6 @@ public class Robot extends SampleRobot
 	@Override
 	public void test()
 	{
+		
 	}
 }
