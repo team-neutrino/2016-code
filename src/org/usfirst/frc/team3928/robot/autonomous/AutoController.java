@@ -1,5 +1,6 @@
 package org.usfirst.frc.team3928.robot.autonomous;
 
+import org.usfirst.frc.team3928.robot.Constants;
 import org.usfirst.frc.team3928.robot.sensors.ThumbwheelSwitch;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,7 +16,6 @@ public class AutoController
 	private int runningMode;
 
 	private static final int MAX_MODES = 16;
-	private static final int DRIVER_STATION_REFRESH_RATE = 1000;
 
 	/**
 	 * This class manages the auto mode selection and execution
@@ -32,11 +32,8 @@ public class AutoController
 		SmartDashboard.putBoolean("Auto Switch Override", false);
 		SmartDashboard.putNumber("Auto Switch Override Number", 0);
 
-		Thread smartDashboardThread = new Thread(new SmartDashboardThread());
-		smartDashboardThread.start();
-
-		Thread autoMonitorThread = new Thread(new AutoMonitorThread());
-		autoMonitorThread.start();
+		new Thread(new SmartDashboardThread()).start();
+		new Thread(new AutoMonitorThread()).start();
 	}
 
 	/**
@@ -126,7 +123,7 @@ public class AutoController
 			{
 				try
 				{
-					Thread.sleep(DRIVER_STATION_REFRESH_RATE);
+					Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
 				}
 				catch (InterruptedException e)
 				{
@@ -171,7 +168,7 @@ public class AutoController
 			{
 				try
 				{
-					Thread.sleep(DRIVER_STATION_REFRESH_RATE);
+					Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
 				}
 				catch (InterruptedException e)
 				{
@@ -182,7 +179,7 @@ public class AutoController
 				{
 					try
 					{
-						Thread.sleep(DRIVER_STATION_REFRESH_RATE);
+						Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
 					}
 					catch (InterruptedException e)
 					{

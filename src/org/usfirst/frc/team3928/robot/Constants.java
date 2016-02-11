@@ -20,8 +20,15 @@ public class Constants
 	// Button Mapping - Game pad
 	
 	// Camera Constants
-	public static final double IMAGE_CENTER_X = 100;
-	public static final double IMAGE_CENTER_Y = 100;
+	public static final String CAMERA_NAME = "cam1";
+	public static final int DEFAULT_HUE_LOW = 71;
+	public static final int DEFAULT_HUE_HIGH = 102;
+	public static final int DEFAULT_SATURATION_LOW = 167;
+	public static final int DEFAULT_SATURATION_HIGH = 255;
+	public static final int DEFAULT_LUMINENCE_LOW = 155;
+	public static final int DEFAULT_LUMINENCE_HIGH = 71;
+	public static final int DEFAULT_EXPOSURE = 50;
+	public static final boolean DEFAULT_AUTO_EXPOSURE = true;
 
 	// Sensor Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
@@ -50,12 +57,15 @@ public class Constants
 	public static final int DRIVE_RIGHT_3_CHANNEL = 5;
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 10;
 	
-	//Intake Constants
+	// Intake Constants
 	public static final int INTAKE_POSITION_MOTOR_CHANNEL = 10;
 	public static final int INTAKE_CENTER_MOTOR_CHANNEL = 11;
 	public static final int INTAKE_SIDE_MOTOR_CHANNEL = 12;
 	
-	//Shooter Constants
+	// Shooter Constants
 	public static final int SHOOTER_MOTOR_0 = 20;
 	public static final int SHOOTER_MOTOR_1 = 21;
+	
+	// Misc Constants
+	public static final int DRIVER_STATION_REFRESH_RATE = 1000;
 }
