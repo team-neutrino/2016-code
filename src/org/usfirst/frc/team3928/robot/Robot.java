@@ -32,6 +32,7 @@ public class Robot extends SampleRobot
 		drive = new Drive();
 		intake = new Intake();
 		driver = new AutoDriver(drive);
+		shooter = new Shooter();
 
 		// set up auto modes
 		autoController = new AutoController();
@@ -65,14 +66,14 @@ public class Robot extends SampleRobot
 
 		while (isOperatorControl() && isEnabled())
 		{
-//			if (gamepad.getRawButton(4))
-//			{
-//				shooter.on = true;
-//			}
-//			else
-//			{
-//				shooter.on = false;
-//			}
+			if (gamepad.getRawButton(4))
+			{
+				shooter.start();
+			}
+			else
+			{
+				shooter.stop();
+			}
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
 			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
