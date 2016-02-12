@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Shooter
+public class Shooter implements Runnable
 {
 	Talon t0;
 	Talon t1;
@@ -36,24 +36,53 @@ public class Shooter
 	int counter2;
 
 	int waitTime;
+	
+	boolean isSetToRPM;
 
 	DigitalInput break0;
 	DigitalInput break1;
-
+	
+	public boolean on;
+	
 	public Shooter()
 	{
+		new Thread(this).start();
 		t0 = new Talon(Constants.SHOOTER_MOTOR_0);
 		t1 = new Talon(Constants.SHOOTER_MOTOR_1);
 		break0 = new DigitalInput(Constants.SHOOTER_BEAMBREAKE_0_CHANNEL);
 		break1 = new DigitalInput(Constants.SHOOTER_BEAMBREAKE_1_CHANNEL);
+		isSetToRPM = false;
 	}
-
-	public void setRPM(double RPM)
+	
+	public void run()
+	{
+		while (true)
+		{
+			if (on)
+			{
+				setRPM(Constants.RPM_OF_SHOOTER);
+			}
+		}
+	}
+	
+	public boolean isSetToRPM()
+	{
+		if (isSetToRPM == true)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	private void setRPM(double RPM)
 	{
 		count1 = new Counter(break0);
 		count2 = new Counter(break1);
 		time = System.currentTimeMillis();
-
+		
 		RPS1 = count1.getRate();
 		RPS2 = count2.getRate();
 
@@ -117,7 +146,9 @@ public class Shooter
 		}
 
 		Timer.delay(0.005); // wait for a motor update time
-
+		
+		isSetToRPM = true;
+		
 	}
 
 }
