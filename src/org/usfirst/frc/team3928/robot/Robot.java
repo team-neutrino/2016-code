@@ -65,14 +65,14 @@ public class Robot extends SampleRobot
 
 		while (isOperatorControl() && isEnabled())
 		{
-			if (gamepad.getRawButton(4))
-			{
-				shooter.on = true;
-			}
-			else
-			{
-				shooter.on = false;
-			}
+//			if (gamepad.getRawButton(4))
+//			{
+//				shooter.on = true;
+//			}
+//			else
+//			{
+//				shooter.on = false;
+//			}
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
 			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
