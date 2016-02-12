@@ -9,40 +9,40 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Shooter implements Runnable
 {
-	Talon t0;
-	Talon t1;
-	int sum1;
-	int sum2;
-	int total;
+	private Talon t0;
+	private Talon t1;
+	private int sum1;
+	private int sum2;
+	private int total;
 
-	double time;
+	private double time;
 
-	double RPS1;
-	double RPS2;
+	private double RPS1;
+	private double RPS2;
 
-	double RPM1;
-	double RPM2;
+	private double RPM1;
+	private double RPM2;
 
-	double maxRPM1;
-	double maxRPM2;
+	private double maxRPM1;
+	private double maxRPM2;
 
-	double tgtSpd1;
-	double tgtSpd2;
+	private double tgtSpd1;
+	private double tgtSpd2;
 
-	Counter count2;
-	Counter count1;
+	private Counter count2;
+	private Counter count1;
 
-	int counter1;
-	int counter2;
+	private int counter1;
+	private int counter2;
 
-	int waitTime;
+	private int waitTime;
 
-	boolean isSetToRPM;
+	private boolean isSetToRPM;
 
-	DigitalInput break0;
-	DigitalInput break1;
+	private DigitalInput break0;
+	private DigitalInput break1;
 
-	public boolean on;
+	private boolean on;
 
 	public Shooter()
 	{
