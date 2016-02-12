@@ -4,12 +4,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.usfirst.frc.team3928.robot.Constants;
 
+import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.Image;
+
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.image.BinaryImage;
-import edu.wpi.first.wpilibj.image.HSLImage;
-import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.vision.USBCamera;
 
 public class Camera implements Runnable
 {
@@ -19,10 +18,6 @@ public class Camera implements Runnable
 	private AtomicInteger saturationHigh;
 	private AtomicInteger luminenceLow;
 	private AtomicInteger luminenceHigh;
-	private boolean autoExposure;
-	private AtomicInteger exposure;
-
-	private USBCamera cam;
 
 	public Camera()
 	{
@@ -32,11 +27,6 @@ public class Camera implements Runnable
 		saturationHigh = new AtomicInteger(Constants.DEFAULT_SATURATION_HIGH);
 		luminenceLow = new AtomicInteger(Constants.DEFAULT_LUMINENCE_LOW);
 		luminenceHigh = new AtomicInteger(Constants.DEFAULT_LUMINENCE_HIGH);
-		autoExposure = Constants.DEFAULT_AUTO_EXPOSURE;
-		exposure = new AtomicInteger(autoExposure ? 0 : Constants.DEFAULT_EXPOSURE);
-
-		cam = new USBCamera(Constants.CAMERA_NAME);
-		updateCameraExposure();
 
 		SmartDashboard.putNumber("Hue Low", hueLow.get());
 		SmartDashboard.putNumber("Hue High", hueHigh.get());
@@ -44,8 +34,6 @@ public class Camera implements Runnable
 		SmartDashboard.putNumber("Saturation High", saturationHigh.get());
 		SmartDashboard.putNumber("Luminence Low", luminenceLow.get());
 		SmartDashboard.putNumber("Luminence High", luminenceHigh.get());
-		SmartDashboard.putBoolean("Auto Exposure", autoExposure);
-		SmartDashboard.putNumber("Exposure", exposure.get());
 
 		new Thread(this).start();
 		new Thread(new SmartDashboardThread()).start();
@@ -90,38 +78,16 @@ public class Camera implements Runnable
 	@Override
 	public void run()
 	{
-		BinaryImage img;
+		Image frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		int session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME, NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 
-		cam.startCapture();
-
-		HSLImage camImage;
-
-		try
-		{
-			camImage = new HSLImage();
-		}
-		catch (NIVisionException e)
-		{
-			camImage = null;
-			e.printStackTrace();
-		}
+		NIVision.IMAQdxStartAcquisition(session);
 
 		while (true)
 		{
-			cam.getImage(camImage.image);
+			NIVision.IMAQdxGrab(session, frame, 1);
 
-			CameraServer.getInstance().setImage(camImage.image);
-
-			try
-			{
-				img = camImage.thresholdHSL(hueLow.get(), hueHigh.get(), saturationLow.get(), saturationHigh.get(),
-						luminenceLow.get(), luminenceHigh.get());
-			}
-			catch (NIVisionException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			CameraServer.getInstance().setImage(frame);
 
 			Thread.yield();
 		}
@@ -148,40 +114,7 @@ public class Camera implements Runnable
 				saturationHigh.set((int) SmartDashboard.getNumber("Saturation High", saturationHigh.get()));
 				luminenceLow.set((int) SmartDashboard.getNumber("Luminence Low", luminenceLow.get()));
 				luminenceHigh.set((int) SmartDashboard.getNumber("Luninence High", luminenceHigh.get()));
-
-				boolean smartdashboardAutoExposure = SmartDashboard.getBoolean("Auto Exposure", autoExposure);
-				
-				if (smartdashboardAutoExposure)
-				{
-					SmartDashboard.putNumber("Exposure", 0);
-					if (!autoExposure)
-					{
-						autoExposure = true;
-						updateCameraExposure();
-					}
-				} else
-				{
-					int smartdashboardExposure = (int) SmartDashboard.getNumber("Exposure", exposure.get());
-					if (smartdashboardExposure != exposure.get())
-					{
-						autoExposure = false;
-						exposure.set(smartdashboardExposure);
-						updateCameraExposure();
-					}
-				}
 			}
-		}
-	}
-
-	private void updateCameraExposure()
-	{
-		if (autoExposure)
-		{
-			cam.setExposureAuto();
-		}
-		else
-		{
-			cam.setExposureManual(0);
 		}
 	}
 }
