@@ -13,20 +13,14 @@ public class Shooter implements Runnable
 	private Talon t1;
 
 	private double time;
-
-	private double RPS1;
-	private double RPS2;
-
-	private double tgtSpd1;
-	private double tgtSpd2;
+	
+	private DigitalInput break0;
+	private DigitalInput break1;
 
 	private Counter count2;
 	private Counter count1;
 
 	private int waitTime;
-
-	private DigitalInput break0;
-	private DigitalInput break1;
 
 	private boolean on;
 
@@ -37,6 +31,8 @@ public class Shooter implements Runnable
 		t1 = new Talon(Constants.SHOOTER_MOTOR_1);
 		break0 = new DigitalInput(Constants.SHOOTER_BEAMBREAKE_0_CHANNEL);
 		break1 = new DigitalInput(Constants.SHOOTER_BEAMBREAKE_1_CHANNEL);
+		count1 = new Counter(break0);
+		count2 = new Counter(break1);
 		on = false;
 	}
 
@@ -57,12 +53,13 @@ public class Shooter implements Runnable
 
 	public void run()
 	{
-		count1 = new Counter(break0);
-		count2 = new Counter(break1);
 		time = System.currentTimeMillis();
 
-		RPS1 = count1.getRate();
-		RPS2 = count2.getRate();
+		double RPS1 = count1.getRate();
+		double RPS2 = count2.getRate();
+		
+		double tgtSpd1;
+		double tgtSpd2;
 
 		System.out.println("RPM1: " + RPS1 * 60);
 		// System.out.println("(RPS2, RPM2): " + RPS2 + ", " + RPS2*60);
@@ -125,5 +122,4 @@ public class Shooter implements Runnable
 
 		Timer.delay(0.005); // wait for a motor update time
 	}
-
 }
