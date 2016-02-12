@@ -11,29 +11,17 @@ public class Shooter implements Runnable
 {
 	private Talon t0;
 	private Talon t1;
-	private int sum1;
-	private int sum2;
-	private int total;
 
 	private double time;
 
 	private double RPS1;
 	private double RPS2;
 
-	private double RPM1;
-	private double RPM2;
-
-	private double maxRPM1;
-	private double maxRPM2;
-
 	private double tgtSpd1;
 	private double tgtSpd2;
 
 	private Counter count2;
 	private Counter count1;
-
-	private int counter1;
-	private int counter2;
 
 	private int waitTime;
 
