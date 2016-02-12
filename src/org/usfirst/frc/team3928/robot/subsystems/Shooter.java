@@ -25,8 +25,6 @@ public class Shooter implements Runnable
 
 	private int waitTime;
 
-	private boolean isSetToRPM;
-
 	private DigitalInput break0;
 	private DigitalInput break1;
 
@@ -39,7 +37,7 @@ public class Shooter implements Runnable
 		t1 = new Talon(Constants.SHOOTER_MOTOR_1);
 		break0 = new DigitalInput(Constants.SHOOTER_BEAMBREAKE_0_CHANNEL);
 		break1 = new DigitalInput(Constants.SHOOTER_BEAMBREAKE_1_CHANNEL);
-		isSetToRPM = false;
+		on = false;
 	}
 
 	public void start()
@@ -58,21 +56,14 @@ public class Shooter implements Runnable
 		{
 			if (on)
 			{
-				setRPM(Constants.RPM_OF_SHOOTER);
+				setRPM(Constants.SHOOTER_RPM);
 			}
 		}
 	}
 
-	public boolean isSetToRPM()
+	public boolean isOn()
 	{
-		if (isSetToRPM == true)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return on;
 	}
 
 	private void setRPM(double RPM)
@@ -144,9 +135,6 @@ public class Shooter implements Runnable
 		}
 
 		Timer.delay(0.005); // wait for a motor update time
-
-		isSetToRPM = true;
-
 	}
 
 }
