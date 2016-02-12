@@ -3,22 +3,16 @@ package org.usfirst.frc.team3928.robot.subsystems;
 import org.usfirst.frc.team3928.robot.Constants;
 
 import edu.wpi.first.wpilibj.Counter;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Shooter implements Runnable
 {
-	private Talon t0;
-	private Talon t1;
+	private Talon motor1;
+	private Talon motor2;
 
-	private double time;
-	
-	private DigitalInput break0;
-	private DigitalInput break1;
-
-	private Counter count2;
-	private Counter count1;
+	private Counter beambreak1;
+	private Counter beambreak2;
 
 	private int waitTime;
 
@@ -27,12 +21,10 @@ public class Shooter implements Runnable
 	public Shooter()
 	{
 		new Thread(this).start();
-		t0 = new Talon(Constants.SHOOTER_MOTOR_0);
-		t1 = new Talon(Constants.SHOOTER_MOTOR_1);
-		break0 = new DigitalInput(Constants.SHOOTER_BEAMBREAKE_0_CHANNEL);
-		break1 = new DigitalInput(Constants.SHOOTER_BEAMBREAKE_1_CHANNEL);
-		count1 = new Counter(break0);
-		count2 = new Counter(break1);
+		motor1 = new Talon(Constants.SHOOTER_MOTOR_0);
+		motor2 = new Talon(Constants.SHOOTER_MOTOR_1);
+		beambreak1 = new Counter(Constants.SHOOTER_BEAMBREAKE_0_CHANNEL);
+		beambreak2 = new Counter(Constants.SHOOTER_BEAMBREAKE_1_CHANNEL);
 		on = false;
 	}
 
@@ -53,10 +45,10 @@ public class Shooter implements Runnable
 
 	public void run()
 	{
-		time = System.currentTimeMillis();
+		double startTime = System.currentTimeMillis();
 
-		double RPS1 = count1.getRate();
-		double RPS2 = count2.getRate();
+		double RPS1 = beambreak1.getRate();
+		double RPS2 = beambreak2.getRate();
 		
 		double tgtSpd1;
 		double tgtSpd2;
@@ -64,11 +56,11 @@ public class Shooter implements Runnable
 		System.out.println("RPM1: " + RPS1 * 60);
 		// System.out.println("(RPS2, RPM2): " + RPS2 + ", " + RPS2*60);
 		System.out.println("Target RPM: " + Constants.SHOOTER_RPM);
-		count1.reset();
-		count2.reset();
+		beambreak1.reset();
+		beambreak2.reset();
 		double RPS = Constants.SHOOTER_RPM * 60;
 
-		while ((System.currentTimeMillis() - time < waitTime))
+		while ((System.currentTimeMillis() - startTime < waitTime))
 		{
 			if (RPS != RPS1)
 			{
@@ -116,10 +108,9 @@ public class Shooter implements Runnable
 			{
 				tgtSpd2 = 1;
 			}
-			t0.set(-tgtSpd1);
-			t1.set(tgtSpd2);
+			motor1.set(-tgtSpd1);
+			motor2.set(tgtSpd2);
 		}
-
 		Timer.delay(0.005); // wait for a motor update time
 	}
 }
