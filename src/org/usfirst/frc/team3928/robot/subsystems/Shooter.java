@@ -50,23 +50,12 @@ public class Shooter implements Runnable
 		on = false;
 	}
 
-	public void run()
-	{
-		while (true)
-		{
-			if (on)
-			{
-				setRPM(Constants.SHOOTER_RPM);
-			}
-		}
-	}
-
 	public boolean isOn()
 	{
 		return on;
 	}
 
-	private void setRPM(double RPM)
+	public void run()
 	{
 		count1 = new Counter(break0);
 		count2 = new Counter(break1);
@@ -77,10 +66,10 @@ public class Shooter implements Runnable
 
 		System.out.println("RPM1: " + RPS1 * 60);
 		// System.out.println("(RPS2, RPM2): " + RPS2 + ", " + RPS2*60);
-		System.out.println("Target RPM: " + RPM);
+		System.out.println("Target RPM: " + Constants.SHOOTER_RPM);
 		count1.reset();
 		count2.reset();
-		double RPS = RPM * 60;
+		double RPS = Constants.SHOOTER_RPM * 60;
 
 		while ((System.currentTimeMillis() - time < waitTime))
 		{
