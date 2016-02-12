@@ -4,7 +4,6 @@ import org.usfirst.frc.team3928.robot.Constants;
 
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
 
 public class Shooter implements Runnable
 {
