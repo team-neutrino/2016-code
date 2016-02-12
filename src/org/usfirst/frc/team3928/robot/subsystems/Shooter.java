@@ -14,8 +14,6 @@ public class Shooter implements Runnable
 	private Counter beambreak1;
 	private Counter beambreak2;
 
-	private int waitTime;
-
 	private boolean on;
 
 	public Shooter()
@@ -47,9 +45,11 @@ public class Shooter implements Runnable
 	{
 		double startTime = System.currentTimeMillis();
 
+		int waitTime;
+
 		double RPS1 = beambreak1.getRate();
 		double RPS2 = beambreak2.getRate();
-		
+
 		double tgtSpd1;
 		double tgtSpd2;
 
@@ -111,6 +111,5 @@ public class Shooter implements Runnable
 			motor1.set(-tgtSpd1);
 			motor2.set(tgtSpd2);
 		}
-		Timer.delay(0.005); // wait for a motor update time
 	}
 }
