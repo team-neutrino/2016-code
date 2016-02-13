@@ -1,6 +1,5 @@
 package org.usfirst.frc.team3928.robot.subsystems;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
@@ -142,23 +141,23 @@ public class Shooter implements Runnable
 					+ " ," + RPMilliLeft + " ," + RPMilliRight + " ," + RPMilliMin + " ," + integral + " ," + error
 					+ " ," + targetPower + " ," + leftCorrection + " ," + rightCorrection + "\n";
 		}
-		
+
 		writeFile("/home/lvuser/shooterRun.csv", printout);
-		
+
 		motorLeft.set(0);
 		motorRight.set(0);
 	}
-	
+
 	// TODO Remove
 	public void writeShooterCurves()
 	{
 		String printout = "currTime, timeInterval, countLeft, countRight, RPMilliLeft, RPMilliRight, " + "\n";
-		
+
 		beambreakLeft.reset();
 		beambreakRight.reset();
-		
+
 		long lastResetTime = System.currentTimeMillis();
-		
+
 		for (double i = 0; i <= 1; i += .005)
 		{
 			try
@@ -178,13 +177,13 @@ public class Shooter implements Runnable
 
 			double RPMilliLeft = (((double) countLeft) / timeInterval);
 			double RPMilliRight = (((double) countRight) / timeInterval);
-			
-			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight 
-					+ " ," + RPMilliLeft + " ," + RPMilliRight + "\n";
+
+			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliLeft
+					+ " ," + RPMilliRight + "\n";
 		}
 		motorLeft.set(0);
 		motorRight.set(0);
-		
+
 		writeFile("/home/lvuser/shooterRun.csv", printout);
 	}
 

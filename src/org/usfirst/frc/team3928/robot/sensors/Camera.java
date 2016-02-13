@@ -83,7 +83,8 @@ public class Camera implements Runnable
 		Image raw;
 
 		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
+				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::WhiteBalance::Mode", "Auto");
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "AutoAperaturePriority");
 		NIVision.IMAQdxConfigureGrab(session);
@@ -91,9 +92,9 @@ public class Camera implements Runnable
 		while (true)
 		{
 			NIVision.IMAQdxGrab(session, raw, 1);
-			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow.get(), hueHigh.get()),
-					new Range(saturationLow.get(), saturationHigh.get()),
-					new Range(luminenceLow.get(), luminenceHigh.get()));
+//			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow.get(), hueHigh.get()),
+//					new Range(saturationLow.get(), saturationHigh.get()),
+//					new Range(luminenceLow.get(), luminenceHigh.get()));
 			CameraServer.getInstance().setImage(raw);
 			System.out.println("lel" + session);
 		}

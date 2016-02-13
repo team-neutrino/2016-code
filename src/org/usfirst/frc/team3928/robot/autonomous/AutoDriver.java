@@ -94,7 +94,7 @@ public class AutoDriver
 
 			double rightCorrection;
 			double leftCorrection;
-			String msg;
+			// String msg;
 
 			double diff = rightDistance - leftDistance;
 
@@ -106,7 +106,7 @@ public class AutoDriver
 				leftCorrection = 0;
 				rightCorrection = 0;
 				terminate = true;
-				msg = "done";
+				// msg = "done";
 			}
 			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
 			{
@@ -127,21 +127,21 @@ public class AutoDriver
 			}
 			else if (diff > 0)
 			{
-				msg = "veer right";
+				// msg = "veer right";
 				// veer right
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
 			}
 			else if (diff < 0)
 			{
-				msg = "veer left";
+				// msg = "veer left";
 				// veer right
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 				rightCorrection = 1;
 			}
 			else
 			{
-				msg = "going straight";
+				// msg = "going straight";
 				// go straight
 				leftCorrection = 1;
 				rightCorrection = 1;

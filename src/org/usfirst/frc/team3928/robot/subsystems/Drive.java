@@ -35,13 +35,17 @@ public class Drive
 			right3 = new Victor(Constants.DRIVE_RIGHT_3_CHANNEL);
 			left3 = new Victor(Constants.DRIVE_LEFT_3_CHANNEL);
 		}
+		
+		right1.setInverted(true);
+		right2.setInverted(true);
+		right3.setInverted(true);
 	}
 
 	public void setRight(double speed)
 	{
-		right1.set(-speed);
-		right2.set(-speed);
-		right3.set(-speed);
+		right1.set(speed);
+		right2.set(speed);
+		right3.set(speed);
 	}
 
 	public void setLeft(double speed)
