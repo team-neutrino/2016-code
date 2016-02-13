@@ -1,6 +1,6 @@
-package org.teamneutrino.stronghold.robot.subsystems;
+package org.usfirst.frc.team3928.robot.subsystems;
 
-import org.teamneutrino.stronghold.robot.Constants;
+import org.usfirst.frc.team3928.robot.Constants;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;

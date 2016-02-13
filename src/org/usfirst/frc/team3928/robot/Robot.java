@@ -1,14 +1,14 @@
-package org.teamneutrino.stronghold.robot;
+package org.usfirst.frc.team3928.robot;
 
-import org.teamneutrino.stronghold.robot.autonomous.AutoController;
-import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
-import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
-import org.teamneutrino.stronghold.robot.autonomous.modes.MoveForward;
-import org.teamneutrino.stronghold.robot.autonomous.modes.TestMode;
-import org.teamneutrino.stronghold.robot.autonomous.modes.TurnTowardGoal;
-import org.teamneutrino.stronghold.robot.subsystems.Drive;
-import org.teamneutrino.stronghold.robot.subsystems.Intake;
-import org.teamneutrino.stronghold.robot.subsystems.Shooter;
+import org.usfirst.frc.team3928.robot.autonomous.AutoController;
+import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
+import org.usfirst.frc.team3928.robot.autonomous.modes.DoNothing;
+import org.usfirst.frc.team3928.robot.autonomous.modes.MoveForward;
+import org.usfirst.frc.team3928.robot.autonomous.modes.TestMode;
+import org.usfirst.frc.team3928.robot.autonomous.modes.TurnTowardGoal;
+import org.usfirst.frc.team3928.robot.subsystems.Drive;
+import org.usfirst.frc.team3928.robot.subsystems.Intake;
+import org.usfirst.frc.team3928.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;

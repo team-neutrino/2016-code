@@ -1,6 +1,6 @@
-package org.teamneutrino.stronghold.robot.autonomous.modes;
+package org.usfirst.frc.team3928.robot.autonomous.modes;
 
-import org.teamneutrino.stronghold.robot.autonomous.AutoMode;
+import org.usfirst.frc.team3928.robot.autonomous.AutoMode;
 
 /**
  * Do Nothing Autonomous

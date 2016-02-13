@@ -1,7 +1,7 @@
-package org.teamneutrino.stronghold.robot.autonomous;
+package org.usfirst.frc.team3928.robot.autonomous;
 
-import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.sensors.ThumbwheelSwitch;
+import org.usfirst.frc.team3928.robot.Constants;
+import org.usfirst.frc.team3928.robot.sensors.ThumbwheelSwitch;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

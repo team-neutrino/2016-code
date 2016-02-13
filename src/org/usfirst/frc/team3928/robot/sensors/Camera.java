@@ -1,8 +1,8 @@
-package org.teamneutrino.stronghold.robot.sensors;
+package org.usfirst.frc.team3928.robot.sensors;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.teamneutrino.stronghold.robot.Constants;
+import org.usfirst.frc.team3928.robot.Constants;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;

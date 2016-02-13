@@ -1,9 +1,9 @@
-package org.teamneutrino.stronghold.robot.autonomous;
+package org.usfirst.frc.team3928.robot.autonomous;
 
-import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.exceptions.EncoderUnpluggedException;
-import org.teamneutrino.stronghold.robot.sensors.Camera;
-import org.teamneutrino.stronghold.robot.subsystems.Drive;
+import org.usfirst.frc.team3928.robot.Constants;
+import org.usfirst.frc.team3928.robot.exceptions.EncoderUnpluggedException;
+import org.usfirst.frc.team3928.robot.sensors.Camera;
+import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
