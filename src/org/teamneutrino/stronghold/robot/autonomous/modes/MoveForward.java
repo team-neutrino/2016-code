@@ -1,7 +1,7 @@
-package org.usfirst.frc.team3928.robot.autonomous.modes;
+package org.teamneutrino.stronghold.robot.autonomous.modes;
 
-import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
-import org.usfirst.frc.team3928.robot.autonomous.AutoMode;
+import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
+import org.teamneutrino.stronghold.robot.autonomous.AutoMode;
 
 /**
  * Move Forward Autonomous (and can be used for testing)

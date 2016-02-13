@@ -1,8 +1,8 @@
-package org.usfirst.frc.team3928.robot.autonomous.modes;
+package org.teamneutrino.stronghold.robot.autonomous.modes;
 
-import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
-import org.usfirst.frc.team3928.robot.autonomous.AutoMode;
-import org.usfirst.frc.team3928.robot.subsystems.Shooter;
+import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
+import org.teamneutrino.stronghold.robot.autonomous.AutoMode;
+import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
 public class TurnTowardGoal implements AutoMode
 {
