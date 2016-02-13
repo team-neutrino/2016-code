@@ -81,21 +81,26 @@ public class Camera implements Runnable
 	{
 		int session;
 		Image raw;
-
+		Image outpt;
+		
 		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		outpt = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
 				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value");
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::WhiteBalance::Mode", "Auto");
-		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "AutoAperaturePriority");
+	      NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "Manual");
+        NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
 		NIVision.IMAQdxConfigureGrab(session);
 		NIVision.IMAQdxStartAcquisition(session);
 		while (true)
 		{
 			NIVision.IMAQdxGrab(session, raw, 1);
-//			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow.get(), hueHigh.get()),
-//					new Range(saturationLow.get(), saturationHigh.get()),
-//					new Range(luminenceLow.get(), luminenceHigh.get()));
-			CameraServer.getInstance().setImage(raw);
+			outpt = raw;
+			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow.get(), hueHigh.get()),
+					new Range(saturationLow.get(), saturationHigh.get()),
+					new Range(luminenceLow.get(), luminenceHigh.get()));
+			CameraServer.getInstance().setImage(outpt);
 		}
 	}
 
