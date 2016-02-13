@@ -33,6 +33,7 @@ public class Constants
 	public static final int DEFAULT_LUMINENCE_HIGH = 102;
 	public static final int DEFAULT_EXPOSURE = 50;
 	public static final boolean DEFAULT_AUTO_EXPOSURE = true;
+	public static final int DEFAULT_OUTPUT_MODE = 0;
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;

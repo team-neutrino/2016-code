@@ -9,6 +9,7 @@ import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.Range;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Camera implements Runnable
@@ -19,6 +20,13 @@ public class Camera implements Runnable
 	private AtomicInteger saturationHigh;
 	private AtomicInteger luminenceLow;
 	private AtomicInteger luminenceHigh;
+	private SendableChooser outModeChooser;
+	private OutputMode outMode;
+
+	enum OutputMode
+	{
+		RAW_IMAGE, THRESHOLD_IMAGE, CONVEX_HULL, RECTANGLE_OVERLAY
+	}
 
 	public Camera()
 	{
@@ -35,6 +43,15 @@ public class Camera implements Runnable
 		SmartDashboard.putNumber("Saturation High", saturationHigh.get());
 		SmartDashboard.putNumber("Luminence Low", luminenceLow.get());
 		SmartDashboard.putNumber("Luminence High", luminenceHigh.get());
+
+		outMode = OutputMode.RAW_IMAGE;
+
+		outModeChooser = new SendableChooser();
+		outModeChooser.addDefault("Raw", OutputMode.RAW_IMAGE);
+		outModeChooser.addObject("Threshold", OutputMode.THRESHOLD_IMAGE);
+		outModeChooser.addObject("Convex Hull", OutputMode.CONVEX_HULL);
+		outModeChooser.addObject("Rectangle", OutputMode.RECTANGLE_OVERLAY);
+		SmartDashboard.putData("Image Stage", outModeChooser);
 
 		new Thread(this).start();
 		new Thread(new SmartDashboardThread()).start();
@@ -82,25 +99,42 @@ public class Camera implements Runnable
 		int session;
 		Image raw;
 		Image outpt;
-		
+
 		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		outpt = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
 				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value");
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::WhiteBalance::Mode", "Auto");
-	      NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "Manual");
-        NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
+		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "Manual");
+		NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
 		NIVision.IMAQdxConfigureGrab(session);
 		NIVision.IMAQdxStartAcquisition(session);
 		while (true)
 		{
 			NIVision.IMAQdxGrab(session, raw, 1);
-			outpt = raw;
+
+			if (outMode == OutputMode.RAW_IMAGE)
+			{
+				CameraServer.getInstance().setImage(raw);
+			}
 			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow.get(), hueHigh.get()),
 					new Range(saturationLow.get(), saturationHigh.get()),
 					new Range(luminenceLow.get(), luminenceHigh.get()));
-			CameraServer.getInstance().setImage(outpt);
+			if (outMode == OutputMode.THRESHOLD_IMAGE)
+			{
+				CameraServer.getInstance().setImage(raw);
+			}
+//			NIVision.imaqSizeFilter(raw, raw, 1, 3, NIVision.SizeType.KEEP_LARGE,
+//					new NIVision.StructuringElement(3, 3, 0));
+			if (outMode == OutputMode.CONVEX_HULL)
+			{
+				CameraServer.getInstance().setImage(raw);
+			}
+			if (outMode == OutputMode.RECTANGLE_OVERLAY)
+			{
+				CameraServer.getInstance().setImage(raw);
+			}
 		}
 	}
 
@@ -114,8 +148,7 @@ public class Camera implements Runnable
 				try
 				{
 					Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
-				}
-				catch (InterruptedException e)
+				} catch (InterruptedException e)
 				{
 				}
 
@@ -125,6 +158,8 @@ public class Camera implements Runnable
 				saturationHigh.set((int) SmartDashboard.getNumber("Saturation High", saturationHigh.get()));
 				luminenceLow.set((int) SmartDashboard.getNumber("Luminence Low", luminenceLow.get()));
 				luminenceHigh.set((int) SmartDashboard.getNumber("Luninence High", luminenceHigh.get()));
+
+				outMode = (OutputMode) outModeChooser.getSelected();
 			}
 		}
 	}
