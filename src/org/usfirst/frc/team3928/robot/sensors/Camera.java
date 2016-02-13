@@ -1,29 +1,38 @@
 package org.usfirst.frc.team3928.robot.sensors;
 
 import java.util.Vector;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.usfirst.frc.team3928.robot.Constants;
 
 import com.ni.vision.NIVision;
+import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ImageInfo;
 import com.ni.vision.NIVision.ParticleReport;
 import com.ni.vision.NIVision.Range;
+import com.ni.vision.NIVision.Rect;
+import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Camera implements Runnable
 {
-	private AtomicInteger hueLow;
-	private AtomicInteger hueHigh;
-	private AtomicInteger saturationLow;
-	private AtomicInteger saturationHigh;
-	private AtomicInteger luminenceLow;
-	private AtomicInteger luminenceHigh;
+	private int hueLow;
+	private int hueHigh;
+	private int saturationLow;
+	private int saturationHigh;
+	private int luminenceLow;
+	private int luminenceHigh;
 	private SendableChooser outModeChooser;
 	private OutputMode outMode;
+	private double maxArea;
+	private double centerX;
+	private double centerY;
+	private Rect rectangle;
+	private ImageInfo imgInfo;
 
 	enum OutputMode
 	{
@@ -32,19 +41,20 @@ public class Camera implements Runnable
 
 	public Camera()
 	{
-		hueLow = new AtomicInteger(Constants.DEFAULT_HUE_LOW);
-		hueHigh = new AtomicInteger(Constants.DEFAULT_HUE_HIGH);
-		saturationLow = new AtomicInteger(Constants.DEFAULT_SATURATION_LOW);
-		saturationHigh = new AtomicInteger(Constants.DEFAULT_SATURATION_HIGH);
-		luminenceLow = new AtomicInteger(Constants.DEFAULT_LUMINENCE_LOW);
-		luminenceHigh = new AtomicInteger(Constants.DEFAULT_LUMINENCE_HIGH);
+		hueLow = Constants.DEFAULT_HUE_LOW;
+		hueHigh = Constants.DEFAULT_HUE_HIGH;
+		saturationLow = Constants.DEFAULT_SATURATION_LOW;
+		saturationHigh = Constants.DEFAULT_SATURATION_HIGH;
+		luminenceLow = Constants.DEFAULT_LUMINENCE_LOW;
+		luminenceHigh = Constants.DEFAULT_LUMINENCE_HIGH;
+		rectangle = new Rect();
 
-		SmartDashboard.putNumber("Hue Low", hueLow.get());
-		SmartDashboard.putNumber("Hue High", hueHigh.get());
-		SmartDashboard.putNumber("Saturation Low", saturationLow.get());
-		SmartDashboard.putNumber("Saturation High", saturationHigh.get());
-		SmartDashboard.putNumber("Luminence Low", luminenceLow.get());
-		SmartDashboard.putNumber("Luminence High", luminenceHigh.get());
+		SmartDashboard.putNumber("Hue Low", hueLow);
+		SmartDashboard.putNumber("Hue High", hueHigh);
+		SmartDashboard.putNumber("Saturation Low", saturationLow);
+		SmartDashboard.putNumber("Saturation High", saturationHigh);
+		SmartDashboard.putNumber("Luminence Low", luminenceLow);
+		SmartDashboard.putNumber("Luminence High", luminenceHigh);
 
 		outMode = OutputMode.RAW_IMAGE;
 
@@ -73,20 +83,17 @@ public class Camera implements Runnable
 
 	public double getMostCenterX()
 	{
-		// TODO
-		return 0.0;
+		return centerX;
 	}
 
 	public double getMostCenterY()
 	{
-		// TODO
-		return 0.0;
+		return centerY;
 	}
 
 	public double getLargestArea()
 	{
-		// TODO
-		return 0.0;
+		return maxArea;
 	}
 
 	public boolean isAimed()
@@ -102,6 +109,8 @@ public class Camera implements Runnable
 		Image raw;
 		Image outpt;
 
+		imgInfo = new ImageInfo();
+
 		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		outpt = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
@@ -115,15 +124,15 @@ public class Camera implements Runnable
 		while (true)
 		{
 			NIVision.IMAQdxGrab(session, raw, 1);
-			
+			NIVision.imaqDuplicate(outpt, raw);
 			
 			if (outMode == OutputMode.RAW_IMAGE)
 			{
 				CameraServer.getInstance().setImage(raw);
 			}
-			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow.get(), hueHigh.get()),
-					new Range(saturationLow.get(), saturationHigh.get()),
-					new Range(luminenceLow.get(), luminenceHigh.get()));
+			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow, hueHigh),
+					new Range(saturationLow, saturationHigh),
+					new Range(luminenceLow, luminenceHigh));
 			int numParticles = NIVision.imaqCountParticles(raw, 0);
 			if (numParticles > 0)
 			{
@@ -134,6 +143,14 @@ public class Camera implements Runnable
 				{
 					ParticleReport par = new ParticleReport();
 					par.area = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_AREA);
+					par.projectionX = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_CENTER_OF_MASS_X);
+					par.projectionY = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_CENTER_OF_MASS_Y);
+					int top = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
+					int left = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
+					int height = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
+					int width = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
+					Rect rect = new Rect(top, left, height, width);
+					par.boundingBox = rect;
 					particles.add(par);
 					SmartDashboard.putString("Added particle: ", par.toString() + "");
 				}
@@ -154,8 +171,10 @@ public class Camera implements Runnable
 					myArr[i] = min;
 					particles.remove(k);
 				}
-				System.out.println("Area " + myArr[0].area);
-				
+				maxArea = myArr[0].area;
+				centerX = myArr[0].projectionX;
+				centerY = myArr[0].projectionY;
+				rectangle = myArr[0].boundingBox;
 			}
 			if (outMode == OutputMode.THRESHOLD_IMAGE)
 			{
@@ -167,7 +186,10 @@ public class Camera implements Runnable
 			}
 			if (outMode == OutputMode.RECTANGLE_OVERLAY)
 			{
-				CameraServer.getInstance().setImage(raw);
+				NIVision.imaqDrawShapeOnImage(outpt, outpt, rectangle,
+	                    DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
+				
+				CameraServer.getInstance().setImage(outpt);
 			}
 		}
 	}
@@ -186,12 +208,12 @@ public class Camera implements Runnable
 				{
 				}
 
-				hueLow.set((int) SmartDashboard.getNumber("Hue Low", hueLow.get()));
-				hueHigh.set((int) SmartDashboard.getNumber("Hue High", hueHigh.get()));
-				saturationLow.set((int) SmartDashboard.getNumber("Saturation Low", saturationLow.get()));
-				saturationHigh.set((int) SmartDashboard.getNumber("Saturation High", saturationHigh.get()));
-				luminenceLow.set((int) SmartDashboard.getNumber("Luminence Low", luminenceLow.get()));
-				luminenceHigh.set((int) SmartDashboard.getNumber("Luninence High", luminenceHigh.get()));
+				hueLow = (int) SmartDashboard.getNumber("Hue Low", hueLow);
+				hueHigh = (int) SmartDashboard.getNumber("Hue High", hueHigh);
+				saturationLow = (int) SmartDashboard.getNumber("Saturation Low", saturationLow);
+				saturationHigh = (int) SmartDashboard.getNumber("Saturation High", saturationHigh);
+				luminenceLow = (int) SmartDashboard.getNumber("Luminence Low", luminenceLow);
+				luminenceHigh = (int) SmartDashboard.getNumber("Luninence High", luminenceHigh);
 
 				outMode = (OutputMode) outModeChooser.getSelected();
 			}

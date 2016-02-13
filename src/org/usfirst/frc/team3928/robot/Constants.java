@@ -69,11 +69,12 @@ public class Constants
 	public static final double SHOOTER_PERCENT_POWER_PER_RPMilli = 2; // TODO
 	public static final double SHOOTER_K_P = .1; // TODO
 	public static final double SHOOTER_K_I = 0; // TODO
+	public static final double SHOOTER_REST_POSITION = 0; // TOD0
 	
 	// ShooterPosition Constants
 	public static final int SHOOTER_POSITION_MOTOR_RIGHT = 9; // TODO
 	public static final int SHOOTER_POSITION_MOTOR_LEFT = 10; // TODO
-	public static final int POTENTIOMETER_CHANNEL = 3; // TODO
+	public static final int POTENTIOMETER_CHANNEL = 2; // TODO
 
 	// Misc Constants
 	public static final int DRIVER_STATION_REFRESH_RATE = 1000;

@@ -21,6 +21,8 @@ public class AutoDriver
 
 	private Drive drive;
 	private Camera cam;
+	
+	private boolean isAimed;
 
 	private static final int TIMEOUT = 100000;
 
@@ -317,21 +319,18 @@ public class AutoDriver
 	 */
 	public void rotateTowardGoal()
 	{
-		double prevArea;
-		double postArea;
+		double imageCenterX = 240;
+		double centerX;
 		double startTime = System.currentTimeMillis();
 		boolean terminate = false;
 
-		prevArea = cam.getLargestArea();
-		this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
-		postArea = cam.getLargestArea();
-		if (postArea > prevArea)
+		centerX = cam.getMostCenterX();
+		if (centerX > imageCenterX)
 		{
-			while (postArea > prevArea && !terminate)
+			while (centerX > imageCenterX && !terminate)
 			{
-				prevArea = cam.getLargestArea();
+				centerX = cam.getLargestArea();
 				this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
-				postArea = cam.getLargestArea();
 
 				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled())
@@ -339,23 +338,31 @@ public class AutoDriver
 					terminate = true;
 					System.out.println("drive timeout");
 				}
+				if (Math.abs(centerX - imageCenterX) < 5)
+				{
+					terminate = true;
+					System.out.println("Done!");
+				}
 
 				Thread.yield();
 			}
 		}
 		else
 		{
-			while (postArea > prevArea && !terminate)
+			while (imageCenterX > centerX && !terminate)
 			{
-				prevArea = cam.getLargestArea();
-				this.turnDegrees(-1, Constants.AUTO_MOVE_SPEED);
-				postArea = cam.getLargestArea();
+				centerX = cam.getLargestArea();
 
 				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled())
 				{
 					terminate = true;
 					System.out.println("drive timeout");
+				}
+				if (Math.abs(centerX - imageCenterX) < 5)
+				{
+					terminate = true;
+					System.out.println("Done!");
 				}
 
 				Thread.yield();

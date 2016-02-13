@@ -19,7 +19,7 @@ public class TurnTowardGoal implements AutoMode
 	@Override
 	public String getName()
 	{
-		return "Test Mode";
+		return "TurnTowardGoal";
 	}
 
 	@Override

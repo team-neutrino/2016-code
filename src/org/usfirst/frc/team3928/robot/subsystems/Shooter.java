@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import org.usfirst.frc.team3928.robot.Constants;
+import org.usfirst.frc.team3928.robot.sensors.Camera;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -203,6 +205,58 @@ public class Shooter implements Runnable
 		catch (FileNotFoundException e)
 		{
 			DriverStation.reportError("Can't write file!", false);
+		}
+	}
+	public class ShootAngle implements Runnable
+	{
+		private boolean isAimed;
+		private boolean isOn;
+		private double targetDegrees;
+		
+		private AnalogPotentiometer anPo;
+		private Thread shooterAngleThread;
+		private Camera cam;
+		
+		
+		public ShootAngle (Camera cam)
+		{
+			isOn = false;
+			
+			cam = this.cam;
+			anPo = new AnalogPotentiometer(Constants.POTENTIOMETER_CHANNEL);
+		}
+		
+		public void run()
+		{
+			isAimed = false;
+			while (isOn)
+			{
+				angleDegrees();
+			}
+		}
+		public boolean isAimed()
+		{
+			return isAimed;
+		}
+		public void angleDegrees()
+		{
+			double currentDegrees;
+			
+			currentDegrees = anPo.get();
+			if (targetDegrees > currentDegrees)
+			{
+				
+			}
+		}
+		public void returnToRest()
+		{
+			targetDegrees = Constants.SHOOTER_REST_POSITION;
+			isOn = false;
+		}
+		public void startMove(double targDegrees)
+		{
+			targetDegrees = targDegrees;
+			isOn = true;
 		}
 	}
 }
