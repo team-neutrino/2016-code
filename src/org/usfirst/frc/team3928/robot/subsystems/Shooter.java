@@ -27,7 +27,6 @@ public class Shooter implements Runnable
 
 	public Shooter()
 	{
-		new Thread(this).start();
 		motorLeft = new Talon(Constants.SHOOTER_MOTOR_LEFT);
 		motorRight = new Talon(Constants.SHOOTER_MOTOR_RIGHT);
 		motorLeft.setInverted(true);

@@ -96,7 +96,6 @@ public class Camera implements Runnable
 //					new Range(saturationLow.get(), saturationHigh.get()),
 //					new Range(luminenceLow.get(), luminenceHigh.get()));
 			CameraServer.getInstance().setImage(raw);
-			System.out.println("lel" + session);
 		}
 	}
 
