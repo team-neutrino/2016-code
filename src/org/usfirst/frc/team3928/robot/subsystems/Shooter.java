@@ -22,7 +22,7 @@ public class Shooter implements Runnable
 
 	private Thread shooterSpeedThread;
 
-	private static final int MILISECONDS_PER_MINUTE = 60000;
+	private static final int MILLISECONDS_PER_MINUTE = 60000;
 	private static final int CORRECTION_RPM = 2000;
 
 	public Shooter()
@@ -68,7 +68,7 @@ public class Shooter implements Runnable
 
 		long lastResetTime = System.currentTimeMillis();
 
-		double RPMiliTarget = ((double) Constants.SHOOTER_RPM) / MILISECONDS_PER_MINUTE;
+		double RPMiliTarget = ((double) Constants.SHOOTER_RPM) / MILLISECONDS_PER_MINUTE;
 
 		double integral = 0;
 
