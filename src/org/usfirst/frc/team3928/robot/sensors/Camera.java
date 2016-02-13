@@ -1,11 +1,13 @@
 package org.usfirst.frc.team3928.robot.sensors;
 
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.usfirst.frc.team3928.robot.Constants;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ParticleReport;
 import com.ni.vision.NIVision.Range;
 
 import edu.wpi.first.wpilibj.CameraServer;
@@ -104,7 +106,7 @@ public class Camera implements Runnable
 		outpt = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
 				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
-		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value");
+		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value") + 5;
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::WhiteBalance::Mode", "Auto");
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "Manual");
 		NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
@@ -113,7 +115,8 @@ public class Camera implements Runnable
 		while (true)
 		{
 			NIVision.IMAQdxGrab(session, raw, 1);
-
+			
+			
 			if (outMode == OutputMode.RAW_IMAGE)
 			{
 				CameraServer.getInstance().setImage(raw);
@@ -121,12 +124,43 @@ public class Camera implements Runnable
 			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow.get(), hueHigh.get()),
 					new Range(saturationLow.get(), saturationHigh.get()),
 					new Range(luminenceLow.get(), luminenceHigh.get()));
+			int numParticles = NIVision.imaqCountParticles(raw, 0);
+			if (numParticles > 0)
+			{
+				// Measure particles and sort by particle size
+				 Vector<ParticleReport> particles = new Vector<ParticleReport>();
+
+				for (int particleIndex = 0; particleIndex < numParticles; particleIndex++)
+				{
+					ParticleReport par = new ParticleReport();
+					par.area = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_AREA);
+					particles.add(par);
+					SmartDashboard.putString("Added particle: ", par.toString() + "");
+				}
+				ParticleReport[] myArr = new ParticleReport[particles.size()];
+				ParticleReport min = null;
+				for(int i = 0; i < particles.size();)
+				{
+					min = particles.get(i);
+					int k = i;
+					for(int j = 0; j < particles.size(); ++j)
+					{
+						if(particles.get(j).area < min.area)
+						{
+							k = j;
+							min = particles.get(j);
+						}
+					}
+					myArr[i] = min;
+					particles.remove(k);
+				}
+				System.out.println("Area " + myArr[0].area);
+				
+			}
 			if (outMode == OutputMode.THRESHOLD_IMAGE)
 			{
 				CameraServer.getInstance().setImage(raw);
 			}
-//			NIVision.imaqSizeFilter(raw, raw, 1, 3, NIVision.SizeType.KEEP_LARGE,
-//					new NIVision.StructuringElement(3, 3, 0));
 			if (outMode == OutputMode.CONVEX_HULL)
 			{
 				CameraServer.getInstance().setImage(raw);
