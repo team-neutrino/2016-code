@@ -6,6 +6,7 @@ import org.usfirst.frc.team3928.robot.Constants;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.Range;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -78,18 +79,23 @@ public class Camera implements Runnable
 	@Override
 	public void run()
 	{
-		Image frame = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		int session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME, NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+		int session;
+		Image raw;
 
+		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		session = NIVision.IMAQdxOpenCamera("cam1", NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::WhiteBalance::Mode", "Auto");
+		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "AutoAperaturePriority");
+		NIVision.IMAQdxConfigureGrab(session);
 		NIVision.IMAQdxStartAcquisition(session);
-
 		while (true)
 		{
-			NIVision.IMAQdxGrab(session, frame, 1);
-
-			CameraServer.getInstance().setImage(frame);
-
-			Thread.yield();
+			NIVision.IMAQdxGrab(session, raw, 1);
+			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow.get(), hueHigh.get()),
+					new Range(saturationLow.get(), saturationHigh.get()),
+					new Range(luminenceLow.get(), luminenceHigh.get()));
+			CameraServer.getInstance().setImage(raw);
+			System.out.println("lel" + session);
 		}
 	}
 
