@@ -2,6 +2,7 @@ package org.usfirst.frc.team3928.robot.autonomous;
 
 import org.usfirst.frc.team3928.robot.Constants;
 import org.usfirst.frc.team3928.robot.exceptions.EncoderUnpluggedException;
+import org.usfirst.frc.team3928.robot.exceptions.GyroUnpluggedException;
 import org.usfirst.frc.team3928.robot.sensors.Camera;
 import org.usfirst.frc.team3928.robot.subsystems.Drive;
 
@@ -21,8 +22,6 @@ public class AutoDriver
 
 	private Drive drive;
 	private Camera cam;
-	
-	private boolean isAimed;
 
 	private static final int TIMEOUT = 100000;
 
@@ -35,8 +34,14 @@ public class AutoDriver
 
 	private static final double RAMP_UP_DISTANCE = 3;
 	private static final double RAMP_DOWN_DISTANCE = 5;
+	
+	private static final double RAMP_UP_DEGREES = 90;
+	private static final double RAMP_DOWN_DEGREES = 180;
 
 	private static final double ENCODER_UNPLUGGED_THRESHOLD = .5;
+	
+	private static final double GYRO_UNPLUGGED_TIMEOUT = 250;
+	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
 
 	private static final long TIMEOUT_REFRESH_RATE = 5;
 
@@ -258,66 +263,163 @@ public class AutoDriver
 	 *            number will got clockwise. A negative number will go counter
 	 *            clockwise.
 	 * @param speed
+	 * @throws EncoderUnpluggedException
+	 * @throws GyroUnpluggedException
 	 */
-	public void turnDegrees(double degrees, double speed)
+	public void turnDegrees(double degrees, double speed) throws EncoderUnpluggedException, GyroUnpluggedException
 	{
-		double origDeg = gyro.getAngle();
-		double degreesTurned = 0;
-		if (degrees > 0)
+		gyro.reset();
+		encLeft.reset();
+		encRight.reset();
+
+		// multiply speed to motors by -1 if going backwards
+		int negitiveMultiplier = (degrees >= 0 ? 1 : -1);
+
+		// make speed positive and less than 1
+		speed = Math.min(Math.abs(speed), 1);
+
+		// make distance positive, this class does all calculations using
+		// positive numbers and makes the output negative if going backwards
+		degrees = Math.abs(degrees);
+
+		boolean terminate = false;
+		double startTime = System.currentTimeMillis();
+
+		int count = 0;
+
+		while (!terminate)
 		{
-			while (degreesTurned < degrees)
+			count++;
+			double rightDistance = Math.abs(encRight.getDistance());
+			double leftDistance = Math.abs(encLeft.getDistance());
+			double degreesTraveled = Math.abs(gyro.getAngle());
+
+			double currTime = System.currentTimeMillis();
+
+			double rightCorrection;
+			double leftCorrection;
+			String msg;
+
+			double diff = rightDistance - leftDistance;
+
+			if (degreesTraveled > degrees)
 			{
-				if (degrees - degreesTurned < .5)
+				// done
+				System.out.println("Left Distance Traveled: " + leftDistance);
+				System.out.println("Right Distance Traveled: " + rightDistance);
+				leftCorrection = 0;
+				rightCorrection = 0;
+				terminate = true;
+				msg = "done";
+			}
+			else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
+			{
+				// gyro unplugged
+				drive.setLeft(0);
+				drive.setRight(0);
+
+				DriverStation.reportError("Gyro is unplugged", false);
+				throw new GyroUnpluggedException("Gyro is unplgged");
+			}
+			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			{
+				// encoder unplugged
+				drive.setLeft(0);
+				drive.setRight(0);
+
+				if (diff >= 0)
 				{
-					drive.setLeft(0);
-					drive.setRight(0);
-				}
-				else if (degrees - degreesTurned < 5)
-				{
-					drive.setLeft(((degrees - degreesTurned) / 5) * speed);
-					drive.setLeft(-((degrees - degreesTurned) / 5) * speed);
+					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
+					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
 				}
 				else
 				{
-					drive.setRight(-speed);
-					drive.setLeft(speed);
+					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
+					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
 				}
-				degreesTurned = (gyro.getAngle() - origDeg);
-				Thread.yield();
 			}
-			System.out.println(degrees);
-			System.out.println(degreesTurned);
-		}
-		else
-		{
-			while (degreesTurned > degrees)
+			else if (diff > 0)
 			{
-				if (degrees - degreesTurned < .5)
-				{
-					drive.setLeft(0);
-					drive.setRight(0);
-				}
-				else if (degrees - degreesTurned < -5)
-				{
-					drive.setLeft(-((degrees - degreesTurned) / 5) * speed);
-					drive.setLeft(((degrees - degreesTurned) / 5) * speed);
-				}
-				else
-				{
-					drive.setRight(speed);
-					drive.setLeft(-speed);
-				}
-				degreesTurned = (gyro.getAngle() - origDeg);
-				Thread.yield();
+				msg = "veer right";
+				// veer right
+				leftCorrection = 1;
+				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
 			}
+			else if (diff < 0)
+			{
+				msg = "veer left";
+				// veer right
+				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
+				rightCorrection = 1;
+			}
+			else
+			{
+				msg = "going straight";
+				// go straight
+				leftCorrection = 1;
+				rightCorrection = 1;
+			}
+
+			double degreesRemain = degrees - degreesTraveled;
+
+			double ramp = 1;
+
+			if ((degreesTraveled < RAMP_UP_DEGREES) && (degreesRemain < RAMP_DOWN_DEGREES))
+			{
+				// both ramp up and ramp down are in effect, pick the min
+				ramp = Math.min(degreesTraveled / RAMP_UP_DISTANCE, degreesRemain / RAMP_DOWN_DISTANCE);
+			}
+			else if (degreesTraveled < RAMP_UP_DEGREES)
+			{
+				// ramp up
+				ramp = (degreesTraveled / RAMP_UP_DEGREES);
+			}
+			else if (degreesRemain < RAMP_DOWN_DEGREES)
+			{
+				// ramp down
+				ramp = (degreesRemain / RAMP_DOWN_DEGREES);
+			}
+
+			// scale the ramp from between 0 and 1 to between MIN_RAMP and 1
+			ramp = ramp * (1 - MIN_RAMP) + MIN_RAMP;
+
+			double leftSpeed = negitiveMultiplier * speed * ramp * leftCorrection;
+			double rightSpeed = -negitiveMultiplier * speed * ramp * rightCorrection;
+
+			// scale speed from between 0 and 1 to between MIN_SPEED and 1
+			leftSpeed = leftSpeed * (1 - MIN_SPEED) + MIN_SPEED;
+			rightSpeed = rightSpeed * (1 - MIN_SPEED) + MIN_SPEED;
+
+			drive.setLeft(leftSpeed);
+			drive.setRight(rightSpeed);
+
+			if (count % 10 == 0)
+				System.out.println(msg + "    Degrees Traveled: " + degreesTraveled + "    Right Distance: "
+						+ rightDistance + "    Right Speed: " + rightSpeed + "    Left Distance: " + leftDistance
+						+ "    Left Speed: " + leftSpeed + "    Ramp: " + ramp);
+
+			// timeout
+			if ((currTime - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
+					|| DriverStation.getInstance().isDisabled())
+			{
+				terminate = true;
+				System.out.println("drive timeout");
+			}
+
+			Thread.yield();
 		}
+
+		drive.setLeft(0);
+		drive.setRight(0);
 	}
 
 	/**
 	 * Uses the camera to rotate the robot so that it is pointed toward the
 	 * goal.
+	 * @throws GyroUnpluggedException 
+	 * @throws EncoderUnpluggedException 
 	 */
-	public void rotateTowardGoal()
+	public void rotateTowardGoal() throws EncoderUnpluggedException, GyroUnpluggedException
 	{
 		double imageCenterX = 240;
 		double centerX;

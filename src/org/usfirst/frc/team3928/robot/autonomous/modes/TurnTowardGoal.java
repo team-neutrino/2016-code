@@ -2,6 +2,8 @@ package org.usfirst.frc.team3928.robot.autonomous.modes;
 
 import org.usfirst.frc.team3928.robot.autonomous.AutoDriver;
 import org.usfirst.frc.team3928.robot.autonomous.AutoMode;
+import org.usfirst.frc.team3928.robot.exceptions.EncoderUnpluggedException;
+import org.usfirst.frc.team3928.robot.exceptions.GyroUnpluggedException;
 import org.usfirst.frc.team3928.robot.subsystems.Shooter;
 
 public class TurnTowardGoal implements AutoMode
@@ -25,7 +27,13 @@ public class TurnTowardGoal implements AutoMode
 	@Override
 	public void run()
 	{
-		driver.rotateTowardGoal();
+		try
+		{
+			driver.rotateTowardGoal();
+		}
+		catch (EncoderUnpluggedException | GyroUnpluggedException e)
+		{
+		}
 	}
 
 }
