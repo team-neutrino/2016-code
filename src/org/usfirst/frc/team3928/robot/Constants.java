@@ -73,6 +73,8 @@ public class Constants
 	// ShooterPosition Constants
 	public static final int SHOOTER_POSITION_MOTOR = 6;
 	public static final int POTENTIOMETER_CHANNEL = 2; // TODO
+	public static final int SHOOTER_FRONT_LIMIT = 10;
+	public static final int SHOOTER_BACK_LIMIT = 11;
 
 	// Misc Constants
 	public static final int DRIVER_STATION_REFRESH_RATE = 1000;
