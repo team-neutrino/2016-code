@@ -1,10 +1,10 @@
-package org.usfirst.frc.team3928.robot.subsystems;
+package org.teamneutrino.stronghold.robot.subsystems;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import org.usfirst.frc.team3928.robot.Constants;
-import org.usfirst.frc.team3928.robot.sensors.Camera;
+import org.teamneutrino.stronghold.robot.Constants;
+import org.teamneutrino.stronghold.robot.sensors.Camera;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Counter;

@@ -1,8 +1,8 @@
-package org.usfirst.frc.team3928.robot.sensors;
+package org.teamneutrino.stronghold.robot.sensors;
 
 import java.util.Vector;
 
-import org.usfirst.frc.team3928.robot.Constants;
+import org.teamneutrino.stronghold.robot.Constants;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
