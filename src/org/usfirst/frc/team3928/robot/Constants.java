@@ -72,8 +72,7 @@ public class Constants
 	public static final double SHOOTER_REST_POSITION = 0; // TOD0
 	
 	// ShooterPosition Constants
-	public static final int SHOOTER_POSITION_MOTOR_RIGHT = 9; // TODO
-	public static final int SHOOTER_POSITION_MOTOR_LEFT = 10; // TODO
+	public static final int SHOOTER_POSITION_MOTOR = 9; // TODO
 	public static final int POTENTIOMETER_CHANNEL = 2; // TODO
 
 	// Misc Constants

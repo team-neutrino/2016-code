@@ -9,8 +9,7 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class ShooterPosition 
 {
-	private SpeedController right1;
-	private SpeedController left1;
+	private SpeedController motor;
 	private AnalogPotentiometer potent;
 	private Thread shooterPositionThread;
 	private boolean resetPosition;
@@ -21,13 +20,11 @@ public class ShooterPosition
 		potent = new AnalogPotentiometer(Constants.POTENTIOMETER_CHANNEL);
 		if (Constants.REAL_BOT)
 		{
-			right1 = new TalonSRX(Constants.SHOOTER_POSITION_MOTOR_RIGHT);
-			left1 = new TalonSRX(Constants.SHOOTER_POSITION_MOTOR_LEFT);
+			motor = new TalonSRX(Constants.SHOOTER_POSITION_MOTOR);
 		}
 		else
 		{
-			right1 = new Victor(Constants.SHOOTER_POSITION_MOTOR_RIGHT);
-			left1 = new Victor(Constants.SHOOTER_POSITION_MOTOR_RIGHT);
+			motor = new Victor(Constants.SHOOTER_POSITION_MOTOR);
 		}
 	}
 	
@@ -50,18 +47,15 @@ public class ShooterPosition
 			pos = potent.get();
 			if (pos < angle)
 			{
-				right1.set(0.01);
-				left1.set(-0.01);
+				motor.set(0.01);
 			}
 			if (pos > angle)
 			{
-				right1.set(-0.01);
-				left1.set(0.01);
+				motor.set(-0.01);
 			}
 			if (angle == 0 && pos == 0)
 			{
-				right1.set(0);
-				left1.set(0);
+				motor.set(0);
 				break;
 			}
 			if (resetPosition == true)
