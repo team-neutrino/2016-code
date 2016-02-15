@@ -5,7 +5,6 @@ public class Constants
 	public static final boolean REAL_BOT = false;
 
 	// Autonomous Constants
-	public static final int AUTO_MODE = 2;
 	public static final double AUTO_MOVE_SPEED = .25;
 	public static final int GYRO_CHANNEL = 0;
 	public static final double AUTO_SLOW_DISTANCE = 1; // IN FEET
@@ -56,8 +55,8 @@ public class Constants
 	
 	// Intake Constants
 	public static final int INTAKE_POSITION_MOTOR_CHANNEL = 9;
-	public static final int INTAKE_FRONT_BACK_MOTOR_CHANNEL = 8;
-	public static final int INTAKE_SIDE_SIDE_MOTOR_CHANNEL = 7;
+	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 8;
+	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
 	
 	// Shooter Constants
 	public static final int SHOOTER_MOTOR_LEFT = 10;

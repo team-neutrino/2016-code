@@ -9,22 +9,22 @@ import edu.wpi.first.wpilibj.Victor;
 public class Intake
 {
 	SpeedController positionMotor;
-	SpeedController intakeFrontBackMotor;
-	SpeedController intakeSideSideMotor;
+	SpeedController intakeFrontToBackMotor;
+	SpeedController intakeSideToSideMotor;
 
 	public Intake()
 	{
 		if (Constants.REAL_BOT)
 		{
 			positionMotor = new CANTalon(Constants.INTAKE_POSITION_MOTOR_CHANNEL);
-			intakeFrontBackMotor = new CANTalon(Constants.INTAKE_FRONT_BACK_MOTOR_CHANNEL);
-			intakeSideSideMotor = new CANTalon(Constants.INTAKE_SIDE_SIDE_MOTOR_CHANNEL);
+			intakeFrontToBackMotor = new CANTalon(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
+			intakeSideToSideMotor = new CANTalon(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 		}
 		else
 		{
 			positionMotor = new Victor(Constants.INTAKE_POSITION_MOTOR_CHANNEL);
-			intakeFrontBackMotor = new Victor(Constants.INTAKE_FRONT_BACK_MOTOR_CHANNEL);
-			intakeSideSideMotor = new Victor(Constants.INTAKE_SIDE_SIDE_MOTOR_CHANNEL);
+			intakeFrontToBackMotor = new Victor(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
+			intakeSideToSideMotor = new Victor(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 		}
 	}
 
@@ -35,7 +35,7 @@ public class Intake
 
 	public void set(double speed)
 	{
-		intakeFrontBackMotor.set(speed);
-		intakeSideSideMotor.set(speed);
+		intakeFrontToBackMotor.set(speed);
+		intakeSideToSideMotor.set(speed);
 	}
 }
