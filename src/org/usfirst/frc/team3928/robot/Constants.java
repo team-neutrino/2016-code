@@ -60,8 +60,8 @@ public class Constants
 	public static final int INTAKE_SIDE_SIDE_MOTOR_CHANNEL = 12;
 	
 	// Shooter Constants
-	public static final int SHOOTER_MOTOR_LEFT = 20;
-	public static final int SHOOTER_MOTOR_RIGHT = 21;
+	public static final int SHOOTER_MOTOR_LEFT = 10;
+	public static final int SHOOTER_MOTOR_RIGHT = 11;
 	public static final int SHOOTER_REFRESH_RATE = 50;
 	public static final int SHOOTER_RPM = 1500;
 	public static final int SHOOTER_BEAMBREAKE_RIGHT_CHANNEL = 8;
