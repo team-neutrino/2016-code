@@ -55,9 +55,9 @@ public class Constants
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 10;
 	
 	// Intake Constants
-	public static final int INTAKE_POSITION_MOTOR_CHANNEL = 10;
-	public static final int INTAKE_FRONT_BACK_MOTOR_CHANNEL = 11;
-	public static final int INTAKE_SIDE_SIDE_MOTOR_CHANNEL = 12;
+	public static final int INTAKE_POSITION_MOTOR_CHANNEL = 9;
+	public static final int INTAKE_FRONT_BACK_MOTOR_CHANNEL = 8;
+	public static final int INTAKE_SIDE_SIDE_MOTOR_CHANNEL = 7;
 	
 	// Shooter Constants
 	public static final int SHOOTER_MOTOR_LEFT = 10;
@@ -72,7 +72,7 @@ public class Constants
 	public static final double SHOOTER_REST_POSITION = 0; // TOD0
 	
 	// ShooterPosition Constants
-	public static final int SHOOTER_POSITION_MOTOR = 9; // TODO
+	public static final int SHOOTER_POSITION_MOTOR = 6;
 	public static final int POTENTIOMETER_CHANNEL = 2; // TODO
 
 	// Misc Constants

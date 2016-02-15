@@ -8,6 +8,7 @@ import org.usfirst.frc.team3928.robot.sensors.Camera;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -225,14 +226,14 @@ public class Shooter implements Runnable
 
 		private AnalogPotentiometer anPo;
 		private Thread shooterAngleThread;
-		private Camera cam;
+		private SpeedController shooterTilt;
+		private DigitalInput limitSwitch;
 
-		public ShootAngle(Camera cam)
+		public ShootAngle()
 		{
 			isOn = false;
-
-			cam = this.cam;
 			anPo = new AnalogPotentiometer(Constants.POTENTIOMETER_CHANNEL);
+			shooterTilt = new Talon(Constants.SHOOTER_POSITION_MOTOR);
 		}
 
 		public void run()
@@ -256,7 +257,7 @@ public class Shooter implements Runnable
 			currentDegrees = anPo.get();
 			if (targetDegrees > currentDegrees)
 			{
-
+				
 			}
 		}
 
@@ -268,8 +269,12 @@ public class Shooter implements Runnable
 
 		public void startMove(double targDegrees)
 		{
+			if (!isOn)
+			{
+				shooterAngleThread.start();
+				isOn = true;
+			}
 			targetDegrees = targDegrees;
-			isOn = true;
 		}
 	}
 }
