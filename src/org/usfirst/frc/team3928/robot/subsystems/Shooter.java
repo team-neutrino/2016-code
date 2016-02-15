@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
 
 public class Shooter implements Runnable
 {
@@ -28,16 +29,16 @@ public class Shooter implements Runnable
 
 	public Shooter()
 	{
-		// motorLeft = new Talon(Constants.SHOOTER_MOTOR_LEFT);
-		// motorRight = new Talon(Constants.SHOOTER_MOTOR_RIGHT);
-		// motorLeft.setInverted(true);
-		// beambreakLeft = new
-		// Counter(Constants.SHOOTER_BEAMBREAKE_RIGHT_CHANNEL);
-		// beambreakRight = new
-		// Counter(Constants.SHOOTER_BEAMBREAKE_LEFT_CHANNEL);
-		// on = false;
-		//
-		// shooterSpeedThread = new Thread(this);
+		 motorLeft = new Talon(Constants.SHOOTER_MOTOR_LEFT);
+		 motorRight = new Talon(Constants.SHOOTER_MOTOR_RIGHT);
+		 motorLeft.setInverted(true);
+		 beambreakLeft = new
+		 Counter(Constants.SHOOTER_BEAMBREAKE_RIGHT_CHANNEL);
+		 beambreakRight = new
+		 Counter(Constants.SHOOTER_BEAMBREAKE_LEFT_CHANNEL);
+		 on = false;
+		
+		 shooterSpeedThread = new Thread(this);
 	}
 
 	public void start()
