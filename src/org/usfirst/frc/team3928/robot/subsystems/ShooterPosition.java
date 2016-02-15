@@ -19,12 +19,12 @@ public class ShooterPosition
 	{
 		shooterPositionThread.start();
 		potent = new AnalogPotentiometer(Constants.POTENTIOMETER_CHANNEL);
-		if (Constants.REAL_BOT == true)
+		if (Constants.REAL_BOT)
 		{
 			right1 = new TalonSRX(Constants.SHOOTER_POSITION_MOTOR_RIGHT);
 			left1 = new TalonSRX(Constants.SHOOTER_POSITION_MOTOR_LEFT);
 		}
-		if (Constants.REAL_BOT == false)
+		else
 		{
 			right1 = new Victor(Constants.SHOOTER_POSITION_MOTOR_RIGHT);
 			left1 = new Victor(Constants.SHOOTER_POSITION_MOTOR_RIGHT);
