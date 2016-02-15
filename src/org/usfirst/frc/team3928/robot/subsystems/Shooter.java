@@ -227,13 +227,17 @@ public class Shooter implements Runnable
 		private AnalogPotentiometer anPo;
 		private Thread shooterAngleThread;
 		private SpeedController shooterTilt;
-		private DigitalInput limitSwitch;
+		private DigitalInput limitBack;
+		private DigitalInput limitFront;
+		
 
 		public ShootAngle()
 		{
 			isOn = false;
 			anPo = new AnalogPotentiometer(Constants.POTENTIOMETER_CHANNEL);
 			shooterTilt = new Talon(Constants.SHOOTER_POSITION_MOTOR);
+			limitFront = new DigitalInput(Constants.SHOOTER_FRONT_LIMIT);
+			limitBack = new DigitalInput(Constants.SHOOTER_BACK_LIMIT);
 		}
 
 		public void run()
@@ -242,6 +246,7 @@ public class Shooter implements Runnable
 			while (isOn)
 			{
 				angleDegrees();
+				
 			}
 		}
 
@@ -253,11 +258,17 @@ public class Shooter implements Runnable
 		public void angleDegrees()
 		{
 			double currentDegrees;
+			double speed;
 
+			speed = Constants.SHOOTER_ANGLE_SPEED;
 			currentDegrees = anPo.get();
 			if (targetDegrees > currentDegrees)
 			{
-				
+				shooterTilt.set(speed);
+			}
+			if (targetDegrees < currentDegrees)
+			{
+				shooterTilt.set(-speed);
 			}
 		}
 
