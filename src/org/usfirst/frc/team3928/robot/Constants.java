@@ -5,7 +5,6 @@ public class Constants
 	public static final boolean REAL_BOT = false;
 
 	// Autonomous Constants
-	public static final int AUTO_MODE = 2;
 	public static final double AUTO_MOVE_SPEED = .25;
 	public static final int GYRO_CHANNEL = 0;
 	public static final double AUTO_SLOW_DISTANCE = 1; // IN FEET
