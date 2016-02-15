@@ -141,7 +141,7 @@ public class Camera implements Runnable
 				for (int particleIndex = 0; particleIndex < numParticles; particleIndex++)
 				{
 					ParticleReport par = new ParticleReport();
-					par.area = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_AREA);
+					par.area = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_CONVEX_HULL_AREA);
 					par.projectionX = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_CENTER_OF_MASS_X);
 					par.projectionY = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_CENTER_OF_MASS_Y);
 					int top = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
