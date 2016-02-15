@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
 
 public class Shooter implements Runnable
 {
@@ -29,14 +28,16 @@ public class Shooter implements Runnable
 
 	public Shooter()
 	{
-//		motorLeft = new Talon(Constants.SHOOTER_MOTOR_LEFT);
-//		motorRight = new Talon(Constants.SHOOTER_MOTOR_RIGHT);
-//		motorLeft.setInverted(true);
-//		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAKE_RIGHT_CHANNEL);
-//		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAKE_LEFT_CHANNEL);
-//		on = false;
-//
-//		shooterSpeedThread = new Thread(this);
+		// motorLeft = new Talon(Constants.SHOOTER_MOTOR_LEFT);
+		// motorRight = new Talon(Constants.SHOOTER_MOTOR_RIGHT);
+		// motorLeft.setInverted(true);
+		// beambreakLeft = new
+		// Counter(Constants.SHOOTER_BEAMBREAKE_RIGHT_CHANNEL);
+		// beambreakRight = new
+		// Counter(Constants.SHOOTER_BEAMBREAKE_LEFT_CHANNEL);
+		// on = false;
+		//
+		// shooterSpeedThread = new Thread(this);
 	}
 
 	public void start()
@@ -207,25 +208,25 @@ public class Shooter implements Runnable
 			DriverStation.reportError("Can't write file!", false);
 		}
 	}
+
 	public class ShootAngle implements Runnable
 	{
 		private boolean isAimed;
 		private boolean isOn;
 		private double targetDegrees;
-		
+
 		private AnalogPotentiometer anPo;
 		private Thread shooterAngleThread;
 		private Camera cam;
-		
-		
-		public ShootAngle (Camera cam)
+
+		public ShootAngle(Camera cam)
 		{
 			isOn = false;
-			
+
 			cam = this.cam;
 			anPo = new AnalogPotentiometer(Constants.POTENTIOMETER_CHANNEL);
 		}
-		
+
 		public void run()
 		{
 			isAimed = false;
@@ -234,25 +235,29 @@ public class Shooter implements Runnable
 				angleDegrees();
 			}
 		}
+
 		public boolean isAimed()
 		{
 			return isAimed;
 		}
+
 		public void angleDegrees()
 		{
 			double currentDegrees;
-			
+
 			currentDegrees = anPo.get();
 			if (targetDegrees > currentDegrees)
 			{
-				
+
 			}
 		}
+
 		public void returnToRest()
 		{
 			targetDegrees = Constants.SHOOTER_REST_POSITION;
 			isOn = false;
 		}
+
 		public void startMove(double targDegrees)
 		{
 			targetDegrees = targDegrees;
