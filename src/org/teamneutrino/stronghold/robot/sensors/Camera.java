@@ -7,7 +7,6 @@ import org.teamneutrino.stronghold.robot.Constants;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.DrawMode;
 import com.ni.vision.NIVision.Image;
-import com.ni.vision.NIVision.ImageInfo;
 import com.ni.vision.NIVision.ParticleReport;
 import com.ni.vision.NIVision.Range;
 import com.ni.vision.NIVision.Rect;
@@ -31,11 +30,10 @@ public class Camera implements Runnable
 	private double centerX;
 	private double centerY;
 	private Rect rectangle;
-	private ImageInfo imgInfo;
 
 	enum OutputMode
 	{
-		RAW_IMAGE, THRESHOLD_IMAGE, CONVEX_HULL, RECTANGLE_OVERLAY
+		RAW_IMAGE, THRESHOLD_IMAGE, RECTANGLE_OVERLAY
 	}
 
 	public Camera()
@@ -58,60 +56,39 @@ public class Camera implements Runnable
 		outMode = OutputMode.RAW_IMAGE;
 
 		outModeChooser = new SendableChooser();
+		outModeChooser.addObject("Rectangle", OutputMode.RECTANGLE_OVERLAY);
 		outModeChooser.addDefault("Raw", OutputMode.RAW_IMAGE);
 		outModeChooser.addObject("Threshold", OutputMode.THRESHOLD_IMAGE);
-		outModeChooser.addObject("Convex Hull", OutputMode.CONVEX_HULL);
-		outModeChooser.addObject("Rectangle", OutputMode.RECTANGLE_OVERLAY);
 		SmartDashboard.putData("Image Stage", outModeChooser);
 
 		new Thread(this).start();
 		new Thread(new SmartDashboardThread()).start();
 	}
 
-	public double getHighestHeight()
-	{
-		// TODO
-		return 0.0;
-	}
-
-	public double getWidestWidth()
-	{
-		// TODO
-		return 0.0;
-	}
-
-	public double getMostCenterX()
+	public double getTargetX()
 	{
 		return centerX;
 	}
 
-	public double getMostCenterY()
+	public double getTargetY()
 	{
 		return centerY;
 	}
 
-	public double getLargestArea()
+	public double getTargetArea()
 	{
 		return maxArea;
-	}
-
-	public boolean isAimed()
-	{
-		// TODO
-		return false;
 	}
 
 	@Override
 	public void run()
 	{
 		int session;
+		Image image;
 		Image raw;
-		Image outpt;
 
-		imgInfo = new ImageInfo();
-
+		image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		outpt = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
 				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value") + 5;
@@ -122,46 +99,52 @@ public class Camera implements Runnable
 		NIVision.IMAQdxStartAcquisition(session);
 		while (true)
 		{
-			NIVision.IMAQdxGrab(session, raw, 1);
-			NIVision.imaqDuplicate(outpt, raw);
-			
+			NIVision.IMAQdxGrab(session, image, 1);
+			NIVision.imaqDuplicate(raw, image);
+
 			if (outMode == OutputMode.RAW_IMAGE)
 			{
-				CameraServer.getInstance().setImage(raw);
+				CameraServer.getInstance().setImage(image);
 			}
-			NIVision.imaqColorThreshold(raw, raw, 255, NIVision.ColorMode.HSL, new Range(hueLow, hueHigh),
-					new Range(saturationLow, saturationHigh),
-					new Range(luminenceLow, luminenceHigh));
-			int numParticles = NIVision.imaqCountParticles(raw, 0);
+			NIVision.imaqColorThreshold(image, image, 255, NIVision.ColorMode.HSL, new Range(hueLow, hueHigh),
+					new Range(saturationLow, saturationHigh), new Range(luminenceLow, luminenceHigh));
+			int numParticles = NIVision.imaqCountParticles(image, 0);
 			if (numParticles > 0)
 			{
-				// Measure particles and sort by particle size
-				 Vector<ParticleReport> particles = new Vector<ParticleReport>();
-
+				// Measure particles
+				Vector<ParticleReport> particles = new Vector<ParticleReport>();
 				for (int particleIndex = 0; particleIndex < numParticles; particleIndex++)
 				{
 					ParticleReport par = new ParticleReport();
-					par.area = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_CONVEX_HULL_AREA);
-					par.projectionX = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_CENTER_OF_MASS_X);
-					par.projectionY = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_CENTER_OF_MASS_Y);
-					int top = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
-					int left = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
-					int height = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
-					int width = (int)NIVision.imaqMeasureParticle(raw, particleIndex, 0, NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
+					par.area = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+							NIVision.MeasurementType.MT_CONVEX_HULL_AREA);
+					par.projectionX = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+							NIVision.MeasurementType.MT_CENTER_OF_MASS_X);
+					par.projectionY = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+							NIVision.MeasurementType.MT_CENTER_OF_MASS_Y);
+					int top = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+							NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
+					int left = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+							NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
+					int height = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+							NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
+					int width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+							NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
 					Rect rect = new Rect(top, left, height, width);
 					par.boundingBox = rect;
 					particles.add(par);
-					SmartDashboard.putString("Added particle: ", par.toString() + "");
 				}
 				ParticleReport[] myArr = new ParticleReport[particles.size()];
 				ParticleReport min = null;
-				for(int i = 0; i < particles.size();)
+
+				// Get largest area
+				for (int i = 0; i < particles.size();)
 				{
 					min = particles.get(i);
 					int k = i;
-					for(int j = 0; j < particles.size(); ++j)
+					for (int j = 0; j < particles.size(); ++j)
 					{
-						if(particles.get(j).area < min.area)
+						if (particles.get(j).area < min.area)
 						{
 							k = j;
 							min = particles.get(j);
@@ -177,18 +160,14 @@ public class Camera implements Runnable
 			}
 			if (outMode == OutputMode.THRESHOLD_IMAGE)
 			{
-				CameraServer.getInstance().setImage(raw);
-			}
-			if (outMode == OutputMode.CONVEX_HULL)
-			{
-				CameraServer.getInstance().setImage(raw);
+				CameraServer.getInstance().setImage(image);
 			}
 			if (outMode == OutputMode.RECTANGLE_OVERLAY)
 			{
-				NIVision.imaqDrawShapeOnImage(outpt, outpt, rectangle,
-	                    DrawMode.DRAW_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
-				
-				CameraServer.getInstance().setImage(outpt);
+
+				NIVision.imaqDrawShapeOnImage(raw, raw, rectangle, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
+
+				CameraServer.getInstance().setImage(raw);
 			}
 		}
 	}
@@ -203,7 +182,8 @@ public class Camera implements Runnable
 				try
 				{
 					Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 				}
 
@@ -212,7 +192,13 @@ public class Camera implements Runnable
 				saturationLow = (int) SmartDashboard.getNumber("Saturation Low", saturationLow);
 				saturationHigh = (int) SmartDashboard.getNumber("Saturation High", saturationHigh);
 				luminenceLow = (int) SmartDashboard.getNumber("Luminence Low", luminenceLow);
-				luminenceHigh = (int) SmartDashboard.getNumber("Luninence High", luminenceHigh);
+				luminenceHigh = (int) SmartDashboard.getNumber("Luminence High", luminenceHigh);
+				SmartDashboard.putNumber("Hue Low", hueLow);
+				SmartDashboard.putNumber("Hue High", hueHigh);
+				SmartDashboard.putNumber("Saturation Low", saturationLow);
+				SmartDashboard.putNumber("Saturation High", saturationHigh);
+				SmartDashboard.putNumber("Luminence Low", luminenceLow);
+				SmartDashboard.putNumber("Luminence High", luminenceHigh);
 
 				outMode = (OutputMode) outModeChooser.getSelected();
 			}

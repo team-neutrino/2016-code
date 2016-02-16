@@ -426,12 +426,12 @@ public class AutoDriver
 		double startTime = System.currentTimeMillis();
 		boolean terminate = false;
 
-		centerX = cam.getMostCenterX();
+		centerX = cam.getTargetX();
 		if (centerX > imageCenterX)
 		{
 			while (centerX > imageCenterX && !terminate)
 			{
-				centerX = cam.getLargestArea();
+				centerX = cam.getTargetArea();
 				this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
 
 				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
@@ -453,7 +453,7 @@ public class AutoDriver
 		{
 			while (imageCenterX > centerX && !terminate)
 			{
-				centerX = cam.getLargestArea();
+				centerX = cam.getTargetArea();
 
 				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
 						|| DriverStation.getInstance().isDisabled())
