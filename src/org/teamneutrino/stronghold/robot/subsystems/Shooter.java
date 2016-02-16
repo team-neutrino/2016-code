@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.sensors.Camera;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Counter;
@@ -233,6 +232,7 @@ public class Shooter implements Runnable
 			shooterTilt = new Talon(Constants.SHOOTER_POSITION_MOTOR);
 			limitFront = new DigitalInput(Constants.SHOOTER_FRONT_LIMIT);
 			limitBack = new DigitalInput(Constants.SHOOTER_BACK_LIMIT);
+			shooterAngleThread = new Thread(this);
 		}
 
 		public void run()
