@@ -57,6 +57,9 @@ public class Constants
 	public static final int INTAKE_POSITION_MOTOR_CHANNEL = 9;
 	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 8;
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
+	public static final int INTAKE_POTENTIOMETER_CHANNEL = 1;
+	public static final double INTAKE_POTENTIOMETER_FULLRANGE = 5; //TODO
+	public static final double INTAKE_POTENTIOMETER_OFFSET = 1; //TODO
 	
 	// Shooter Constants
 	public static final int SHOOTER_MOTOR_LEFT = 10;
@@ -72,7 +75,9 @@ public class Constants
 	
 	// ShooterPosition Constants
 	public static final int SHOOTER_POSITION_MOTOR = 6;
-	public static final int POTENTIOMETER_CHANNEL = 2; // TODO
+	public static final int SHOOTER_POTENTIOMETER_CHANNEL = 2; // TODO
+	public static final double SHOOTER_POTENTIOMETER_FULLRANGE = 5; //TODO
+	public static final double SHOOTER_POTENTIOMETER_OFFSET = 1; //TODO
 	public static final int SHOOTER_FRONT_LIMIT = 10;
 	public static final int SHOOTER_BACK_LIMIT = 11;
 	public static final double SHOOTER_ANGLE_SPEED = .5;

@@ -17,7 +17,7 @@ public class ShooterPosition
 	ShooterPosition()
 	{
 		shooterPositionThread.start();
-		potent = new AnalogPotentiometer(Constants.POTENTIOMETER_CHANNEL);
+		potent = new AnalogPotentiometer(Constants.SHOOTER_POTENTIOMETER_CHANNEL);
 		if (Constants.REAL_BOT)
 		{
 			motor = new TalonSRX(Constants.SHOOTER_POSITION_MOTOR);
