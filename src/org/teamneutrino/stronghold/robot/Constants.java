@@ -27,9 +27,9 @@ public class Constants
 	public static final int DEFAULT_HUE_LOW = 101;
 	public static final int DEFAULT_HUE_HIGH = 136;
 	public static final int DEFAULT_SATURATION_LOW = 84;
-	public static final int DEFAULT_SATURATION_HIGH = 253;
+	public static final int DEFAULT_SATURATION_HIGH = 255;
 	public static final int DEFAULT_LUMINENCE_LOW = 34;
-	public static final int DEFAULT_LUMINENCE_HIGH = 102;
+	public static final int DEFAULT_LUMINENCE_HIGH = 255;
 	public static final int DEFAULT_EXPOSURE = 50;
 	public static final boolean DEFAULT_AUTO_EXPOSURE = true;
 	public static final int DEFAULT_OUTPUT_MODE = 0;
