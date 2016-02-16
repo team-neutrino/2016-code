@@ -64,8 +64,9 @@ public class Constants
 	public static final int INTAKE_LIMIT_DOWN_CHANNEL = 13;
 	
 	// Shooter Constants
-	public static final int SHOOTER_MOTOR_LEFT = 10;
-	public static final int SHOOTER_MOTOR_RIGHT = 11;
+	public static final int SHOOTER_LEFT_MOTOR = 10;
+	public static final int SHOOTER_RIGHT_MOTOR = 11;
+	public static final int SHOOTER_ACTUATOR_MOTOR = 6;
 	public static final int SHOOTER_REFRESH_RATE = 50;
 	public static final int SHOOTER_RPM = 1500;
 	public static final int SHOOTER_BEAMBREAKE_RIGHT_CHANNEL = 8;
@@ -73,15 +74,15 @@ public class Constants
 	public static final double SHOOTER_PERCENT_POWER_PER_RPMilli = 2; // TODO
 	public static final double SHOOTER_K_P = .1; // TODO
 	public static final double SHOOTER_K_I = 0; // TODO
-	public static final double SHOOTER_REST_POSITION = 0; // TOD0
-	
-	// ShooterPosition Constants
-	public static final int SHOOTER_POSITION_MOTOR = 6;
-	public static final int SHOOTER_POTENTIOMETER_CHANNEL = 2; // TODO
-	public static final double SHOOTER_POTENTIOMETER_FULLRANGE = 5; //TODO
-	public static final double SHOOTER_POTENTIOMETER_OFFSET = 1; //TODO
-	public static final int SHOOTER_FRONT_LIMIT = 10;
-	public static final int SHOOTER_BACK_LIMIT = 11;
+	public static final double SHOOTER_REST_POSITION = 0; // TODO
+	public static final int SHOOTER_ENCODER_CHANNEL = 2; // TODO
+	public static final double SHOOTER_ENCODER_SCALE = 5; //TODO
+	public static final double SHOOTER_ENCODER_OFFSET = 0; //TODO
+	public static final double SHOOTER_ACTUATION_K_P = 1;
+	public static final double SHOOTER_ACTUATION_K_I = 0;
+	public static final double SHOOTER_ACTUATION_K_D = 0;
+	public static final int SHOOTER_FRONT_LIMITSWITCH = 10;
+	public static final int SHOOTER_BACK_LIMITSWITCH = 11;
 	public static final double SHOOTER_ANGLE_SPEED = .5;
 
 	// Misc Constants
