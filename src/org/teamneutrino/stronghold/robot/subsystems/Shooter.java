@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.sensors.Camera;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Counter;
@@ -35,8 +34,7 @@ public class Shooter implements Runnable
 		{
 			motorLeft = new Talon(Constants.SHOOTER_MOTOR_LEFT);
 			motorRight = new Talon(Constants.SHOOTER_MOTOR_RIGHT);
-		}
-		else
+		} else
 		{
 			motorLeft = new Victor(Constants.SHOOTER_MOTOR_LEFT);
 			motorRight = new Victor(Constants.SHOOTER_MOTOR_RIGHT);
@@ -95,8 +93,7 @@ public class Shooter implements Runnable
 			try
 			{
 				Thread.sleep(Constants.SHOOTER_REFRESH_RATE);
-			}
-			catch (InterruptedException e)
+			} catch (InterruptedException e)
 			{
 			}
 
@@ -131,14 +128,12 @@ public class Shooter implements Runnable
 				// right is too fast
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_RPM), 0);
-			}
-			else if (diff < 0)
+			} else if (diff < 0)
 			{
 				// left is too fast
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_RPM), 0);
 				rightCorrection = 1;
-			}
-			else
+			} else
 			{
 				// everything good
 				leftCorrection = 1;
@@ -174,8 +169,7 @@ public class Shooter implements Runnable
 			try
 			{
 				Thread.sleep(1000);
-			}
-			catch (InterruptedException e)
+			} catch (InterruptedException e)
 			{
 			}
 			long currTime = System.currentTimeMillis();
@@ -211,8 +205,7 @@ public class Shooter implements Runnable
 			PrintWriter writer = new PrintWriter(filename);
 			writer.println(contents);
 			writer.close();
-		}
-		catch (FileNotFoundException e)
+		} catch (FileNotFoundException e)
 		{
 			DriverStation.reportError("Can't write file!", false);
 		}
@@ -223,21 +216,23 @@ public class Shooter implements Runnable
 		private boolean isAimed;
 		private boolean isOn;
 		private double targetDegrees;
+		private double currentDegrees;
 
 		private AnalogPotentiometer anPo;
 		private Thread shooterAngleThread;
 		private SpeedController shooterTilt;
 		private DigitalInput limitBack;
 		private DigitalInput limitFront;
-		
 
 		public ShootAngle()
 		{
 			isOn = false;
-			anPo = new AnalogPotentiometer(Constants.POTENTIOMETER_CHANNEL);
+			anPo = new AnalogPotentiometer(Constants.SHOOTER_POTENTIOMETER_CHANNEL,
+					Constants.SHOOTER_POTENTIOMETER_FULLRANGE, Constants.SHOOTER_POTENTIOMETER_OFFSET);
 			shooterTilt = new Talon(Constants.SHOOTER_POSITION_MOTOR);
 			limitFront = new DigitalInput(Constants.SHOOTER_FRONT_LIMIT);
 			limitBack = new DigitalInput(Constants.SHOOTER_BACK_LIMIT);
+			shooterAngleThread = new Thread(this);
 		}
 
 		public void run()
@@ -246,7 +241,11 @@ public class Shooter implements Runnable
 			while (isOn)
 			{
 				angleDegrees();
-				
+				if (limitFront.get() || limitBack.get() || DriverStation.getInstance().isDisabled()
+						|| !DriverStation.getInstance().isDSAttached())
+				{
+					isOn = false;
+				}
 			}
 		}
 
@@ -257,17 +256,18 @@ public class Shooter implements Runnable
 
 		public void angleDegrees()
 		{
-			double currentDegrees;
 			double speed;
 
 			speed = Constants.SHOOTER_ANGLE_SPEED;
 			currentDegrees = anPo.get();
 			if (targetDegrees > currentDegrees)
 			{
+				speed = currentDegrees/targetDegrees;
 				shooterTilt.set(speed);
 			}
 			if (targetDegrees < currentDegrees)
 			{
+				speed = targetDegrees/currentDegrees;
 				shooterTilt.set(-speed);
 			}
 		}
@@ -275,7 +275,15 @@ public class Shooter implements Runnable
 		public void returnToRest()
 		{
 			targetDegrees = Constants.SHOOTER_REST_POSITION;
-			isOn = false;
+			while(targetDegrees != currentDegrees && isOn)
+			{
+				angleDegrees();
+				if (limitFront.get() || limitBack.get() || DriverStation.getInstance().isDisabled()
+						|| !DriverStation.getInstance().isDSAttached())
+				{
+					isOn = false;
+				}
+			}
 		}
 
 		public void startMove(double targDegrees)
