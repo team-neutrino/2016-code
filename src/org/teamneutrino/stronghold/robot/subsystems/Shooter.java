@@ -8,8 +8,10 @@ import org.teamneutrino.stronghold.robot.Constants;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
@@ -24,11 +26,16 @@ public class Shooter implements Runnable
 	private Counter beambreakLeft;
 	private Counter beambreakRight;
 	private AnalogPotentiometer encoder;
+	private DigitalInput limitFront;
+	private DigitalInput limitBack;
+	private Solenoid flippers;
 
 	private PIDController actuationPID;
 
 	private boolean running;
 	private boolean reverse;
+	private boolean angleRunning;
+	private boolean flippersActive;
 
 	private Thread shooterSpeedThread;
 
@@ -50,6 +57,8 @@ public class Shooter implements Runnable
 			actuatorMotor = new Victor(Constants.SHOOTER_ACTUATOR_MOTOR);
 		}
 		leftMotor.setInverted(true);
+		
+		flippers = new Solenoid(Constants.SHOOTER_SOLENOID_CHANNEL);
 
 		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAKE_RIGHT_CHANNEL);
 		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAKE_LEFT_CHANNEL);
@@ -59,7 +68,8 @@ public class Shooter implements Runnable
 
 		actuationPID = new PIDController(Constants.SHOOTER_ACTUATION_K_P, Constants.SHOOTER_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
-
+		
+		angleRunning = false;
 		running = false;
 		reverse = false;
 
@@ -102,6 +112,19 @@ public class Shooter implements Runnable
 	{
 		actuationPID.setSetpoint(angle);
 		actuationPID.enable();
+		if ((limitFront.get() || limitBack.get()) && angleRunning)
+		{
+			actuationPID.disable();
+			angleRunning = false;
+		}
+		
+		angleRunning = actuationPID.onTarget();
+	}
+	
+	public void setFlipper(boolean on)
+	{
+		flippers.set(on);
+		flippersActive = on;
 	}
 
 	@Override
@@ -122,7 +145,7 @@ public class Shooter implements Runnable
 		leftMotor.set(RPMiliToPower(RPMiliTarget));
 		rightMotor.set(RPMiliToPower(RPMiliTarget));
 
-		while (running)
+		while (running && DriverStation.getInstance().isEnabled())
 		{
 			try
 			{
@@ -176,7 +199,9 @@ public class Shooter implements Runnable
 				leftCorrection = 1;
 				rightCorrection = 1;
 			}
-
+			
+			
+			
 			leftMotor.set((reverse ? -1 : 1) * targetPower * leftCorrection);
 			rightMotor.set((reverse ? -1 : 1) * targetPower * rightCorrection);
 

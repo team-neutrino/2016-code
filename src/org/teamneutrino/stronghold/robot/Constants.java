@@ -84,7 +84,11 @@ public class Constants
 	public static final int SHOOTER_FRONT_LIMITSWITCH = 10;
 	public static final int SHOOTER_BACK_LIMITSWITCH = 11;
 	public static final double SHOOTER_ANGLE_SPEED = .5;
+	public static final int SHOOTER_SOLENOID_CHANNEL = 0;
 
+	//Stinger Constants
+	public static final int STINGER_SOLENOID_CHANNEL = 1;
+	
 	// Misc Constants
 	public static final int DRIVER_STATION_REFRESH_RATE = 1000;
 }
