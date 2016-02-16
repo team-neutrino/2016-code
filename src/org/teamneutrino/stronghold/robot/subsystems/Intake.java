@@ -4,15 +4,27 @@ import org.teamneutrino.stronghold.robot.Constants;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Victor;
 
-public class Intake
+public class Intake implements Runnable
 {
-	SpeedController positionMotor;
-	SpeedController intakeFrontToBackMotor;
-	SpeedController intakeSideToSideMotor;
-	AnalogPotentiometer anPo;
+	private SpeedController positionMotor;
+	private SpeedController intakeFrontToBackMotor;
+	private SpeedController intakeSideToSideMotor;
+	private AnalogPotentiometer anPo;
+	private DigitalInput limUp;
+	private DigitalInput limDown;
+	private Thread intakeThread;
+
+	private boolean isInPosition;
+	private boolean on;
+	private int positionNumber;
+	private double currDegrees;
+	private double desiredDegrees;
+	private double speed;
 
 	public Intake()
 	{
@@ -29,11 +41,58 @@ public class Intake
 		}
 		anPo = new AnalogPotentiometer(Constants.INTAKE_POTENTIOMETER_CHANNEL, Constants.INTAKE_POTENTIOMETER_FULLRANGE,
 				Constants.INTAKE_POTENTIOMETER_OFFSET);
+		limUp = new DigitalInput(Constants.INTAKE_LIMIT_UP_CHANNEL);
+		limDown = new DigitalInput(Constants.INTAKE_LIMIT_DOWN_CHANNEL);
+		speed = .5;
+		intakeThread = new Thread(this);
 	}
 
-	public void setPosition(double position)
+	public void run()
 	{
-		// TODO
+
+	}
+
+	public void setPosition(int posNumber)
+	{
+		intakeThread.start();
+		on = true;
+		positionNumber = posNumber;
+		currDegrees = anPo.get();
+		isInPosition = false;
+		while (on)
+		{
+			if (positionNumber == 0)
+			{
+				desiredDegrees = 0;
+				goToPosition();
+			}
+			if (limUp.get() || limDown.get() || DriverStation.getInstance().isDisabled())
+			{
+				on = false;
+			}
+		}
+	}
+	public void goToPosition()
+	{
+		if (desiredDegrees > currDegrees)
+		{
+			speed = currDegrees/desiredDegrees;
+			positionMotor.set(speed);
+		}
+		if (desiredDegrees < currDegrees)
+		{
+			speed = desiredDegrees/currDegrees;
+			positionMotor.set(-speed);
+		}
+		if (Math.abs(desiredDegrees - currDegrees) < 10)
+		{
+			isInPosition = true;
+		}
+	}
+
+	public boolean isInPosition()
+	{
+		return isInPosition;
 	}
 
 	public void set(double speed)

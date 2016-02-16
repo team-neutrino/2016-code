@@ -60,6 +60,8 @@ public class Constants
 	public static final int INTAKE_POTENTIOMETER_CHANNEL = 1;
 	public static final double INTAKE_POTENTIOMETER_FULLRANGE = 5; //TODO
 	public static final double INTAKE_POTENTIOMETER_OFFSET = 1; //TODO
+	public static final int INTAKE_LIMIT_UP_CHANNEL = 12;
+	public static final int INTAKE_LIMIT_DOWN_CHANNEL = 13;
 	
 	// Shooter Constants
 	public static final int SHOOTER_MOTOR_LEFT = 10;

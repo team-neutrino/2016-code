@@ -215,6 +215,7 @@ public class Shooter implements Runnable
 	{
 		private boolean isAimed;
 		private boolean isOn;
+		private boolean returnToRest;
 		private double targetDegrees;
 		private double currentDegrees;
 
@@ -226,6 +227,7 @@ public class Shooter implements Runnable
 
 		public ShootAngle()
 		{
+			returnToRest = true;
 			isOn = false;
 			anPo = new AnalogPotentiometer(Constants.SHOOTER_POTENTIOMETER_CHANNEL,
 					Constants.SHOOTER_POTENTIOMETER_FULLRANGE, Constants.SHOOTER_POTENTIOMETER_OFFSET);
@@ -238,15 +240,7 @@ public class Shooter implements Runnable
 		public void run()
 		{
 			isAimed = false;
-			while (isOn)
-			{
-				angleDegrees();
-				if (limitFront.get() || limitBack.get() || DriverStation.getInstance().isDisabled()
-						|| !DriverStation.getInstance().isDSAttached())
-				{
-					isOn = false;
-				}
-			}
+
 		}
 
 		public boolean isAimed()
@@ -259,23 +253,26 @@ public class Shooter implements Runnable
 			double speed;
 
 			speed = Constants.SHOOTER_ANGLE_SPEED;
-			currentDegrees = anPo.get();
-			if (targetDegrees > currentDegrees)
-			{
-				speed = currentDegrees/targetDegrees;
-				shooterTilt.set(speed);
-			}
-			if (targetDegrees < currentDegrees)
-			{
-				speed = targetDegrees/currentDegrees;
-				shooterTilt.set(-speed);
-			}
+			
+				currentDegrees = anPo.get();
+				if (targetDegrees > currentDegrees)
+				{
+					speed = currentDegrees / targetDegrees;
+					shooterTilt.set(speed);
+				}
+				if (targetDegrees < currentDegrees)
+				{
+					speed = targetDegrees / currentDegrees;
+					shooterTilt.set(-speed);
+				}
+				
 		}
 
 		public void returnToRest()
 		{
+			returnToRest = true;
 			targetDegrees = Constants.SHOOTER_REST_POSITION;
-			while(targetDegrees != currentDegrees && isOn)
+			while (targetDegrees != currentDegrees && isOn)
 			{
 				angleDegrees();
 				if (limitFront.get() || limitBack.get() || DriverStation.getInstance().isDisabled()
@@ -288,12 +285,22 @@ public class Shooter implements Runnable
 
 		public void startMove(double targDegrees)
 		{
+			returnToRest = false;
 			if (!isOn)
 			{
 				shooterAngleThread.start();
 				isOn = true;
 			}
 			targetDegrees = targDegrees;
+			while (isOn && !returnToRest)
+			{
+				angleDegrees();
+				if (limitFront.get() || limitBack.get() || DriverStation.getInstance().isDisabled()
+						|| !DriverStation.getInstance().isDSAttached())
+				{
+					isOn = false;
+				}
+			}
 		}
 	}
 }
