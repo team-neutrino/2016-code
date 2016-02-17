@@ -28,14 +28,13 @@ public class Shooter implements Runnable
 	private AnalogPotentiometer encoder;
 	private DigitalInput limitSwitchFront;
 	private DigitalInput limitSwitchBack;
-	private Solenoid flippers;
+	private Solenoid flippersCylinder;
 
 	private PIDController actuationPID;
 
 	private boolean running;
-	private boolean isSet;
+	private boolean atTargetSpeed;
 	private boolean reverse;
-	private boolean flippersActive;
 
 	private Thread shooterSpeedThread;
 
@@ -58,11 +57,11 @@ public class Shooter implements Runnable
 		}
 		leftMotor.setInverted(true);
 
-		flippers = new Solenoid(Constants.SHOOTER_SOLENOID_CHANNEL);
+		flippersCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_CYLINDER_CHANNEL);
 
 		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAK_RIGHT_CHANNEL);
 		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAK_LEFT_CHANNEL);
-		
+
 		limitSwitchFront = new DigitalInput(Constants.SHOOTER_LIMITSWITCH_FRONT_CHANNEL);
 		limitSwitchBack = new DigitalInput(Constants.SHOOTER_LIMITSWITCH_BACK_CHANNEL);
 
@@ -83,13 +82,13 @@ public class Shooter implements Runnable
 		// TODO
 		leftMotor.set(1);
 		rightMotor.set(1);
-//		reverse = false;
-//
-//		if (!running)
-//		{
-//			shooterSpeedThread.start();
-//			running = true;
-//		}
+		// reverse = false;
+		//
+		// if (!running)
+		// {
+		// shooterSpeedThread.start();
+		// running = true;
+		// }
 	}
 
 	public void reverse()
@@ -97,13 +96,13 @@ public class Shooter implements Runnable
 		// TODO
 		leftMotor.set(-1);
 		rightMotor.set(-1);
-//		reverse = true;
-//
-//		if (!running)
-//		{
-//			shooterSpeedThread.start();
-//			running = true;
-//		}
+		// reverse = true;
+		//
+		// if (!running)
+		// {
+		// shooterSpeedThread.start();
+		// running = true;
+		// }
 	}
 
 	public void stop()
@@ -111,7 +110,7 @@ public class Shooter implements Runnable
 		// TODO
 		leftMotor.set(0);
 		rightMotor.set(0);
-//		running = false;
+		// running = false;
 	}
 
 	public boolean isRunning()
@@ -119,11 +118,11 @@ public class Shooter implements Runnable
 		return running;
 	}
 
-	public boolean isSet()
+	public boolean isAtTargetSpeed()
 	{
-		return isSet;
+		return atTargetSpeed;
 	}
-	
+
 	public void setAcutatorOverride(double speed)
 	{
 		actuationPID.disable();
@@ -134,19 +133,13 @@ public class Shooter implements Runnable
 	{
 		actuationPID.setSetpoint(angle);
 		actuationPID.enable();
-		
+
 		// TODO put limit switch in thread
 	}
 
-	public void setFlipper(boolean on)
+	public void setFlippers(boolean triggered)
 	{
-		flippers.set(on);
-		flippersActive = on;
-	}
-
-	public boolean isFlipperActive()
-	{
-		return flippersActive;
+		flippersCylinder.set(triggered);
 	}
 
 	@Override
@@ -158,6 +151,7 @@ public class Shooter implements Runnable
 		long lastResetTime = System.currentTimeMillis();
 
 		double RPMilliTarget = ((double) Constants.SHOOTER_RPM) / MILLISECONDS_PER_MINUTE;
+		double RPMilliTolerence = ((double) Constants.SHOOTER_TARGET_SPEED_TOLERANCE_RPM) / MILLISECONDS_PER_MINUTE;
 
 		double integral = 0;
 
@@ -190,23 +184,20 @@ public class Shooter implements Runnable
 
 			double RPMilliMin = Math.min(RPMilliLeft, RPMilliRight);
 
-			// TODO Remove magic numbers
-			if ((RPMilliMin < RPMilliTarget * 1.05) && (RPMilliMin > (RPMilliTarget - (RPMilliTarget * .05))))
+			integral = integral + RPMilliMin * timeInterval;
+			double error = RPMilliTarget - RPMilliMin;
+
+			if (Math.abs(error) <= RPMilliTolerence)
 			{
-				isSet = true;
-				// TODO Printouts should only be used for testing, remove
-				System.out.println("Shooter is set!");
+				atTargetSpeed = true;
 			}
 			else
 			{
-				isSet = false;
+				atTargetSpeed = false;
 			}
 
-			double inegral = integral + RPMilliMin * timeInterval;
-			double error = RPMilliTarget - RPMilliMin;
-
 			double targetPower = RPMiliToPower(RPMilliTarget) + error * Constants.SHOOTER_K_P
-					+ inegral * Constants.SHOOTER_K_I;
+					+ integral * Constants.SHOOTER_K_I;
 
 			// Keep target power between 0 and 1
 			targetPower = Math.min(1, Math.max(0, targetPower));

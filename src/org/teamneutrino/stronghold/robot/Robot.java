@@ -87,16 +87,14 @@ public class Robot extends SampleRobot
 					shooter.start();
 				}
 			}
-			// TODO move this logic to shooter
-			isShooterActive = shooter.isRunning();
 
-			if (shooter.isSet() && isShooterActive && (joyLeft.getRawButton(3) || joyRight.getRawButton(3)))
+			if (joyLeft.getRawButton(3) || joyRight.getRawButton(3))
 			{
-				shooter.setFlipper(true);
+				shooter.setFlippers(true);
 			}
 			else
 			{
-				shooter.setFlipper(false);
+				shooter.setFlippers(false);
 			}
 
 			if (joyLeft.getRawButton(2) || joyRight.getRawButton(2))

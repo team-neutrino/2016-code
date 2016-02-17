@@ -68,7 +68,7 @@ public class Constants
 	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 6;
 	public static final int SHOOTER_REFRESH_RATE = 50;
 	public static final int SHOOTER_RPM = 1500;
-	public static final double SHOOTER_TOLERANCE = .05;
+	public static final double SHOOTER_TARGET_SPEED_TOLERANCE_RPM = 200;
 	public static final int SHOOTER_BEAMBREAK_RIGHT_CHANNEL = 8;
 	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = 9;
 	public static final double SHOOTER_PERCENT_POWER_PER_RPMILLI = 2; // TODO
@@ -83,7 +83,7 @@ public class Constants
 	public static final double SHOOTER_ACTUATION_K_D = 0;
 	public static final int SHOOTER_LIMITSWITCH_FRONT_CHANNEL = 10;
 	public static final int SHOOTER_LIMITSWITCH_BACK_CHANNEL = 11;
-	public static final int SHOOTER_SOLENOID_CHANNEL = 0;
+	public static final int SHOOTER_FLIPPER_CYLINDER_CHANNEL = 0;
 
 	// Stinger Constants
 	public static final int STINGER_CYLINDER_CHANNEL = 1;
