@@ -484,19 +484,19 @@ public class AutoDriver implements Runnable
 			if (yPosOfGoal > yCenterOfImage)
 			{
 				angle = -angleIncrement;
-				shooter.incrementAngle(angle);
+				// TODO shooter.incrementAngle(angle);
 			}
 			if (yPosOfGoal < yCenterOfImage)
 			{
 				angle = angleIncrement;
-				shooter.incrementAngle(angle);
+				// TODO shooter.incrementAngle(angle);
 			}
 			
 			if ((Math.abs(yPosOfGoal - yCenterOfImage) < 10) || DriverStation.getInstance().isDisabled()
 					|| !DriverStation.getInstance().isDSAttached())
 			{
 				isOn = false;
-				shooter.incrementAngle(0);
+				// TODO shooter.incrementAngle(0);
 			}
 		}
 	}
