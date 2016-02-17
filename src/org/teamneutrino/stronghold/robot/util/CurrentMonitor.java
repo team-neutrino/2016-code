@@ -61,6 +61,9 @@ public class CurrentMonitor implements Runnable
 
 			// PCM
 			SmartDashboard.putNumber("Compressor Current", pcm.getCompressorCurrent());
+			
+			// Overall Current
+			SmartDashboard.putNumber("Total Current", pdp.getTotalCurrent() + pcm.getCompressorCurrent());
 		}
 	}
 
