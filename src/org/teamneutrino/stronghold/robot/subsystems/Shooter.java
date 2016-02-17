@@ -4,13 +4,13 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import org.teamneutrino.stronghold.robot.Constants;
+import org.teamneutrino.stronghold.robot.util.LimitedMotorPIDController;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -26,11 +26,9 @@ public class Shooter implements Runnable
 	private Counter beambreakLeft;
 	private Counter beambreakRight;
 	private AnalogPotentiometer encoder;
-	private DigitalInput limitSwitchFront;
-	private DigitalInput limitSwitchBack;
 	private Solenoid flippersCylinder;
 
-	private PIDController actuationPID;
+	private LimitedMotorPIDController actuationPID;
 
 	private boolean running;
 	private boolean atTargetSpeed;
@@ -62,14 +60,13 @@ public class Shooter implements Runnable
 		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAK_RIGHT_CHANNEL);
 		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAK_LEFT_CHANNEL);
 
-		limitSwitchFront = new DigitalInput(Constants.SHOOTER_LIMITSWITCH_FRONT_CHANNEL);
-		limitSwitchBack = new DigitalInput(Constants.SHOOTER_LIMITSWITCH_BACK_CHANNEL);
-
 		encoder = new AnalogPotentiometer(Constants.SHOOTER_ENCODER_CHANNEL, Constants.SHOOTER_ENCODER_SCALE,
 				Constants.SHOOTER_ENCODER_OFFSET);
 
-		actuationPID = new PIDController(Constants.SHOOTER_ACTUATION_K_P, Constants.SHOOTER_ACTUATION_K_I,
-				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
+		actuationPID = new LimitedMotorPIDController(Constants.SHOOTER_ACTUATION_K_P, Constants.SHOOTER_ACTUATION_K_I,
+				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor,
+				new DigitalInput(Constants.SHOOTER_LIMITSWITCH_FRONT_CHANNEL),
+				new DigitalInput(Constants.SHOOTER_LIMITSWITCH_BACK_CHANNEL));
 
 		running = false;
 		reverse = false;
@@ -125,16 +122,14 @@ public class Shooter implements Runnable
 
 	public void setAcutatorOverride(double speed)
 	{
-		actuationPID.disable();
-		actuatorMotor.set(speed);
+		actuationPID.setMotorSpeedOverride(speed);
+		;
 	}
 
 	public void setAngle(double angle)
 	{
 		actuationPID.setSetpoint(angle);
 		actuationPID.enable();
-
-		// TODO put limit switch in thread
 	}
 
 	public void setFlippers(boolean triggered)
