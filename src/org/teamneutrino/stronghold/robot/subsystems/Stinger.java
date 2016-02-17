@@ -6,25 +6,25 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class Stinger
 {
-	private Solenoid sting;
+	private Solenoid piston;
 	
-	private boolean isStingerOn;
+	private boolean isOn;
 	
 	public Stinger()
 	{
-		sting = new Solenoid(Constants.STINGER_SOLENOID_CHANNEL);
+		piston = new Solenoid(Constants.STINGER_CYLINDER_CHANNEL);
 		
 		setStinger(false);
 	}
 
-	public boolean isStingerOn()
+	public boolean isOn()
 	{
-		return isStingerOn;
+		return isOn;
 	}
 
 	public void setStinger(boolean on)
 	{
-		this.isStingerOn = on;
-		sting.set(isStingerOn);
+		this.isOn = on;
+		piston.set(isOn);
 	}
 }

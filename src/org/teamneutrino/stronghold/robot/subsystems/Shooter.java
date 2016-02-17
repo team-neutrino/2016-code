@@ -47,15 +47,15 @@ public class Shooter implements Runnable
 	{
 		if (Constants.REAL_BOT)
 		{
-			leftMotor = new CANTalon(Constants.SHOOTER_LEFT_MOTOR);
-			rightMotor = new CANTalon(Constants.SHOOTER_RIGHT_MOTOR);
-			actuatorMotor = new Talon(Constants.SHOOTER_ACTUATOR_MOTOR);
+			leftMotor = new CANTalon(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
+			rightMotor = new CANTalon(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
+			actuatorMotor = new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL);
 		}
 		else
 		{
-			leftMotor = new Victor(Constants.SHOOTER_LEFT_MOTOR);
-			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR);
-			actuatorMotor = new Victor(Constants.SHOOTER_ACTUATOR_MOTOR);
+			leftMotor = new Victor(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
+			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
+			actuatorMotor = new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL);
 		}
 		leftMotor.setInverted(true);
 
@@ -79,29 +79,38 @@ public class Shooter implements Runnable
 
 	public void start()
 	{
-		reverse = false;
-
-		if (!running)
-		{
-			shooterSpeedThread.start();
-			running = true;
-		}
+		// TODO
+		leftMotor.set(1);
+		rightMotor.set(1);
+//		reverse = false;
+//
+//		if (!running)
+//		{
+//			shooterSpeedThread.start();
+//			running = true;
+//		}
 	}
 
 	public void reverse()
 	{
-		reverse = true;
-
-		if (!running)
-		{
-			shooterSpeedThread.start();
-			running = true;
-		}
+		// TODO
+		leftMotor.set(-1);
+		rightMotor.set(-1);
+//		reverse = true;
+//
+//		if (!running)
+//		{
+//			shooterSpeedThread.start();
+//			running = true;
+//		}
 	}
 
 	public void stop()
 	{
-		running = false;
+		// TODO
+		leftMotor.set(0);
+		rightMotor.set(0);
+//		running = false;
 	}
 
 	public boolean isRunning()
@@ -284,7 +293,7 @@ public class Shooter implements Runnable
 
 	private double RPMiliToPower(double RPMili)
 	{
-		return RPMili * Constants.SHOOTER_PERCENT_POWER_PER_RPMilli;
+		return RPMili * Constants.SHOOTER_PERCENT_POWER_PER_RPMILLI;
 	}
 
 	// TODO Remove
