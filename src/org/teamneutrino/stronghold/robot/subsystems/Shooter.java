@@ -58,7 +58,7 @@ public class Shooter implements Runnable
 			actuatorMotor = new Victor(Constants.SHOOTER_ACTUATOR_MOTOR);
 		}
 		leftMotor.setInverted(true);
-		
+
 		flippers = new Solenoid(Constants.SHOOTER_SOLENOID_CHANNEL);
 
 		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAK_RIGHT_CHANNEL);
@@ -69,29 +69,29 @@ public class Shooter implements Runnable
 
 		actuationPID = new PIDController(Constants.SHOOTER_ACTUATION_K_P, Constants.SHOOTER_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
-		
+
 		angleRunning = false;
 		running = false;
 		reverse = false;
 
 		shooterSpeedThread = new Thread(this);
 	}
-	
+
 	public void start()
 	{
 		reverse = false;
-		
+
 		if (!running)
 		{
 			shooterSpeedThread.start();
 			running = true;
 		}
 	}
-	
+
 	public void reverse()
 	{
 		reverse = true;
-		
+
 		if (!running)
 		{
 			shooterSpeedThread.start();
@@ -108,29 +108,39 @@ public class Shooter implements Runnable
 	{
 		return running;
 	}
+
 	public boolean isSet()
 	{
 		return isSet;
 	}
 	
+	public void setAcutatorOverride(double speed)
+	{
+		actuationPID.disable();
+		actuatorMotor.set(speed);
+	}
+
 	public void setAngle(double angle)
 	{
 		actuationPID.setSetpoint(angle);
 		actuationPID.enable();
+		
+		// TODO put limit switch in thread
 		if ((limitFront.get() || limitBack.get()) && angleRunning)
 		{
 			actuationPID.disable();
 			angleRunning = false;
 		}
-		
+
 		angleRunning = actuationPID.onTarget();
 	}
-	
+
 	public void setFlipper(boolean on)
 	{
 		flippers.set(on);
 		flippersActive = on;
 	}
+
 	public boolean isFlipperActive()
 	{
 		return flippersActive;
@@ -174,11 +184,10 @@ public class Shooter implements Runnable
 
 			double RPMilliLeft = (((double) countLeft) / timeInterval);
 			double RPMilliRight = (((double) countRight) / timeInterval);
-			
 
 			double RPMilliMin = Math.min(RPMilliLeft, RPMilliRight);
-			
-			if ((RPMilliMin < RPMilliTarget * 1.05) && (RPMilliMin > (RPMilliTarget - (RPMilliTarget*.05))))
+
+			if ((RPMilliMin < RPMilliTarget * 1.05) && (RPMilliMin > (RPMilliTarget - (RPMilliTarget * .05))))
 			{
 				isSet = true;
 				System.out.println("Shooter is set!");
@@ -219,7 +228,7 @@ public class Shooter implements Runnable
 				leftCorrection = 1;
 				rightCorrection = 1;
 			}
-			
+
 			leftMotor.set((reverse ? -1 : 1) * targetPower * leftCorrection);
 			rightMotor.set((reverse ? -1 : 1) * targetPower * rightCorrection);
 

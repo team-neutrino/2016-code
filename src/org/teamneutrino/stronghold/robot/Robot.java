@@ -69,6 +69,9 @@ public class Robot extends SampleRobot
 		boolean isShooterActive = false;
 		while (isOperatorControl() && isEnabled())
 		{
+			// TODO move
+
+			// Shooter
 			if (isShooterButtonPressed != wasShooterButtonPressed)
 			{
 				wasShooterButtonPressed = isShooterButtonPressed;
@@ -79,13 +82,15 @@ public class Robot extends SampleRobot
 				if (isShooterActive)
 				{
 					shooter.stop();
-				} else
+				}
+				else
 				{
 					shooter.start();
 				}
 			}
+			// TODO move this logic to shooter
 			isShooterActive = shooter.isRunning();
-			
+
 			if (shooter.isSet() && isShooterActive && (joyLeft.getRawButton(3) || joyRight.getRawButton(3)))
 			{
 				shooter.setFlipper(true);
@@ -103,8 +108,20 @@ public class Robot extends SampleRobot
 			{
 				shooter.stop();
 			}
-			
-			
+
+			if (gamepad.getRawButton(4))
+			{
+				shooter.setAcutatorOverride(1);
+			}
+			else if (gamepad.getRawButton(1))
+			{
+				shooter.setAcutatorOverride(-1);
+			}
+			else
+			{
+				shooter.setAcutatorOverride(0);
+			}
+
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
 			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
