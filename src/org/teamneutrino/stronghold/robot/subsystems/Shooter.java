@@ -206,7 +206,7 @@ public class Shooter implements Runnable
 			double error = RPMilliTarget - RPMilliMin;
 
 			double targetPower = RPMiliToPower(RPMilliTarget) + error * Constants.SHOOTER_K_P
-					+ inegral * Constants.SHOOTER_K_P;
+					+ inegral * Constants.SHOOTER_K_I;
 
 			// Keep target power between 0 and 1
 			targetPower = Math.min(1, Math.max(0, targetPower));

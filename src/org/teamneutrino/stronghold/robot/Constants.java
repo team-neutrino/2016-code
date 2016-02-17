@@ -7,7 +7,6 @@ public class Constants
 	// Autonomous Constants
 	public static final double AUTO_MOVE_SPEED = .25;
 	public static final int GYRO_CHANNEL = 0;
-	public static final double AUTO_SLOW_DISTANCE = 1; // IN FEET
 	public static final int THUMBWHEEL_SWITCH_BIT_1_CHANNEL = 4;
 	public static final int THUMBWHEEL_SWITCH_BIT_2_CHANNEL = 5;
 	public static final int THUMBWHEEL_SWITCH_BIT_4_CHANNEL = 6;
@@ -30,9 +29,6 @@ public class Constants
 	public static final int DEFAULT_SATURATION_HIGH = 255;
 	public static final int DEFAULT_LUMINENCE_LOW = 34;
 	public static final int DEFAULT_LUMINENCE_HIGH = 255;
-	public static final int DEFAULT_EXPOSURE = 50;
-	public static final boolean DEFAULT_AUTO_EXPOSURE = true;
-	public static final int DEFAULT_OUTPUT_MODE = 0;
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
@@ -87,7 +83,6 @@ public class Constants
 	public static final double SHOOTER_ACTUATION_K_D = 0;
 	public static final int SHOOTER_LIMITSWITCH_FRONT_CHANNEL = 10;
 	public static final int SHOOTER_LIMITSWITCH_BACK_CHANNEL = 11;
-	public static final double SHOOTER_ANGLE_SPEED = .5;
 	public static final int SHOOTER_SOLENOID_CHANNEL = 0;
 
 	// Stinger Constants
