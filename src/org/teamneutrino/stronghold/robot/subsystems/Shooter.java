@@ -33,6 +33,7 @@ public class Shooter implements Runnable
 	private boolean running;
 	private boolean atTargetSpeed;
 	private boolean reverse;
+	private boolean usePid;
 	private double currentAngle;
 
 	private Thread shooterSpeedThread;
@@ -47,8 +48,7 @@ public class Shooter implements Runnable
 			leftMotor = new CANTalon(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new CANTalon(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
 			actuatorMotor = new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL);
-		}
-		else
+		} else
 		{
 			leftMotor = new Victor(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
@@ -64,6 +64,7 @@ public class Shooter implements Runnable
 		encoder = new AnalogPotentiometer(Constants.SHOOTER_ENCODER_CHANNEL, Constants.SHOOTER_ENCODER_SCALE,
 				Constants.SHOOTER_ENCODER_OFFSET);
 
+		usePid = Constants.USE_PID_FOR_ANGLE;
 		actuationPID = new LimitedMotorPIDController(Constants.SHOOTER_ACTUATION_K_P, Constants.SHOOTER_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor,
 				new DigitalInput(Constants.SHOOTER_LIMITSWITCH_FRONT_CHANNEL),
@@ -121,7 +122,7 @@ public class Shooter implements Runnable
 		return atTargetSpeed;
 	}
 
-	public void setAcutatorOverride(double speed)
+	public void setActuatorOverride(double speed)
 	{
 		actuationPID.setMotorSpeedOverride(speed);
 		;
@@ -130,8 +131,12 @@ public class Shooter implements Runnable
 	public void setAngle(double angle)
 	{
 		this.currentAngle = angle;
-		actuationPID.setSetpoint(currentAngle);
-		actuationPID.enable();
+		if (usePid && DriverStation.getInstance().isEnabled())
+		{
+			actuationPID.setSetpoint(currentAngle);
+			actuationPID.enable();
+		}
+		
 	}
 
 	public double getCurrentAngle()
@@ -142,8 +147,26 @@ public class Shooter implements Runnable
 	public void incrementAngle(double angle)
 	{
 		this.currentAngle += angle;
-		actuationPID.setSetpoint(currentAngle);
-		actuationPID.enable();
+		if (usePid && DriverStation.getInstance().isEnabled())
+		{
+			actuationPID.setSetpoint(currentAngle);
+			actuationPID.enable();
+		}
+		else
+		{
+			if (angle > 0)
+			{
+				setActuatorOverride(.5);
+			}
+			if (angle < 0)
+			{
+				setActuatorOverride(-.5);
+			}
+			if (angle == 0)
+			{
+				setActuatorOverride(0);
+			}
+		}
 	}
 
 	public void setFlippers(boolean triggered)
@@ -175,8 +198,7 @@ public class Shooter implements Runnable
 			try
 			{
 				Thread.sleep(Constants.SHOOTER_REFRESH_RATE);
-			}
-			catch (InterruptedException e)
+			} catch (InterruptedException e)
 			{
 			}
 
@@ -199,8 +221,7 @@ public class Shooter implements Runnable
 			if (Math.abs(error) <= RPMilliTolerence)
 			{
 				atTargetSpeed = true;
-			}
-			else
+			} else
 			{
 				atTargetSpeed = false;
 			}
@@ -220,14 +241,12 @@ public class Shooter implements Runnable
 				// right is too fast
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_RPM), 0);
-			}
-			else if (diff < 0)
+			} else if (diff < 0)
 			{
 				// left is too fast
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_RPM), 0);
 				rightCorrection = 1;
-			}
-			else
+			} else
 			{
 				// everything good
 				leftCorrection = 1;
@@ -263,8 +282,7 @@ public class Shooter implements Runnable
 			try
 			{
 				Thread.sleep(1000);
-			}
-			catch (InterruptedException e)
+			} catch (InterruptedException e)
 			{
 			}
 			long currTime = System.currentTimeMillis();
@@ -300,8 +318,7 @@ public class Shooter implements Runnable
 			PrintWriter writer = new PrintWriter(filename);
 			writer.println(contents);
 			writer.close();
-		}
-		catch (FileNotFoundException e)
+		} catch (FileNotFoundException e)
 		{
 			DriverStation.reportError("Can't write file!", false);
 		}

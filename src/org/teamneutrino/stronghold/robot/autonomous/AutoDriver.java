@@ -496,6 +496,7 @@ public class AutoDriver implements Runnable
 					|| !DriverStation.getInstance().isDSAttached())
 			{
 				isOn = false;
+				shooter.incrementAngle(0);
 			}
 		}
 	}
