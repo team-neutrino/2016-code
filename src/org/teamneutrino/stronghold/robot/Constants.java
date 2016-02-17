@@ -84,6 +84,7 @@ public class Constants
 	public static final int SHOOTER_LIMITSWITCH_FRONT_CHANNEL = 10;
 	public static final int SHOOTER_LIMITSWITCH_BACK_CHANNEL = 11;
 	public static final int SHOOTER_FLIPPER_CYLINDER_CHANNEL = 0;
+	public static final boolean USE_PID_FOR_ANGLE = false;
 
 	// Stinger Constants
 	public static final int STINGER_CYLINDER_CHANNEL = 1;

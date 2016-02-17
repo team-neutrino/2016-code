@@ -5,6 +5,7 @@ import org.teamneutrino.stronghold.robot.exceptions.EncoderUnpluggedException;
 import org.teamneutrino.stronghold.robot.exceptions.GyroUnpluggedException;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
+import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -14,14 +15,17 @@ import edu.wpi.first.wpilibj.Encoder;
  * This class autonomously drives and operates the robot using feed back from
  * sensors.
  */
-public class AutoDriver
+public class AutoDriver implements Runnable
 {
 	private Encoder encLeft;
 	private Encoder encRight;
 	private AnalogGyro gyro;
 
 	private Drive drive;
+	private Shooter shooter;
 	private Camera cam;
+
+	private Thread aimShooterWithCam;
 
 	private static final int TIMEOUT = 100000;
 
@@ -34,20 +38,21 @@ public class AutoDriver
 
 	private static final double RAMP_UP_DISTANCE = 3;
 	private static final double RAMP_DOWN_DISTANCE = 5;
-	
+
 	private static final double RAMP_UP_DEGREES = 90;
 	private static final double RAMP_DOWN_DEGREES = 180;
 
 	private static final double ENCODER_UNPLUGGED_THRESHOLD = .5;
-	
+
 	private static final double GYRO_UNPLUGGED_TIMEOUT = 250;
 	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
 
 	private static final long TIMEOUT_REFRESH_RATE = 5;
 
-	public AutoDriver(Drive drive)
+	public AutoDriver(Drive drive, Shooter shooter)
 	{
 		this.drive = drive;
+		this.shooter = shooter;
 		cam = new Camera();
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
@@ -55,6 +60,8 @@ public class AutoDriver
 
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
+
+		aimShooterWithCam = new Thread(this);
 	}
 
 	/**
@@ -114,8 +121,7 @@ public class AutoDriver
 				rightCorrection = 0;
 				terminate = true;
 				// msg = "done";
-			}
-			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			} else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
@@ -125,28 +131,24 @@ public class AutoDriver
 				{
 					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				}
-				else
+				} else
 				{
 					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
 				}
-			}
-			else if (diff > 0)
+			} else if (diff > 0)
 			{
 				// msg = "veer right";
 				// veer right
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-			}
-			else if (diff < 0)
+			} else if (diff < 0)
 			{
 				// msg = "veer left";
 				// veer right
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 				rightCorrection = 1;
-			}
-			else
+			} else
 			{
 				// msg = "going straight";
 				// go straight
@@ -162,13 +164,11 @@ public class AutoDriver
 			{
 				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
-			}
-			else if (minDistance < RAMP_UP_DISTANCE)
+			} else if (minDistance < RAMP_UP_DISTANCE)
 			{
 				// ramp up
 				ramp = (minDistance / RAMP_UP_DISTANCE);
-			}
-			else if (remainDistance < RAMP_DOWN_DISTANCE)
+			} else if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
@@ -237,8 +237,7 @@ public class AutoDriver
 			try
 			{
 				Thread.sleep(TIMEOUT_REFRESH_RATE);
-			}
-			catch (InterruptedException e)
+			} catch (InterruptedException e)
 			{
 			}
 
@@ -311,8 +310,7 @@ public class AutoDriver
 				rightCorrection = 0;
 				terminate = true;
 				msg = "done";
-			}
-			else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
+			} else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
 			{
 				// gyro unplugged
 				drive.setLeft(0);
@@ -320,8 +318,7 @@ public class AutoDriver
 
 				DriverStation.reportError("Gyro is unplugged", false);
 				throw new GyroUnpluggedException("Gyro is unplgged");
-			}
-			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			} else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
@@ -331,28 +328,24 @@ public class AutoDriver
 				{
 					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				}
-				else
+				} else
 				{
 					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
 				}
-			}
-			else if (diff > 0)
+			} else if (diff > 0)
 			{
 				msg = "veer right";
 				// veer right
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-			}
-			else if (diff < 0)
+			} else if (diff < 0)
 			{
 				msg = "veer left";
 				// veer right
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 				rightCorrection = 1;
-			}
-			else
+			} else
 			{
 				msg = "going straight";
 				// go straight
@@ -368,13 +361,11 @@ public class AutoDriver
 			{
 				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(degreesTraveled / RAMP_UP_DISTANCE, degreesRemain / RAMP_DOWN_DISTANCE);
-			}
-			else if (degreesTraveled < RAMP_UP_DEGREES)
+			} else if (degreesTraveled < RAMP_UP_DEGREES)
 			{
 				// ramp up
 				ramp = (degreesTraveled / RAMP_UP_DEGREES);
-			}
-			else if (degreesRemain < RAMP_DOWN_DEGREES)
+			} else if (degreesRemain < RAMP_DOWN_DEGREES)
 			{
 				// ramp down
 				ramp = (degreesRemain / RAMP_DOWN_DEGREES);
@@ -416,8 +407,9 @@ public class AutoDriver
 	/**
 	 * Uses the camera to rotate the robot so that it is pointed toward the
 	 * goal.
-	 * @throws GyroUnpluggedException 
-	 * @throws EncoderUnpluggedException 
+	 * 
+	 * @throws GyroUnpluggedException
+	 * @throws EncoderUnpluggedException
 	 */
 	public void rotateTowardGoal() throws EncoderUnpluggedException, GyroUnpluggedException
 	{
@@ -448,8 +440,7 @@ public class AutoDriver
 
 				Thread.yield();
 			}
-		}
-		else
+		} else
 		{
 			while (imageCenterX > centerX && !terminate)
 			{
@@ -471,5 +462,47 @@ public class AutoDriver
 			}
 		}
 
+	}
+
+	/**
+	 * Uses the camera to angle the shooter to point at the goal.
+	 * 
+	 * TODO: Find the offset of the camera!
+	 */
+	public void run()
+	{
+		double yPosOfGoal;
+		double yCenterOfImage = 320;
+		boolean isOn = true;
+		
+		double angleIncrement = 1;
+		double angle;
+
+		yPosOfGoal = cam.getTargetY();
+		while (isOn)
+		{
+			if (yPosOfGoal > yCenterOfImage)
+			{
+				angle = -angleIncrement;
+				shooter.incrementAngle(angle);
+			}
+			if (yPosOfGoal < yCenterOfImage)
+			{
+				angle = angleIncrement;
+				shooter.incrementAngle(angle);
+			}
+			
+			if ((Math.abs(yPosOfGoal - yCenterOfImage) < 10) || DriverStation.getInstance().isDisabled()
+					|| !DriverStation.getInstance().isDSAttached())
+			{
+				isOn = false;
+				shooter.incrementAngle(0);
+			}
+		}
+	}
+
+	public void aimShooterAtGoal()
+	{
+		aimShooterWithCam.start();
 	}
 }
