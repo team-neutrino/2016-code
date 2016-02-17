@@ -9,6 +9,7 @@ import org.teamneutrino.stronghold.robot.autonomous.modes.TurnTowardGoal;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
+import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
@@ -33,6 +34,9 @@ public class Robot extends SampleRobot
 		intake = new Intake();
 		driver = new AutoDriver(drive, shooter);
 		shooter = new Shooter();
+		
+		// current monitor
+		new CurrentMonitor();
 
 		// set up auto modes
 		autoController = new AutoController();

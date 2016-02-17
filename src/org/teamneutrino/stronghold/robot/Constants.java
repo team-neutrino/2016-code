@@ -37,17 +37,17 @@ public class Constants
 	public static final int ENCODER_RIGHT_B_CHANNEL = 3;
 	public static final double ENCODER_DISTANCE_PER_PULSE = (.5 * Math.PI) * 1.0 / 360 / 3;
 	public static final int DRIVE_LEFT_1_CHANNEL = 0;
-	public static final int DRIVE_LEFT_1_POWER_CHANNEL = 10;
+	public static final int DRIVE_LEFT_1_POWER_CHANNEL = 1; // TODO
 	public static final int DRIVE_LEFT_2_CHANNEL = 1;
-	public static final int DRIVE_LEFT_2_POWER_CHANNEL = 10;
+	public static final int DRIVE_LEFT_2_POWER_CHANNEL = 2; // TODO
 	public static final int DRIVE_LEFT_3_CHANNEL = 2;
-	public static final int DRIVE_LEFT_3_POWER_CHANNEL = 10;
+	public static final int DRIVE_LEFT_3_POWER_CHANNEL = 3; // TODO
 	public static final int DRIVE_RIGHT_1_CHANNEL = 3;
-	public static final int DRIVE_RIGHT_1_POWER_CHANNEL = 10;
+	public static final int DRIVE_RIGHT_1_POWER_CHANNEL = 4; // TODO
 	public static final int DRIVE_RIGHT_2_CHANNEL = 4;
-	public static final int DRIVE_RIGHT_2_POWER_CHANNEL = 10;
+	public static final int DRIVE_RIGHT_2_POWER_CHANNEL = 5; // TODO
 	public static final int DRIVE_RIGHT_3_CHANNEL = 5;
-	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 10;
+	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 6; // TODO
 
 	// Intake Constants
 	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
@@ -64,8 +64,11 @@ public class Constants
 
 	// Shooter Constants
 	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = 10;
+	public static final int SHOOTER_LEFT_MOTOR_POWER_CHANNEL = 7; // TODO
 	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = 11;
+	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 8; // TODO
 	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 6;
+	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 9; // TODO
 	public static final int SHOOTER_REFRESH_RATE = 50;
 	public static final int SHOOTER_RPM = 1500;
 	public static final double SHOOTER_TARGET_SPEED_TOLERANCE_RPM = 200;
