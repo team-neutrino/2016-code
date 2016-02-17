@@ -24,7 +24,6 @@ public class Intake implements Runnable
 	private int positionNumber;
 	private double currDegrees;
 	private double desiredDegrees;
-	private double speed;
 
 	public Intake()
 	{
@@ -33,17 +32,20 @@ public class Intake implements Runnable
 			positionMotor = new CANTalon(Constants.INTAKE_POSITION_MOTOR_CHANNEL);
 			intakeFrontToBackMotor = new CANTalon(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
 			intakeSideToSideMotor = new CANTalon(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
-		} else
+		}
+		else
 		{
 			positionMotor = new Victor(Constants.INTAKE_POSITION_MOTOR_CHANNEL);
 			intakeFrontToBackMotor = new Victor(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
 			intakeSideToSideMotor = new Victor(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 		}
+
 		anPo = new AnalogPotentiometer(Constants.INTAKE_POTENTIOMETER_CHANNEL, Constants.INTAKE_POTENTIOMETER_FULLRANGE,
 				Constants.INTAKE_POTENTIOMETER_OFFSET);
+
 		limUp = new DigitalInput(Constants.INTAKE_LIMIT_UP_CHANNEL);
 		limDown = new DigitalInput(Constants.INTAKE_LIMIT_DOWN_CHANNEL);
-		speed = .5;
+
 		intakeThread = new Thread(this);
 	}
 
@@ -72,18 +74,9 @@ public class Intake implements Runnable
 			}
 		}
 	}
+
 	public void goToPosition()
 	{
-		if (desiredDegrees > currDegrees)
-		{
-			speed = currDegrees/desiredDegrees;
-			positionMotor.set(speed);
-		}
-		if (desiredDegrees < currDegrees)
-		{
-			speed = desiredDegrees/currDegrees;
-			positionMotor.set(-speed);
-		}
 		if (Math.abs(desiredDegrees - currDegrees) < 10)
 		{
 			isInPosition = true;
