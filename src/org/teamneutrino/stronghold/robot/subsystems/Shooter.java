@@ -33,6 +33,7 @@ public class Shooter implements Runnable
 	private boolean running;
 	private boolean atTargetSpeed;
 	private boolean reverse;
+	private double currentAngle;
 
 	private Thread shooterSpeedThread;
 
@@ -128,7 +129,20 @@ public class Shooter implements Runnable
 
 	public void setAngle(double angle)
 	{
-		actuationPID.setSetpoint(angle);
+		this.currentAngle = angle;
+		actuationPID.setSetpoint(currentAngle);
+		actuationPID.enable();
+	}
+
+	public double getCurrentAngle()
+	{
+		return currentAngle;
+	}
+
+	public void incrementAngle(double angle)
+	{
+		this.currentAngle += angle;
+		actuationPID.setSetpoint(currentAngle);
 		actuationPID.enable();
 	}
 
