@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Shooter implements Runnable
 {
-	// TODO limit switches
 	private SpeedController leftMotor;
 	private SpeedController rightMotor;
 	private SpeedController actuatorMotor;
@@ -34,10 +33,15 @@ public class Shooter implements Runnable
 	private boolean atTargetSpeed;
 	private boolean reverse;
 
+	private boolean leftBeamBreakNoSignal;
+	private boolean rightBeamBreakNoSignal;
+
 	private Thread shooterSpeedThread;
 
 	private static final int MILLISECONDS_PER_MINUTE = 60000;
 	private static final int CORRECTION_RPM = 2000;
+
+	private static final int NO_SIGNAL_DETECTION_COUNT = 5;
 
 	public Shooter()
 	{
@@ -68,6 +72,9 @@ public class Shooter implements Runnable
 				new DigitalInput(Constants.SHOOTER_LIMITSWITCH_FRONT_CHANNEL),
 				new DigitalInput(Constants.SHOOTER_LIMITSWITCH_BACK_CHANNEL));
 
+		leftBeamBreakNoSignal = false;
+		rightBeamBreakNoSignal = false;
+
 		running = false;
 		reverse = false;
 
@@ -76,38 +83,31 @@ public class Shooter implements Runnable
 
 	public void start()
 	{
-		// TODO
-		leftMotor.set(1);
-		rightMotor.set(1);
-		// reverse = false;
-		//
-		// if (!running)
-		// {
-		// shooterSpeedThread.start();
-		// running = true;
-		// }
+		reverse = false;
+
+		if (!running)
+		{
+			shooterSpeedThread.start();
+			running = true;
+		}
 	}
 
 	public void reverse()
 	{
-		// TODO
-		leftMotor.set(-1);
-		rightMotor.set(-1);
-		// reverse = true;
-		//
-		// if (!running)
-		// {
-		// shooterSpeedThread.start();
-		// running = true;
-		// }
+		reverse = true;
+
+		if (!running)
+		{
+			shooterSpeedThread.start();
+			running = true;
+		}
 	}
 
 	public void stop()
 	{
-		// TODO
 		leftMotor.set(0);
 		rightMotor.set(0);
-		// running = false;
+		 running = false;
 	}
 
 	public boolean isRunning()
@@ -150,6 +150,9 @@ public class Shooter implements Runnable
 
 		double integral = 0;
 
+		int leftNoSignalCount = 0;
+		int rightNoSignalCount = 0;
+
 		beambreakLeft.reset();
 		beambreakRight.reset();
 
@@ -170,14 +173,54 @@ public class Shooter implements Runnable
 			int timeInterval = (int) (lastResetTime - currTime);
 			lastResetTime = currTime;
 			int countLeft = beambreakLeft.get();
-			int countRight = beambreakRight.get();
 			beambreakLeft.reset();
+			int countRight = beambreakRight.get();
 			beambreakRight.reset();
+
+			if (countLeft == 0)
+			{
+				leftNoSignalCount++;
+			}
+			else
+			{
+				leftNoSignalCount = 0;
+			}
+			if (countRight == 0)
+			{
+				rightNoSignalCount++;
+			}
+			else
+			{
+				rightNoSignalCount = 0;
+			}
+
+			if (!leftBeamBreakNoSignal && leftNoSignalCount > NO_SIGNAL_DETECTION_COUNT)
+			{
+				leftBeamBreakNoSignal = true;
+				DriverStation.reportError("No signal from left breambreak (maybe unplugged)", false);
+			}
+			if (!rightBeamBreakNoSignal && rightNoSignalCount > NO_SIGNAL_DETECTION_COUNT)
+			{
+				rightBeamBreakNoSignal = true;
+				DriverStation.reportError("No signal from right breambreak (maybe unplugged)", false);
+			}
 
 			double RPMilliLeft = (((double) countLeft) / timeInterval);
 			double RPMilliRight = (((double) countRight) / timeInterval);
 
-			double RPMilliMin = Math.min(RPMilliLeft, RPMilliRight);
+			double RPMilliMin;
+			if (leftBeamBreakNoSignal)
+			{
+				RPMilliMin = RPMilliRight;
+			}
+			else if (rightBeamBreakNoSignal)
+			{
+				RPMilliMin = RPMilliLeft;
+			}
+			else
+			{
+				RPMilliMin = Math.min(RPMilliLeft, RPMilliRight);
+			}
 
 			integral = integral + RPMilliMin * timeInterval;
 			double error = RPMilliTarget - RPMilliMin;
@@ -191,8 +234,8 @@ public class Shooter implements Runnable
 				atTargetSpeed = false;
 			}
 
-			double targetPower = RPMiliToPower(RPMilliTarget) + error * Constants.SHOOTER_K_P
-					+ integral * Constants.SHOOTER_K_I;
+			double targetPower = RPMiliToPower(RPMilliTarget) + (leftBeamBreakNoSignal && rightBeamBreakNoSignal ? 0
+					: error * Constants.SHOOTER_K_P + integral * Constants.SHOOTER_K_I);
 
 			// Keep target power between 0 and 1
 			targetPower = Math.min(1, Math.max(0, targetPower));
@@ -201,13 +244,13 @@ public class Shooter implements Runnable
 			double diff = RPMilliRight - RPMilliLeft;
 			double leftCorrection;
 			double rightCorrection;
-			if (diff > 0)
+			if (diff > 0 && !leftBeamBreakNoSignal)
 			{
 				// right is too fast
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_RPM), 0);
 			}
-			else if (diff < 0)
+			else if (diff < 0 && !rightBeamBreakNoSignal)
 			{
 				// left is too fast
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_RPM), 0);
@@ -228,10 +271,12 @@ public class Shooter implements Runnable
 					+ " ," + targetPower + " ," + leftCorrection + " ," + rightCorrection + "\n";
 		}
 
-		writeFile("/home/lvuser/shooterRun.csv", printout);
-
 		leftMotor.set(0);
 		rightMotor.set(0);
+
+		running = false;
+
+		writeFile("/home/lvuser/shooterRun.csv", printout);
 	}
 
 	// TODO Remove

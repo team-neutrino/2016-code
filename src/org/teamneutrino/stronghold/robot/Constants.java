@@ -71,7 +71,7 @@ public class Constants
 	public static final double SHOOTER_TARGET_SPEED_TOLERANCE_RPM = 200;
 	public static final int SHOOTER_BEAMBREAK_RIGHT_CHANNEL = 8;
 	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = 9;
-	public static final double SHOOTER_PERCENT_POWER_PER_RPMILLI = 2; // TODO
+	public static final double SHOOTER_PERCENT_POWER_PER_RPMILLI = 1/1500;
 	public static final double SHOOTER_K_P = .1; // TODO
 	public static final double SHOOTER_K_I = 0; // TODO
 	public static final double SHOOTER_REST_POSITION = 0; // TODO
