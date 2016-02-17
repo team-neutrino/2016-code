@@ -33,6 +33,7 @@ public class Shooter implements Runnable
 	private PIDController actuationPID;
 
 	private boolean running;
+	private boolean isSet;
 	private boolean reverse;
 	private boolean angleRunning;
 	private boolean flippersActive;
@@ -60,8 +61,8 @@ public class Shooter implements Runnable
 		
 		flippers = new Solenoid(Constants.SHOOTER_SOLENOID_CHANNEL);
 
-		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAKE_RIGHT_CHANNEL);
-		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAKE_LEFT_CHANNEL);
+		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAK_RIGHT_CHANNEL);
+		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAK_LEFT_CHANNEL);
 
 		encoder = new AnalogPotentiometer(Constants.SHOOTER_ENCODER_CHANNEL, Constants.SHOOTER_ENCODER_SCALE,
 				Constants.SHOOTER_ENCODER_OFFSET);
@@ -107,6 +108,10 @@ public class Shooter implements Runnable
 	{
 		return running;
 	}
+	public boolean isSet()
+	{
+		return isSet;
+	}
 	
 	public void setAngle(double angle)
 	{
@@ -126,6 +131,10 @@ public class Shooter implements Runnable
 		flippers.set(on);
 		flippersActive = on;
 	}
+	public boolean isFlipperActive()
+	{
+		return flippersActive;
+	}
 
 	@Override
 	public void run()
@@ -135,15 +144,15 @@ public class Shooter implements Runnable
 
 		long lastResetTime = System.currentTimeMillis();
 
-		double RPMiliTarget = ((double) Constants.SHOOTER_RPM) / MILLISECONDS_PER_MINUTE;
+		double RPMilliTarget = ((double) Constants.SHOOTER_RPM) / MILLISECONDS_PER_MINUTE;
 
 		double integral = 0;
 
 		beambreakLeft.reset();
 		beambreakRight.reset();
 
-		leftMotor.set(RPMiliToPower(RPMiliTarget));
-		rightMotor.set(RPMiliToPower(RPMiliTarget));
+		leftMotor.set(RPMiliToPower(RPMilliTarget));
+		rightMotor.set(RPMiliToPower(RPMilliTarget));
 
 		while (running && DriverStation.getInstance().isEnabled())
 		{
@@ -165,13 +174,24 @@ public class Shooter implements Runnable
 
 			double RPMilliLeft = (((double) countLeft) / timeInterval);
 			double RPMilliRight = (((double) countRight) / timeInterval);
+			
 
 			double RPMilliMin = Math.min(RPMilliLeft, RPMilliRight);
+			
+			if ((RPMilliMin < RPMilliTarget * 1.05) && (RPMilliMin > (RPMilliTarget - (RPMilliTarget*.05))))
+			{
+				isSet = true;
+				System.out.println("Shooter is set!");
+			}
+			else
+			{
+				isSet = false;
+			}
 
 			double inegral = integral + RPMilliMin * timeInterval;
-			double error = RPMiliTarget - RPMilliMin;
+			double error = RPMilliTarget - RPMilliMin;
 
-			double targetPower = RPMiliToPower(RPMiliTarget) + error * Constants.SHOOTER_K_P
+			double targetPower = RPMiliToPower(RPMilliTarget) + error * Constants.SHOOTER_K_P
 					+ inegral * Constants.SHOOTER_K_P;
 
 			// Keep target power between 0 and 1
@@ -200,12 +220,10 @@ public class Shooter implements Runnable
 				rightCorrection = 1;
 			}
 			
-			
-			
 			leftMotor.set((reverse ? -1 : 1) * targetPower * leftCorrection);
 			rightMotor.set((reverse ? -1 : 1) * targetPower * rightCorrection);
 
-			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMiliTarget
+			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliTarget
 					+ " ," + RPMilliLeft + " ," + RPMilliRight + " ," + RPMilliMin + " ," + integral + " ," + error
 					+ " ," + targetPower + " ," + leftCorrection + " ," + rightCorrection + "\n";
 		}

@@ -69,8 +69,9 @@ public class Constants
 	public static final int SHOOTER_ACTUATOR_MOTOR = 6;
 	public static final int SHOOTER_REFRESH_RATE = 50;
 	public static final int SHOOTER_RPM = 1500;
-	public static final int SHOOTER_BEAMBREAKE_RIGHT_CHANNEL = 8;
-	public static final int SHOOTER_BEAMBREAKE_LEFT_CHANNEL = 9;
+	public static final double SHOOTER_TOLERANCE = .05;
+	public static final int SHOOTER_BEAMBREAK_RIGHT_CHANNEL = 8;
+	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = 9;
 	public static final double SHOOTER_PERCENT_POWER_PER_RPMilli = 2; // TODO
 	public static final double SHOOTER_K_P = .1; // TODO
 	public static final double SHOOTER_K_I = 0; // TODO

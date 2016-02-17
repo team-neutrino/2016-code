@@ -14,12 +14,17 @@ public class Stinger
 	{
 		sting = new Solenoid(Constants.STINGER_SOLENOID_CHANNEL);
 		
-		isStingerOn = false;
+		setStinger(false);
 	}
-	
+
+	public boolean isStingerOn()
+	{
+		return isStingerOn;
+	}
+
 	public void setStinger(boolean on)
 	{
-		sting.set(on);
-		isStingerOn = on;
+		this.isStingerOn = on;
+		sting.set(isStingerOn);
 	}
 }

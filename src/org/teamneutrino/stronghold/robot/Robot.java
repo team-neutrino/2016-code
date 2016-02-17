@@ -12,6 +12,7 @@ import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends SampleRobot
 {
@@ -41,11 +42,11 @@ public class Robot extends SampleRobot
 		autoController.assignMode(2, new TestMode(driver, shooter));
 		autoController.assignMode(3, new TurnTowardGoal(driver, shooter));
 	}
-	
+
 	@Override
 	public void robotInit()
 	{
-		
+
 	}
 
 	@Override
@@ -63,17 +64,47 @@ public class Robot extends SampleRobot
 	@Override
 	public void operatorControl()
 	{
-
+		boolean isShooterButtonPressed = false;
+		boolean wasShooterButtonPressed = false;
+		boolean isShooterActive = false;
 		while (isOperatorControl() && isEnabled())
 		{
-			if (gamepad.getRawButton(4))
+			if (isShooterButtonPressed != wasShooterButtonPressed)
 			{
-				shooter.start();
+				wasShooterButtonPressed = isShooterButtonPressed;
+			}
+			isShooterButtonPressed = (joyLeft.getRawButton(1) || joyRight.getRawButton(1));
+			if (wasShooterButtonPressed)
+			{
+				if (isShooterActive)
+				{
+					shooter.stop();
+				} else
+				{
+					shooter.start();
+				}
+			}
+			isShooterActive = shooter.isRunning();
+			
+			if (shooter.isSet() && isShooterActive && (joyLeft.getRawButton(3) || joyRight.getRawButton(3)))
+			{
+				shooter.setFlipper(true);
+			}
+			else
+			{
+				shooter.setFlipper(false);
+			}
+
+			if (joyLeft.getRawButton(2) || joyRight.getRawButton(2))
+			{
+				shooter.reverse();
 			}
 			else
 			{
 				shooter.stop();
 			}
+			
+			
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
 			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
@@ -85,6 +116,6 @@ public class Robot extends SampleRobot
 	@Override
 	public void test()
 	{
-		
+
 	}
 }
