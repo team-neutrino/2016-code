@@ -19,11 +19,8 @@ public class Intake implements Runnable
 	private DigitalInput limDown;
 	private Thread intakeThread;
 
-	private boolean isInPosition;
 	private boolean on;
 	private int positionNumber;
-	private double currDegrees;
-	private double desiredDegrees;
 
 	public Intake()
 	{
@@ -49,48 +46,24 @@ public class Intake implements Runnable
 		intakeThread = new Thread(this);
 	}
 
-	public void run()
-	{
-
-	}
-
 	public void setPosition(int posNumber)
 	{
-		intakeThread.start();
-		on = true;
-		positionNumber = posNumber;
-		currDegrees = anPo.get();
-		isInPosition = false;
-		while (on)
-		{
-			if (positionNumber == 0)
-			{
-				desiredDegrees = 0;
-				goToPosition();
-			}
-			if (limUp.get() || limDown.get() || DriverStation.getInstance().isDisabled())
-			{
-				on = false;
-			}
-		}
+		
 	}
 
-	public void goToPosition()
+	public void setAngle()
 	{
-		if (Math.abs(desiredDegrees - currDegrees) < 10)
-		{
-			isInPosition = true;
-		}
-	}
-
-	public boolean isInPosition()
-	{
-		return isInPosition;
+		
 	}
 
 	public void set(double speed)
 	{
 		intakeFrontToBackMotor.set(speed);
 		intakeSideToSideMotor.set(speed);
+	}
+	
+	public void run()
+	{
+		// TODO
 	}
 }
