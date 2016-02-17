@@ -2,7 +2,7 @@ package org.teamneutrino.stronghold.robot;
 
 public class Constants
 {
-	public static final boolean REAL_BOT = false;
+	public static final boolean REAL_BOT = true;
 
 	// Autonomous Constants
 	public static final double AUTO_MOVE_SPEED = .25;
@@ -21,7 +21,7 @@ public class Constants
 	// Button Mapping - Joy sticks
 
 	// Button Mapping - Game pad
-	
+
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam1";
 	public static final int DEFAULT_HUE_LOW = 101;
@@ -39,7 +39,7 @@ public class Constants
 	public static final int ENCODER_LEFT_B_CHANNEL = 1;
 	public static final int ENCODER_RIGHT_A_CHANNEL = 2;
 	public static final int ENCODER_RIGHT_B_CHANNEL = 3;
-	public static final double ENCODER_DISTANCE_PER_PULSE = (.5 * Math.PI)*1.0/360/3;
+	public static final double ENCODER_DISTANCE_PER_PULSE = (.5 * Math.PI) * 1.0 / 360 / 3;
 	public static final int DRIVE_LEFT_1_CHANNEL = 0;
 	public static final int DRIVE_LEFT_1_POWER_CHANNEL = 10;
 	public static final int DRIVE_LEFT_2_CHANNEL = 1;
@@ -52,17 +52,20 @@ public class Constants
 	public static final int DRIVE_RIGHT_2_POWER_CHANNEL = 10;
 	public static final int DRIVE_RIGHT_3_CHANNEL = 5;
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 10;
-	
+
 	// Intake Constants
-	public static final int INTAKE_POSITION_MOTOR_CHANNEL = 9;
+	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
 	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 8;
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
-	public static final int INTAKE_POTENTIOMETER_CHANNEL = 1;
-	public static final double INTAKE_POTENTIOMETER_FULLRANGE = 5; //TODO
-	public static final double INTAKE_POTENTIOMETER_OFFSET = 1; //TODO
-	public static final int INTAKE_LIMIT_UP_CHANNEL = 12;
-	public static final int INTAKE_LIMIT_DOWN_CHANNEL = 13;
-	
+	public static final int INTAKE_ENCODER_CHANNEL = 1;
+	public static final double INTAKE_ENCODER_SCALE = 5; // TODO
+	public static final double INTAKE_ENCODER_OFFSET = 0; // TODO
+	public static final double INTAKE_ACTUATION_K_P = 1;
+	public static final double INTAKE_ACTUATION_K_I = 0;
+	public static final double INTAKE_ACTUATION_K_D = 0;
+	public static final int INTAKE_LIMIT_SWITCH_UP_CHANNEL = 12;
+	public static final int INTAKE_LIMIT_SWITCH_DOWN_CHANNEL = 13;
+
 	// Shooter Constants
 	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = 10;
 	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = 11;
@@ -77,19 +80,19 @@ public class Constants
 	public static final double SHOOTER_K_I = 0; // TODO
 	public static final double SHOOTER_REST_POSITION = 0; // TODO
 	public static final int SHOOTER_ENCODER_CHANNEL = 2; // TODO
-	public static final double SHOOTER_ENCODER_SCALE = 5; //TODO
-	public static final double SHOOTER_ENCODER_OFFSET = 0; //TODO
+	public static final double SHOOTER_ENCODER_SCALE = 5; // TODO
+	public static final double SHOOTER_ENCODER_OFFSET = 0; // TODO
 	public static final double SHOOTER_ACTUATION_K_P = 1;
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = 0;
-	public static final int SHOOTER_FRONT_LIMITSWITCH = 10;
-	public static final int SHOOTER_BACK_LIMITSWITCH = 11;
+	public static final int SHOOTER_LIMITSWITCH_FRONT_CHANNEL = 10;
+	public static final int SHOOTER_LIMITSWITCH_BACK_CHANNEL = 11;
 	public static final double SHOOTER_ANGLE_SPEED = .5;
 	public static final int SHOOTER_SOLENOID_CHANNEL = 0;
 
-	//Stinger Constants
+	// Stinger Constants
 	public static final int STINGER_CYLINDER_CHANNEL = 1;
-	
+
 	// Misc Constants
 	public static final int DRIVER_STATION_REFRESH_RATE = 1000;
 }

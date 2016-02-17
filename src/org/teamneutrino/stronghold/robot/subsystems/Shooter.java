@@ -26,8 +26,8 @@ public class Shooter implements Runnable
 	private Counter beambreakLeft;
 	private Counter beambreakRight;
 	private AnalogPotentiometer encoder;
-	private DigitalInput limitFront;
-	private DigitalInput limitBack;
+	private DigitalInput limitSwitchFront;
+	private DigitalInput limitSwitchBack;
 	private Solenoid flippers;
 
 	private PIDController actuationPID;
@@ -35,7 +35,6 @@ public class Shooter implements Runnable
 	private boolean running;
 	private boolean isSet;
 	private boolean reverse;
-	private boolean angleRunning;
 	private boolean flippersActive;
 
 	private Thread shooterSpeedThread;
@@ -63,6 +62,9 @@ public class Shooter implements Runnable
 
 		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAK_RIGHT_CHANNEL);
 		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAK_LEFT_CHANNEL);
+		
+		limitSwitchFront = new DigitalInput(Constants.SHOOTER_LIMITSWITCH_FRONT_CHANNEL);
+		limitSwitchBack = new DigitalInput(Constants.SHOOTER_LIMITSWITCH_BACK_CHANNEL);
 
 		encoder = new AnalogPotentiometer(Constants.SHOOTER_ENCODER_CHANNEL, Constants.SHOOTER_ENCODER_SCALE,
 				Constants.SHOOTER_ENCODER_OFFSET);
@@ -70,7 +72,6 @@ public class Shooter implements Runnable
 		actuationPID = new PIDController(Constants.SHOOTER_ACTUATION_K_P, Constants.SHOOTER_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 
-		angleRunning = false;
 		running = false;
 		reverse = false;
 
@@ -135,13 +136,6 @@ public class Shooter implements Runnable
 		actuationPID.enable();
 		
 		// TODO put limit switch in thread
-		if ((limitFront.get() || limitBack.get()) && angleRunning)
-		{
-			actuationPID.disable();
-			angleRunning = false;
-		}
-
-		angleRunning = actuationPID.onTarget();
 	}
 
 	public void setFlipper(boolean on)
@@ -196,9 +190,11 @@ public class Shooter implements Runnable
 
 			double RPMilliMin = Math.min(RPMilliLeft, RPMilliRight);
 
+			// TODO Remove magic numbers
 			if ((RPMilliMin < RPMilliTarget * 1.05) && (RPMilliMin > (RPMilliTarget - (RPMilliTarget * .05))))
 			{
 				isSet = true;
+				// TODO Printouts should only be used for testing, remove
 				System.out.println("Shooter is set!");
 			}
 			else
