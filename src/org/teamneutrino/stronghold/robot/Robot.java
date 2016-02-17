@@ -31,7 +31,7 @@ public class Robot extends SampleRobot
 		gamepad = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
 		intake = new Intake();
-		driver = new AutoDriver(drive);
+		driver = new AutoDriver(drive, shooter);
 		shooter = new Shooter();
 
 		// set up auto modes
