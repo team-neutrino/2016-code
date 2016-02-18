@@ -57,7 +57,7 @@ public class Shooter implements Runnable
 			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
 			actuatorMotor = new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL);
 		}
-		leftMotor.setInverted(true);
+		rightMotor.setInverted(true);
 
 		flippersCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_CYLINDER_CHANNEL);
 
