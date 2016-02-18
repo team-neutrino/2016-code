@@ -71,6 +71,7 @@ public class Shooter implements Runnable
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor,
 				new DigitalInput(Constants.SHOOTER_LIMITSWITCH_FRONT_CHANNEL),
 				new DigitalInput(Constants.SHOOTER_LIMITSWITCH_BACK_CHANNEL));
+		actuationPID.setContinuous(true);
 
 		leftBeamBreakNoSignal = false;
 		rightBeamBreakNoSignal = false;

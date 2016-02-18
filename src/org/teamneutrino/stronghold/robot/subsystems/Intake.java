@@ -40,6 +40,7 @@ public class Intake
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor,
 				new DigitalInput(Constants.INTAKE_LIMIT_SWITCH_UP_CHANNEL),
 				new DigitalInput(Constants.INTAKE_LIMIT_SWITCH_DOWN_CHANNEL));
+		actuationPID.setContinuous(true);
 	}
 
 	public void setAngle(double angle)
