@@ -126,12 +126,17 @@ public class Shooter implements Runnable
 
 	public void setSetpoint(double angle)
 	{
-		if (DriverStation.getInstance().isEnabled())
+		// bound angle between max and 0
+		if (angle < 0)
 		{
-			actuationPID.setSetpoint(angle);
-			actuationPID.enable();
+			angle = 0;
 		}
-
+		else if (angle > Constants.SHOOTER_ENCODER_MAX)
+		{
+			angle = Constants.SHOOTER_ENCODER_MAX;
+		}
+		actuationPID.setSetpoint(angle);
+		actuationPID.enable();
 	}
 
 	public double getSetpoint()
