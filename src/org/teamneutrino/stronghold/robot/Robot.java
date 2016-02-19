@@ -122,6 +122,10 @@ public class Robot extends SampleRobot
 			{
 				shooter.setActuatorOverride(0);
 			}
+			
+			double intakeSpeed = gamepad.getY();
+			
+			intake.intakeAngleOverride(intakeSpeed);
 
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
