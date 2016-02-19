@@ -59,8 +59,6 @@ public class Constants
 	public static final double INTAKE_ACTUATION_K_P = 1;
 	public static final double INTAKE_ACTUATION_K_I = 0;
 	public static final double INTAKE_ACTUATION_K_D = 0;
-	public static final int INTAKE_LIMIT_SWITCH_UP_CHANNEL = 12;
-	public static final int INTAKE_LIMIT_SWITCH_DOWN_CHANNEL = 13;
 
 	// Shooter Constants
 	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = 10;
@@ -84,8 +82,6 @@ public class Constants
 	public static final double SHOOTER_ACTUATION_K_P = 1;
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = 0;
-	public static final int SHOOTER_LIMITSWITCH_FRONT_CHANNEL = 10;
-	public static final int SHOOTER_LIMITSWITCH_BACK_CHANNEL = 11;
 	public static final int SHOOTER_FLIPPER_CYLINDER_CHANNEL = 0;
 
 	// Stinger Constants
