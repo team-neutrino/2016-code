@@ -141,7 +141,7 @@ public class Shooter implements Runnable
 
 	public double getPosition()
 	{
-		return actuationPID.getSetpoint() - actuationPID.getError();
+		return encoder.get();
 	}
 
 	public void setFlippers(boolean triggered)
