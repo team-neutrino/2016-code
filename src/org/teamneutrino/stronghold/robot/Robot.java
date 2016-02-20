@@ -9,6 +9,7 @@ import org.teamneutrino.stronghold.robot.autonomous.modes.TurnTowardGoal;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
+import org.teamneutrino.stronghold.robot.subsystems.Stinger;
 import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -24,6 +25,7 @@ public class Robot extends SampleRobot
 	private AutoDriver driver;
 	private Intake intake;
 	private Shooter shooter;
+	private Stinger stinger;
 
 	public Robot()
 	{
@@ -34,6 +36,7 @@ public class Robot extends SampleRobot
 		intake = new Intake();
 		driver = new AutoDriver(drive, shooter);
 		shooter = new Shooter();
+		stinger = new Stinger();
 		
 		// current monitor
 		// new CurrentMonitor();
@@ -107,6 +110,9 @@ public class Robot extends SampleRobot
 			
 			// intake
 			intake.set((intakeActive ? 1 : 0));
+			
+			// stingers
+			stinger.setStinger(joyLeft.getRawButton(1) || joyRight.getRawButton(1));
 
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
