@@ -53,7 +53,7 @@ public class Constants
 	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
 	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 8;
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
-	public static final int INTAKE_ENCODER_CHANNEL = 1;
+	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 5; // TODO
 	public static final double INTAKE_ENCODER_OFFSET = 0; // TODO
 	public static final double INTAKE_ACTUATION_K_P = 1;
@@ -76,7 +76,7 @@ public class Constants
 	public static final double SHOOTER_K_P = .1; // TODO
 	public static final double SHOOTER_K_I = 0; // TODO
 	public static final double SHOOTER_REST_POSITION = 0; // TODO
-	public static final int SHOOTER_ENCODER_CHANNEL = 2; // TODO
+	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
 	public static final double SHOOTER_ENCODER_OFFSET = 0; // TODO
@@ -89,5 +89,6 @@ public class Constants
 	public static final int STINGER_CYLINDER_CHANNEL = 1;
 
 	// Misc Constants
+	public static final int PNEUMATIC_PRESSURE_SENSOR_CHANNEL = 0;
 	public static final int DRIVER_STATION_REFRESH_RATE = 1000;
 }
