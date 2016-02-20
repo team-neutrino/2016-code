@@ -95,6 +95,7 @@ public class Shooter implements Runnable
 //			shooterSpeedThread.start();
 //			running = true;
 //		}
+		running = true;
 	}
 
 	public void reverse()
@@ -108,6 +109,7 @@ public class Shooter implements Runnable
 //			shooterSpeedThread.start();
 //			running = true;
 //		}
+		running = true;
 	}
 
 	public void stop()
@@ -160,12 +162,11 @@ public class Shooter implements Runnable
 
 	public void setFlippers(boolean triggered)
 	{
-		// TODO
-		
-//		if (!running)
-//		{
-//			triggered = false;
-//		}
+		if (!running || reverse)
+		{
+			triggered = false;
+		}
+
 		flippersOpenCylinder.set(triggered);
 		flippersCloseCylinder.set(!triggered);
 	}
