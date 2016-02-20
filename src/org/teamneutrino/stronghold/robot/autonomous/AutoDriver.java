@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Encoder;
  * This class autonomously drives and operates the robot using feed back from
  * sensors.
  */
-public class AutoDriver implements Runnable
+public class AutoDriver
 {
 	private Encoder encLeft;
 	private Encoder encRight;
@@ -25,7 +25,10 @@ public class AutoDriver implements Runnable
 	private Shooter shooter;
 	private Camera cam;
 
-	private Thread aimShooterWithCam;
+	private boolean shooterAimingThreadRunning;
+	private Thread shooterAimingThread;
+	private boolean waitUntilAimed;
+	private boolean aimed;
 
 	private static final int TIMEOUT = 100000;
 
@@ -47,7 +50,15 @@ public class AutoDriver implements Runnable
 	private static final double GYRO_UNPLUGGED_TIMEOUT = 250;
 	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
 
-	private static final long TIMEOUT_REFRESH_RATE = 5;
+	private static final int TIMEOUT_REFRESH_RATE = 5;
+	private static final int SHOOTER_AIMING_THREAD_REFRESH_RATE = 5;
+	
+	private static final double AIM_DRIVE_SPEED = .25;
+	private static final double AIM_SHOOTER_ACTUATION_SPEED = .25;
+	
+	private static final double AIM_ON_TARGET_THRESHOLD = 5;
+	
+	private static final double AIM_PROPORTIONAL_OFFSET_THRESHOLD = 20;
 
 	public AutoDriver(Drive drive, Shooter shooter)
 	{
@@ -61,7 +72,9 @@ public class AutoDriver implements Runnable
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 
-		aimShooterWithCam = new Thread(this);
+		shooterAimingThreadRunning = false;
+		aimed = false;
+		shooterAimingThread = new Thread(new ShooterAimingThread());
 	}
 
 	/**
@@ -121,7 +134,8 @@ public class AutoDriver implements Runnable
 				rightCorrection = 0;
 				terminate = true;
 				// msg = "done";
-			} else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			}
+			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
@@ -131,24 +145,28 @@ public class AutoDriver implements Runnable
 				{
 					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				} else
+				}
+				else
 				{
 					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
 				}
-			} else if (diff > 0)
+			}
+			else if (diff > 0)
 			{
 				// msg = "veer right";
 				// veer right
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-			} else if (diff < 0)
+			}
+			else if (diff < 0)
 			{
 				// msg = "veer left";
 				// veer right
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 				rightCorrection = 1;
-			} else
+			}
+			else
 			{
 				// msg = "going straight";
 				// go straight
@@ -164,11 +182,13 @@ public class AutoDriver implements Runnable
 			{
 				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
-			} else if (minDistance < RAMP_UP_DISTANCE)
+			}
+			else if (minDistance < RAMP_UP_DISTANCE)
 			{
 				// ramp up
 				ramp = (minDistance / RAMP_UP_DISTANCE);
-			} else if (remainDistance < RAMP_DOWN_DISTANCE)
+			}
+			else if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
@@ -237,7 +257,8 @@ public class AutoDriver implements Runnable
 			try
 			{
 				Thread.sleep(TIMEOUT_REFRESH_RATE);
-			} catch (InterruptedException e)
+			}
+			catch (InterruptedException e)
 			{
 			}
 
@@ -310,7 +331,8 @@ public class AutoDriver implements Runnable
 				rightCorrection = 0;
 				terminate = true;
 				msg = "done";
-			} else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
+			}
+			else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
 			{
 				// gyro unplugged
 				drive.setLeft(0);
@@ -318,7 +340,8 @@ public class AutoDriver implements Runnable
 
 				DriverStation.reportError("Gyro is unplugged", false);
 				throw new GyroUnpluggedException("Gyro is unplgged");
-			} else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			}
+			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
@@ -328,24 +351,28 @@ public class AutoDriver implements Runnable
 				{
 					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				} else
+				}
+				else
 				{
 					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
 				}
-			} else if (diff > 0)
+			}
+			else if (diff > 0)
 			{
 				msg = "veer right";
 				// veer right
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-			} else if (diff < 0)
+			}
+			else if (diff < 0)
 			{
 				msg = "veer left";
 				// veer right
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 				rightCorrection = 1;
-			} else
+			}
+			else
 			{
 				msg = "going straight";
 				// go straight
@@ -361,11 +388,13 @@ public class AutoDriver implements Runnable
 			{
 				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(degreesTraveled / RAMP_UP_DISTANCE, degreesRemain / RAMP_DOWN_DISTANCE);
-			} else if (degreesTraveled < RAMP_UP_DEGREES)
+			}
+			else if (degreesTraveled < RAMP_UP_DEGREES)
 			{
 				// ramp up
 				ramp = (degreesTraveled / RAMP_UP_DEGREES);
-			} else if (degreesRemain < RAMP_DOWN_DEGREES)
+			}
+			else if (degreesRemain < RAMP_DOWN_DEGREES)
 			{
 				// ramp down
 				ramp = (degreesRemain / RAMP_DOWN_DEGREES);
@@ -404,105 +433,99 @@ public class AutoDriver implements Runnable
 		drive.setRight(0);
 	}
 
-	/**
-	 * Uses the camera to rotate the robot so that it is pointed toward the
-	 * goal.
-	 * 
-	 * @throws GyroUnpluggedException
-	 * @throws EncoderUnpluggedException
-	 */
-	public void rotateTowardGoal() throws EncoderUnpluggedException, GyroUnpluggedException
+	public void aim()
 	{
-		double imageCenterX = 240;
-		double centerX;
-		double startTime = System.currentTimeMillis();
-		boolean terminate = false;
-
-		centerX = cam.getTargetX();
-		if (centerX > imageCenterX)
-		{
-			while (centerX > imageCenterX && !terminate)
-			{
-				centerX = cam.getTargetArea();
-				this.turnDegrees(1, Constants.AUTO_MOVE_SPEED);
-
-				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-						|| DriverStation.getInstance().isDisabled())
-				{
-					terminate = true;
-					System.out.println("drive timeout");
-				}
-				if (Math.abs(centerX - imageCenterX) < 5)
-				{
-					terminate = true;
-					System.out.println("Done!");
-				}
-
-				Thread.yield();
-			}
-		} else
-		{
-			while (imageCenterX > centerX && !terminate)
-			{
-				centerX = cam.getTargetArea();
-
-				if ((System.currentTimeMillis() - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-						|| DriverStation.getInstance().isDisabled())
-				{
-					terminate = true;
-					System.out.println("drive timeout");
-				}
-				if (Math.abs(centerX - imageCenterX) < 5)
-				{
-					terminate = true;
-					System.out.println("Done!");
-				}
-
-				Thread.yield();
-			}
-		}
-
+		aim(true);
 	}
 
 	/**
-	 * Uses the camera to angle the shooter to point at the goal.
+	 * Uses the camera to rotate the robot and shooter so that it is pointed
+	 * toward the goal.
 	 * 
-	 * TODO: Find the offset of the camera!
+	 * @param waitUntilAimed
+	 *            if this is true, the robot will aim for the goal and return
+	 *            once it is aimed
 	 */
-	public void run()
+	public void aim(boolean waitUntilAimed)
 	{
-		double yPosOfGoal;
-		double yCenterOfImage = 320;
-		boolean isOn = true;
+		this.waitUntilAimed = waitUntilAimed;
+
+		shooterAimingThreadRunning = true;
+		if (waitUntilAimed)
+		{
+			new ShooterAimingThread().run();
+		}
+		else
+		{
+			shooterAimingThread.start();
+		}
+	}
+
+	public void stopAim()
+	{
+		shooterAimingThreadRunning = false;
+	}
+
+	public boolean isAimed()
+	{
+		return shooterAimingThreadRunning && aimed;
+	}
+
+	// TODO auto timeout
+	private class ShooterAimingThread implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			int prevFrame = 0;
+			int currFrame = 0;
+			while (shooterAimingThreadRunning && !(aimed && waitUntilAimed))
+			{
+				try
+				{
+					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
+				}
+				catch (InterruptedException e)
+				{
+				}
+
+				// check for new frame
+				currFrame = cam.getCurrentFrame();
+				if (currFrame != prevFrame)
+				{
+					prevFrame = currFrame;
+					aimed = aimShooter();
+				}
+			}
+
+			shooterAimingThreadRunning = false;
+		}
+	}
+
+	private boolean aimDrive()
+	{
+		double error = cam.getTargetX() - Constants.CAMERA_TARGET_X;
+		double speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
 		
-		double angleIncrement = 1;
-		double angle;
-
-		yPosOfGoal = cam.getTargetY();
-		while (isOn)
-		{
-			if (yPosOfGoal > yCenterOfImage)
-			{
-				angle = -angleIncrement;
-				// TODO shooter.incrementAngle(angle);
-			}
-			if (yPosOfGoal < yCenterOfImage)
-			{
-				angle = angleIncrement;
-				// TODO shooter.incrementAngle(angle);
-			}
-			
-			if ((Math.abs(yPosOfGoal - yCenterOfImage) < 10) || DriverStation.getInstance().isDisabled()
-					|| !DriverStation.getInstance().isDSAttached())
-			{
-				isOn = false;
-				// TODO shooter.incrementAngle(0);
-			}
-		}
+		// bound speed between -1 and 1
+		speed = AIM_DRIVE_SPEED * Math.max(-1, Math.min(1, speed));
+		
+		drive.setLeft(speed);
+		drive.setRight(-speed);
+		
+		return Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 	}
 
-	public void aimShooterAtGoal()
+	private boolean aimShooter()
 	{
-		aimShooterWithCam.start();
+		double error = cam.getTargetY() - Constants.CAMERA_TARGET_Y;
+		double speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
+		
+		// bound speed between -1 and 1
+		speed = AIM_DRIVE_SPEED * Math.max(-1, Math.min(1, speed));
+		
+		shooter.setActuatorOverride(speed);
+		
+		return Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 	}
 }

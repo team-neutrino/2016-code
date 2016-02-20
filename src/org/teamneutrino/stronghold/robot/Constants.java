@@ -30,6 +30,8 @@ public class Constants
 	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 34;
 	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 255;
 	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
+	public static final double CAMERA_TARGET_X = 0;
+	public static final double CAMERA_TARGET_Y = 0;
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;

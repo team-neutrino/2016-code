@@ -2,8 +2,6 @@ package org.teamneutrino.stronghold.robot.autonomous.modes;
 
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.AutoMode;
-import org.teamneutrino.stronghold.robot.exceptions.EncoderUnpluggedException;
-import org.teamneutrino.stronghold.robot.exceptions.GyroUnpluggedException;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
 public class TurnTowardGoal implements AutoMode
@@ -17,7 +15,7 @@ public class TurnTowardGoal implements AutoMode
 		this.driver = driver;
 		this.shoot = shoot;
 	}
-	
+
 	@Override
 	public String getName()
 	{
@@ -27,13 +25,7 @@ public class TurnTowardGoal implements AutoMode
 	@Override
 	public void run()
 	{
-		try
-		{
-			driver.rotateTowardGoal();
-		}
-		catch (EncoderUnpluggedException | GyroUnpluggedException e)
-		{
-		}
+		driver.aim();
 	}
 
 }

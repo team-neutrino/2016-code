@@ -34,6 +34,8 @@ public class Camera implements Runnable
 	
 	private Solenoid lightPower;
 
+	private int currentFrame;
+
 	enum OutputMode
 	{
 		RAW_IMAGE, THRESHOLD_IMAGE, RECTANGLE_OVERLAY
@@ -48,6 +50,8 @@ public class Camera implements Runnable
 		luminenceLow = Constants.CAMERA_DEFAULT_LUMINENCE_LOW;
 		luminenceHigh = Constants.CAMERA_DEFAULT_LUMINENCE_HIGH;
 		rectangle = new Rect();
+
+		currentFrame = 0;
 
 		SmartDashboard.putNumber("Hue Low", hueLow);
 		SmartDashboard.putNumber("Hue High", hueHigh);
@@ -69,6 +73,11 @@ public class Camera implements Runnable
 
 		new Thread(this).start();
 		new Thread(new SmartDashboardThread()).start();
+	}
+	
+	public int getCurrentFrame()
+	{
+		return currentFrame;
 	}
 
 	public double getTargetX()
@@ -163,6 +172,7 @@ public class Camera implements Runnable
 				centerX = myArr[0].projectionX;
 				centerY = myArr[0].projectionY;
 				rectangle = myArr[0].boundingBox;
+				currentFrame++;
 			}
 			if (outMode == OutputMode.THRESHOLD_IMAGE)
 			{

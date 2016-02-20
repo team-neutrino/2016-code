@@ -64,7 +64,8 @@ public class Robot extends SampleRobot
 	@Override
 	public void autonomous()
 	{
-		autoController.run();
+//		autoController.run();
+		driver.aim(true);
 	}
 
 	@Override
@@ -79,8 +80,8 @@ public class Robot extends SampleRobot
 		{
 			// Shooter
 			// manually move shooter
-//			shooter.setActuatorOverride(-gamepad.getRawAxis(5));
-			
+			// shooter.setActuatorOverride(-gamepad.getRawAxis(5));
+
 			if (gamepad.getRawButton(4))
 			{
 				shooter.setSetpoint(45);
@@ -93,7 +94,7 @@ public class Robot extends SampleRobot
 			{
 				shooter.setSetpoint(0);
 			}
-			
+
 			System.out.println(shooter.getPosition());
 
 			// shoot
@@ -126,11 +127,11 @@ public class Robot extends SampleRobot
 			// manually move intake TODO
 			// intake.setActuatorOverride(-.25 * gamepad.getRawAxis(1));
 
-			if (gamepad.getRawButton(4) || gamepad.getRawButton(1))
-			{
-				intake.setSetpoint(90);
-			}
-			else if (gamepad.getRawButton(5) || gamepad.getRawButton(2))
+//			if (gamepad.getRawButton(4) || gamepad.getRawButton(1))
+//			{
+//				intake.setSetpoint(90);
+//			} else
+			if (gamepad.getRawButton(5) || gamepad.getRawButton(2))
 			{
 				intake.setSetpoint(-10);
 			}
