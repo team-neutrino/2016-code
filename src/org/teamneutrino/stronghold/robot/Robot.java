@@ -180,6 +180,8 @@ public class Robot extends SampleRobot
 			}
 
 			// drive
+			stinger.setStinger(joyLeft.getRawButton(1) || joyRight.getRawButton(1));
+			
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
 			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
