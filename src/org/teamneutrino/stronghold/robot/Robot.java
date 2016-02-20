@@ -77,7 +77,11 @@ public class Robot extends SampleRobot
 		while (isOperatorControl() && isEnabled())
 		{
 			// Shooter
+			// manually move shooter
 			shooter.setActuatorOverride(gamepad.getRawAxis(5));
+			
+			// shoot
+			shooter.setFlippers(gamepad.getRawButton(3));
 
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();

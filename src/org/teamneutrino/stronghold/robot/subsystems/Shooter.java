@@ -24,7 +24,8 @@ public class Shooter implements Runnable
 	private Counter beambreakLeft;
 	private Counter beambreakRight;
 	private AnalogPotentiometer encoder;
-	private Solenoid flippersCylinder;
+	private Solenoid flippersOpenCylinder;
+	private Solenoid flippersCloseCylinder;
 
 	private PIDController actuationPID;
 
@@ -58,7 +59,9 @@ public class Shooter implements Runnable
 		}
 		rightMotor.setInverted(true);
 
-		flippersCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_CYLINDER_CHANNEL);
+		flippersOpenCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_OPEN_CYLINDER_CHANNEL);
+		flippersCloseCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_CLOSE_CYLINDER_CHANNEL);
+		
 
 		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAK_RIGHT_CHANNEL);
 		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAK_LEFT_CHANNEL);
@@ -151,7 +154,8 @@ public class Shooter implements Runnable
 
 	public void setFlippers(boolean triggered)
 	{
-		flippersCylinder.set(triggered);
+		flippersOpenCylinder.set(triggered);
+		flippersCloseCylinder.set(!triggered);
 	}
 
 	@Override

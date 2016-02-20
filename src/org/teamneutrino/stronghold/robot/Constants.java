@@ -83,7 +83,8 @@ public class Constants
 	public static final double SHOOTER_ACTUATION_K_P = 1;
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = 0;
-	public static final int SHOOTER_FLIPPER_CYLINDER_CHANNEL = 0;
+	public static final int SHOOTER_FLIPPER_OPEN_CYLINDER_CHANNEL = 2;
+	public static final int SHOOTER_FLIPPER_CLOSE_CYLINDER_CHANNEL = 5;
 
 	// Stinger Constants
 	public static final int STINGER_CYLINDER_CHANNEL = 1;
