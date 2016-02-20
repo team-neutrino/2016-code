@@ -33,6 +33,7 @@ public class Constants
 	public static final double CAMERA_TARGET_X = 120;
 	public static final double CAMERA_TARGET_Y = 300;
 	public static final double MIN_PARTICLE_SIZE = 10;
+	public static final double CAMERA_DISTANCE_BASE = 1.17875473; //DISTANCE IN FEET AT WICH THE GOAL HEIGHT IS EQUAL TO THE IMAGE HEIGHT WHEN VIEWED AT 0 DEGREES
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
