@@ -37,7 +37,7 @@ public class Robot extends SampleRobot
 		driver = new AutoDriver(drive, shooter);
 		shooter = new Shooter();
 		stinger = new Stinger();
-		
+
 		// current monitor
 		// new CurrentMonitor();
 
@@ -69,18 +69,36 @@ public class Robot extends SampleRobot
 
 	@Override
 	public void operatorControl()
-	{	
+	{
 		boolean intakeActive = false;
-		
+
+		intake.setSetpoint(-10);
+		shooter.setSetpoint(45);
+
 		while (isOperatorControl() && isEnabled())
 		{
 			// Shooter
 			// manually move shooter
-			shooter.setActuatorOverride(gamepad.getRawAxis(5));
+//			shooter.setActuatorOverride(-gamepad.getRawAxis(5));
 			
+			if (gamepad.getRawButton(4))
+			{
+				shooter.setSetpoint(45);
+			}
+			else if (gamepad.getRawButton(1))
+			{
+				shooter.setSetpoint(135);
+			}
+			else if (gamepad.getRawButton(5) || gamepad.getRawButton(2))
+			{
+				shooter.setSetpoint(0);
+			}
+			
+			System.out.println(shooter.getPosition());
+
 			// shoot
 			shooter.setFlippers(gamepad.getRawButton(3));
-			
+
 			// start shooter
 			if (gamepad.getRawButton(5))
 			{
@@ -94,7 +112,7 @@ public class Robot extends SampleRobot
 					intakeActive = false;
 					shooter.stop();
 				}
-				
+
 				if (gamepad.getPOV() == 0)
 				{
 					shooter.start();
@@ -104,13 +122,22 @@ public class Robot extends SampleRobot
 					shooter.stop();
 				}
 			}
-			
-			// manually move intake
-			intake.setActuatorOverride(gamepad.getRawAxis(1));
-			
+
+			// manually move intake TODO
+			// intake.setActuatorOverride(-.25 * gamepad.getRawAxis(1));
+
+			if (gamepad.getRawButton(4) || gamepad.getRawButton(1))
+			{
+				intake.setSetpoint(90);
+			}
+			else if (gamepad.getRawButton(5) || gamepad.getRawButton(2))
+			{
+				intake.setSetpoint(-10);
+			}
+
 			// intake
 			intake.set((intakeActive ? 1 : 0));
-			
+
 			// stingers
 			stinger.setStinger(joyLeft.getRawButton(1) || joyRight.getRawButton(1));
 

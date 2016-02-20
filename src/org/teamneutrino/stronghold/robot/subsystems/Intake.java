@@ -33,6 +33,7 @@ public class Intake
 		}
 		intakeFrontToBackMotor.setInverted(true);
 		intakeSideToSideMotor.setInverted(true);
+		actuatorMotor.setInverted(true);
 
 		encoder = new AnalogPotentiometer(Constants.INTAKE_ENCODER_CHANNEL, Constants.INTAKE_ENCODER_SCALE,
 				Constants.INTAKE_ENCODER_OFFSET);
@@ -40,6 +41,14 @@ public class Intake
 		actuationPID = new PIDController(Constants.INTAKE_ACTUATION_K_P, Constants.INTAKE_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 		actuationPID.setContinuous(true);
+		
+		// TODO remove
+		actuationPID.setOutputRange(-.25, .25);
+	}
+	
+	public double getPosition()
+	{
+		return encoder.get();
 	}
 
 	public void setSetpoint(double angle)

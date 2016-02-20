@@ -55,9 +55,9 @@ public class Constants
 	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 9;
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 6;
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
-	public static final double INTAKE_ENCODER_SCALE = 5; // TODO
-	public static final double INTAKE_ENCODER_OFFSET = 0; // TODO
-	public static final double INTAKE_ACTUATION_K_P = 1;
+	public static final double INTAKE_ENCODER_SCALE = 360; // TODO
+	public static final double INTAKE_ENCODER_OFFSET = -103; // TODO
+	public static final double INTAKE_ACTUATION_K_P = .025;
 	public static final double INTAKE_ACTUATION_K_I = 0;
 	public static final double INTAKE_ACTUATION_K_D = 0;
 
@@ -82,8 +82,8 @@ public class Constants
 	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
-	public static final double SHOOTER_ENCODER_OFFSET = 0; // TODO
-	public static final double SHOOTER_ACTUATION_K_P = 1;
+	public static final double SHOOTER_ENCODER_OFFSET = -114; // TODO
+	public static final double SHOOTER_ACTUATION_K_P = .025;
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = 0;
 	public static final int SHOOTER_FLIPPER_OPEN_CYLINDER_CHANNEL = 5;

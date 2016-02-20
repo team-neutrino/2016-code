@@ -80,6 +80,9 @@ public class Shooter implements Runnable
 		actuationPID = new PIDController(Constants.SHOOTER_ACTUATION_K_P, Constants.SHOOTER_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 		actuationPID.setContinuous(true);
+		
+		// TODO remove
+		actuationPID.setOutputRange(-.25, .25);
 
 		leftBeamBreakNoSignal = false;
 		rightBeamBreakNoSignal = false;
