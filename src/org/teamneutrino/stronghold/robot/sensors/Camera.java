@@ -169,8 +169,8 @@ public class Camera implements Runnable
 					particles.remove(k);
 				}
 				maxArea = myArr[0].area;
-				centerX = myArr[0].projectionX;
-				centerY = myArr[0].projectionY;
+				centerY = myArr[0].projectionX;
+				centerX = myArr[0].projectionY;
 				rectangle = myArr[0].boundingBox;
 				currentFrame++;
 			}

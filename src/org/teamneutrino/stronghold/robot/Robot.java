@@ -34,9 +34,9 @@ public class Robot extends SampleRobot
 		gamepad = new Joystick(Constants.GAMEPAD);
 		drive = new Drive();
 		intake = new Intake();
-		driver = new AutoDriver(drive, shooter);
 		shooter = new Shooter();
 		stinger = new Stinger();
+		driver = new AutoDriver(drive, shooter);
 
 		// current monitor
 		// new CurrentMonitor();
@@ -95,7 +95,7 @@ public class Robot extends SampleRobot
 				shooter.setSetpoint(0);
 			}
 
-			System.out.println(shooter.getPosition());
+			// System.out.println(shooter.getPosition());
 
 			// shoot
 			shooter.setFlippers(gamepad.getRawButton(3));
