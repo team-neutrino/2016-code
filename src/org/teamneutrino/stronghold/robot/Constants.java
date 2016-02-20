@@ -51,7 +51,7 @@ public class Constants
 
 	// Intake Constants
 	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
-	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 8;
+	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 6;
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 5; // TODO
@@ -65,7 +65,7 @@ public class Constants
 	public static final int SHOOTER_LEFT_MOTOR_POWER_CHANNEL = 7; // TODO
 	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = 11;
 	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 8; // TODO
-	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 6;
+	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 8;
 	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 9; // TODO
 	public static final int SHOOTER_REFRESH_RATE = 50;
 	public static final int SHOOTER_RPM = 1500;
