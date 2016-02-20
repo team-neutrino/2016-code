@@ -528,4 +528,14 @@ public class AutoDriver
 		
 		return Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 	}
+	private double findDistance ()
+	{
+		//AFTER FINDING THE LARGEST PARTICLE'S HEIGHT
+		double maxHeight = cam.getHighestHeight();
+		double ang;
+		ang = shooter.getPosition();
+		maxHeight = maxHeight / Math.sin(ang*Math.PI/180);
+		return maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE;
+		//DISTANCE IS IN FEET
+	}
 }

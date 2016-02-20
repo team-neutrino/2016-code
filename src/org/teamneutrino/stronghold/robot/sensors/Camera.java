@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
 public class Camera implements Runnable
 {
@@ -28,8 +29,11 @@ public class Camera implements Runnable
 	private SendableChooser outModeChooser;
 	private OutputMode outMode;
 	private double maxArea;
+	private double maxHeight;
 	private double centerX;
 	private double centerY;
+	private double ang;
+	private double distanceFromGoal;
 	private Rect rectangle;
 	
 	private Solenoid lightPower;
@@ -94,6 +98,10 @@ public class Camera implements Runnable
 	{
 		return maxArea;
 	}
+	public double getHighestHeight()
+	{
+		return maxHeight;
+	}
 
 	@Override
 	public void run()
@@ -143,6 +151,7 @@ public class Camera implements Runnable
 							NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
 					int height = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 							NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
+					maxHeight = height;
 					int width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 							NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
 					Rect rect = new Rect(top, left, height, width);
