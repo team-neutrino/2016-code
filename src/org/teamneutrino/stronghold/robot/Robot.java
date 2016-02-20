@@ -64,25 +64,113 @@ public class Robot extends SampleRobot
 	@Override
 	public void autonomous()
 	{
-//		autoController.run();
-		driver.aim(true);
+		autoController.run();
 	}
 
 	@Override
 	public void operatorControl()
 	{
-		boolean intakeActive = false;
-
 		intake.setSetpoint(-10);
 		shooter.setSetpoint(45);
 
+		boolean shooterSpinPrev = false;
+
+		boolean shooterOverrideEnabled = false;
+		boolean intakeOverrideEnabled = false;
+
 		while (isOperatorControl() && isEnabled())
 		{
-			// Shooter
-			// manually move shooter
-			// shooter.setActuatorOverride(-gamepad.getRawAxis(5));
+			boolean intaking = false;
+			boolean outtaking = false;
+			boolean shooting = false;
 
-			if (gamepad.getRawButton(4))
+			double shooterPosition = shooter.getPosition();
+			double intakePosition = intake.getPosition();
+			
+			// overrides
+			if (joyRight.getRawButton(6))
+			{
+				intakeOverrideEnabled = true;
+			}
+			else if (joyRight.getRawButton(7))
+			{
+				intakeOverrideEnabled = false;
+			}
+			if (joyRight.getRawButton(11))
+			{
+				shooterOverrideEnabled = true;
+			}
+			else if (joyRight.getRawButton(10))
+			{
+				shooterOverrideEnabled = false;
+			}
+
+			// Shooter Spinup & Shoot
+			boolean shooterSpinCurr = gamepad.getRawAxis(5) > .6 && (shooterPosition > 25 || shooterOverrideEnabled);
+			if (shooterSpinCurr != shooterSpinPrev)
+			{
+				shooterSpinPrev = shooterSpinCurr;
+				if (shooterSpinCurr)
+				{
+					shooter.start();
+				}
+				else
+				{
+					shooter.stop();
+				}
+			}
+			shooting = shooterSpinCurr;
+			shooter.setFlippers(gamepad.getRawButton(6) && (intakePosition < 10 || intakeOverrideEnabled));
+
+			// intake/outtake
+			if (!shooting && gamepad.getRawButton(5))
+			{
+				intaking = true;
+				shooter.setOverrideSpeed(-1);
+				if (shooterPosition < 10 || shooterOverrideEnabled)
+				{
+					intake.set(1);
+				}
+			}
+			else if (!shooting && gamepad.getRawAxis(5) > .6)
+			{
+				outtaking = true;
+				intake.set(-1);
+				if (shooterPosition < 10 || shooterOverrideEnabled)
+				{
+					shooter.setOverrideSpeed(-1);
+				}
+			}
+
+			// intake position
+			double gamepadPOV = gamepad.getPOV();
+			if (intakeOverrideEnabled)
+			{
+				intake.setActuatorOverride(-.25 * gamepad.getRawAxis(1));
+			}
+			else if ((shooting && intakePosition > 0) || intaking || gamepadPOV == 270 || gamepad.getRawButton(2))
+			{
+				intake.setSetpoint(-10);
+			}
+			else if (gamepadPOV == 0)
+			{
+				intake.setSetpoint(90);
+			}
+			else if (gamepadPOV == 180)
+			{
+				intake.setSetpoint(-40);
+			}
+
+			// shooter position
+			if (shooterOverrideEnabled)
+			{
+				shooter.setActuatorOverride(-gamepad.getRawAxis(4));
+			}
+			else if (intaking || outtaking || gamepad.getRawButton(4))
+			{
+				shooter.setSetpoint(0);
+			}
+			else if (gamepad.getRawButton(3))
 			{
 				shooter.setSetpoint(45);
 			}
@@ -90,58 +178,8 @@ public class Robot extends SampleRobot
 			{
 				shooter.setSetpoint(135);
 			}
-			else if (gamepad.getRawButton(5) || gamepad.getRawButton(2))
-			{
-				shooter.setSetpoint(0);
-			}
 
-			// System.out.println(shooter.getPosition());
-
-			// shoot
-			shooter.setFlippers(gamepad.getRawButton(3));
-
-			// start shooter
-			if (gamepad.getRawButton(5))
-			{
-				shooter.reverse();
-				intakeActive = true;
-			}
-			else
-			{
-				if (intakeActive)
-				{
-					intakeActive = false;
-					shooter.stop();
-				}
-
-				if (gamepad.getPOV() == 0)
-				{
-					shooter.start();
-				}
-				else if (gamepad.getPOV() == 180)
-				{
-					shooter.stop();
-				}
-			}
-
-			// manually move intake TODO
-			// intake.setActuatorOverride(-.25 * gamepad.getRawAxis(1));
-
-//			if (gamepad.getRawButton(4) || gamepad.getRawButton(1))
-//			{
-//				intake.setSetpoint(90);
-//			} else
-			if (gamepad.getRawButton(5) || gamepad.getRawButton(2))
-			{
-				intake.setSetpoint(-10);
-			}
-
-			// intake
-			intake.set((intakeActive ? 1 : 0));
-
-			// stingers
-			stinger.setStinger(joyLeft.getRawButton(1) || joyRight.getRawButton(1));
-
+			// drive
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
 			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
