@@ -43,7 +43,7 @@ public class Robot extends SampleRobot
 		shooterSensorPower3 = new Solenoid(7);
 		
 		// current monitor
-		new CurrentMonitor();
+		// new CurrentMonitor();
 
 		// set up auto modes
 		autoController = new AutoController();
@@ -73,7 +73,9 @@ public class Robot extends SampleRobot
 
 	@Override
 	public void operatorControl()
-	{
+	{	
+		boolean intakeActive = false;
+		
 		while (isOperatorControl() && isEnabled())
 		{
 			// Shooter
@@ -82,6 +84,31 @@ public class Robot extends SampleRobot
 			
 			// shoot
 			shooter.setFlippers(gamepad.getRawButton(3));
+			
+			
+			// start shooter
+			if (gamepad.getRawButton(5))
+			{
+				shooter.reverse();
+				intakeActive = true;
+			}
+			else
+			{
+				if (intakeActive)
+				{
+					intakeActive = false;
+					shooter.stop();
+				}
+				
+				if (gamepad.getPOV() == 0)
+				{
+					shooter.start();
+				}
+				else if (gamepad.getPOV() == 180)
+				{
+					shooter.stop();
+				}
+			}
 
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();

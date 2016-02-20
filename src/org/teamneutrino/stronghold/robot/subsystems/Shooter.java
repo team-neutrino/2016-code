@@ -62,6 +62,8 @@ public class Shooter implements Runnable
 		flippersOpenCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_OPEN_CYLINDER_CHANNEL);
 		flippersCloseCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_CLOSE_CYLINDER_CHANNEL);
 		
+		flippersOpenCylinder.set(false);
+		flippersCloseCylinder.set(true);
 
 		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAK_RIGHT_CHANNEL);
 		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAK_LEFT_CHANNEL);
@@ -84,24 +86,28 @@ public class Shooter implements Runnable
 
 	public void start()
 	{
-		reverse = false;
-
-		if (!running)
-		{
-			shooterSpeedThread.start();
-			running = true;
-		}
+		leftMotor.set(1);
+		rightMotor.set(1);
+//		reverse = false;
+//
+//		if (!running)
+//		{
+//			shooterSpeedThread.start();
+//			running = true;
+//		}
 	}
 
 	public void reverse()
 	{
-		reverse = true;
-
-		if (!running)
-		{
-			shooterSpeedThread.start();
-			running = true;
-		}
+		leftMotor.set(-1);
+		rightMotor.set(-1);
+//		reverse = true;
+//
+//		if (!running)
+//		{
+//			shooterSpeedThread.start();
+//			running = true;
+//		}
 	}
 
 	public void stop()
