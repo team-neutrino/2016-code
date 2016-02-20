@@ -106,7 +106,7 @@ public class Robot extends SampleRobot
 			}
 
 			// Shooter Spinup & Shoot
-			boolean shooterSpinCurr = gamepad.getRawAxis(5) > .6 && (shooterPosition > 25 || shooterOverrideEnabled);
+			boolean shooterSpinCurr = gamepad.getRawAxis(3) > .6 && (shooterPosition > 25 || shooterOverrideEnabled);
 			if (shooterSpinCurr != shooterSpinPrev)
 			{
 				shooterSpinPrev = shooterSpinCurr;
@@ -132,7 +132,7 @@ public class Robot extends SampleRobot
 					intake.set(1);
 				}
 			}
-			else if (!shooting && gamepad.getRawAxis(5) > .6)
+			else if (!shooting && gamepad.getRawAxis(2) > .6)
 			{
 				outtaking = true;
 				intake.set(-1);
@@ -166,7 +166,7 @@ public class Robot extends SampleRobot
 			{
 				shooter.setActuatorOverride(-gamepad.getRawAxis(4));
 			}
-			else if (intaking || outtaking || gamepad.getRawButton(4))
+			else if (intaking || outtaking || gamepad.getRawButton(4) || gamepad.getRawButton(2))
 			{
 				shooter.setSetpoint(0);
 			}
