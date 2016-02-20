@@ -194,15 +194,7 @@ public class Robot extends SampleRobot
 			
 			if (outtaking)
 			{
-				try
-				{
-					Thread.sleep(200);
-				}
-				catch (InterruptedException e)
-				{
-				}
-				shooter.setFlippers(true);
-				
+				shooter.startEjectThread();
 			}
 			else
 			{

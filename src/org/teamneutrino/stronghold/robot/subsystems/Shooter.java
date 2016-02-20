@@ -34,12 +34,14 @@ public class Shooter implements Runnable
 	private PIDController actuationPID;
 
 	private boolean running;
+	private boolean ejectThreadRunning;
 	private boolean atTargetSpeed;
 
 	private boolean leftBeamBreakNoSignal;
 	private boolean rightBeamBreakNoSignal;
 
-	private Thread shooterSpeedThread;
+	private Thread speedThread;
+	private Thread ejectThread;
 
 	private static final int MILLISECONDS_PER_MINUTE = 60000;
 	private static final int CORRECTION_RPM = 2000;
@@ -90,7 +92,16 @@ public class Shooter implements Runnable
 
 		setFlippers(false);
 
-		shooterSpeedThread = new Thread(this);
+		speedThread = new Thread(this);
+	}
+	
+	public void startEjectThread()
+	{
+		if (!running && !ejectThreadRunning)
+		{
+			ejectThread.start();
+			ejectThreadRunning = true;
+		}
 	}
 
 	public void start()
@@ -368,5 +379,25 @@ public class Shooter implements Runnable
 		{
 			DriverStation.reportError("Can't write file!", false);
 		}
+	}
+	
+	private class ejectThread implements Runnable
+	{
+
+		@Override
+		public void run()
+		{
+			try
+			{
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e)
+			{
+			}
+			
+			setFlippers(true);
+			ejectThreadRunning = false;
+		}
+		
 	}
 }
