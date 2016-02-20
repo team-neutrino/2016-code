@@ -26,7 +26,7 @@ public class Shooter implements Runnable
 	private AnalogPotentiometer encoder;
 	private Solenoid flippersOpenCylinder;
 	private Solenoid flippersCloseCylinder;
-	
+
 	// TODO change to left & right
 	private Solenoid beambreak1Power;
 	private Solenoid beambreak2Power;
@@ -35,7 +35,6 @@ public class Shooter implements Runnable
 
 	private boolean running;
 	private boolean atTargetSpeed;
-	private boolean reverse;
 
 	private boolean leftBeamBreakNoSignal;
 	private boolean rightBeamBreakNoSignal;
@@ -68,7 +67,7 @@ public class Shooter implements Runnable
 
 		beambreakLeft = new Counter(Constants.SHOOTER_BEAMBREAK_RIGHT_CHANNEL);
 		beambreakRight = new Counter(Constants.SHOOTER_BEAMBREAK_LEFT_CHANNEL);
-		
+
 		beambreak1Power = new Solenoid(Constants.SHOOTER_BEAMBREAK_1_POWER_CHANNEL);
 		beambreak2Power = new Solenoid(Constants.SHOOTER_BEAMBREAK_2_POWER_CHANNEL);
 		beambreak1Power.set(true);
@@ -80,7 +79,7 @@ public class Shooter implements Runnable
 		actuationPID = new PIDController(Constants.SHOOTER_ACTUATION_K_P, Constants.SHOOTER_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 		actuationPID.setContinuous(true);
-		
+
 		// TODO remove
 		actuationPID.setOutputRange(-.25, .25);
 
@@ -88,8 +87,7 @@ public class Shooter implements Runnable
 		rightBeamBreakNoSignal = false;
 
 		running = false;
-		reverse = false;
-		
+
 		setFlippers(false);
 
 		shooterSpeedThread = new Thread(this);
@@ -99,28 +97,22 @@ public class Shooter implements Runnable
 	{
 		leftMotor.set(1);
 		rightMotor.set(1);
-		reverse = false;
-//
-//		if (!running)
-//		{
-//			shooterSpeedThread.start();
-//			running = true;
-//		}
+		//
+		// if (!running)
+		// {
+		// shooterSpeedThread.start();
+		// running = true;
+		// }
 		running = true;
 	}
 
-	public void reverse()
+	public void setOverrideSpeed(double speed)
 	{
-		leftMotor.set(-1);
-		rightMotor.set(-1);
-		reverse = true;
-//
-//		if (!running)
-//		{
-//			shooterSpeedThread.start();
-//			running = true;
-//		}
-		running = true;
+		if (!running)
+		{
+			leftMotor.set(speed);
+			rightMotor.set(speed);
+		}
 	}
 
 	public void stop()
@@ -173,7 +165,7 @@ public class Shooter implements Runnable
 
 	public void setFlippers(boolean triggered)
 	{
-		if (!running || reverse)
+		if (!running)
 		{
 			triggered = false;
 		}
@@ -308,8 +300,8 @@ public class Shooter implements Runnable
 				rightCorrection = 1;
 			}
 
-			leftMotor.set((reverse ? -1 : 1) * targetPower * leftCorrection);
-			rightMotor.set((reverse ? -1 : 1) * targetPower * rightCorrection);
+			leftMotor.set(targetPower * leftCorrection);
+			rightMotor.set(targetPower * rightCorrection);
 
 			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliTarget
 					+ " ," + RPMilliLeft + " ," + RPMilliRight + " ," + RPMilliMin + " ," + integral + " ," + error

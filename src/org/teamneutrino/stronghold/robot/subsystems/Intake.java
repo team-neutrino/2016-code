@@ -68,10 +68,4 @@ public class Intake
 		intakeFrontToBackMotor.set(speed);
 		intakeSideToSideMotor.set(speed);
 	}
-
-	public void intakeAngleOverride(double speed)
-	{
-		actuationPID.disable();
-		actuatorMotor.set(speed);
-	}
 }

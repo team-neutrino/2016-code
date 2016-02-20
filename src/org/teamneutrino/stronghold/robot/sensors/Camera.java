@@ -156,7 +156,10 @@ public class Camera implements Runnable
 							NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
 					Rect rect = new Rect(top, left, height, width);
 					par.boundingBox = rect;
-					particles.add(par);
+					if (par.area > Constants.MIN_PARTICLE_SIZE)
+					{
+						particles.add(par);
+					}
 				}
 				ParticleReport[] myArr = new ParticleReport[particles.size()];
 				ParticleReport min = null;
@@ -178,8 +181,9 @@ public class Camera implements Runnable
 					particles.remove(k);
 				}
 				maxArea = myArr[0].area;
-				centerX = myArr[0].projectionX;
-				centerY = myArr[0].projectionY;
+				System.out.println("Area: " + maxArea);
+				centerY = myArr[0].projectionX;
+				centerX = myArr[0].projectionY;
 				rectangle = myArr[0].boundingBox;
 				currentFrame++;
 			}

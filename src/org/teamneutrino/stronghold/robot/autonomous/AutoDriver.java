@@ -52,12 +52,12 @@ public class AutoDriver
 
 	private static final int TIMEOUT_REFRESH_RATE = 5;
 	private static final int SHOOTER_AIMING_THREAD_REFRESH_RATE = 5;
-	
+
 	private static final double AIM_DRIVE_SPEED = .25;
-	private static final double AIM_SHOOTER_ACTUATION_SPEED = .25;
-	
-	private static final double AIM_ON_TARGET_THRESHOLD = 5;
-	
+	private static final double AIM_SHOOTER_ACTUATION_SPEED = .15;
+
+	private static final double AIM_ON_TARGET_THRESHOLD = 2;
+
 	private static final double AIM_PROPORTIONAL_OFFSET_THRESHOLD = 20;
 
 	public AutoDriver(Drive drive, Shooter shooter)
@@ -450,6 +450,8 @@ public class AutoDriver
 	{
 		this.waitUntilAimed = waitUntilAimed;
 
+		aimed = false;
+
 		shooterAimingThreadRunning = true;
 		if (waitUntilAimed)
 		{
@@ -504,29 +506,63 @@ public class AutoDriver
 
 	private boolean aimDrive()
 	{
-		double error = cam.getTargetX() - Constants.CAMERA_TARGET_X;
+		double targetX = cam.getTargetX();
+		System.out.println(targetX);
+		double error = targetX - Constants.CAMERA_TARGET_X;
 		double speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
-		
+		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
+
 		// bound speed between -1 and 1
 		speed = AIM_DRIVE_SPEED * Math.max(-1, Math.min(1, speed));
+
+		if (!onTarget)
+		{
+			drive.setLeft(speed);
+			drive.setRight(-speed);
+
+			try
+			{
+				Thread.sleep(100);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
 		
-		drive.setLeft(speed);
-		drive.setRight(-speed);
-		
-		return Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
+		drive.setLeft(0);
+		drive.setRight(0);
+
+		return onTarget;
 	}
 
 	private boolean aimShooter()
 	{
-		double error = cam.getTargetY() - Constants.CAMERA_TARGET_Y;
+
+		double targetY = cam.getTargetY();
+		System.out.println(targetY);
+		double error = targetY - Constants.CAMERA_TARGET_Y;
 		double speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
-		
+		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
+
 		// bound speed between -1 and 1
-		speed = AIM_DRIVE_SPEED * Math.max(-1, Math.min(1, speed));
-		
-		shooter.setActuatorOverride(speed);
-		
-		return Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
+		speed = AIM_SHOOTER_ACTUATION_SPEED * Math.max(-1, Math.min(1, speed));
+
+		if (!onTarget)
+		{
+			shooter.setActuatorOverride(speed);
+
+			try
+			{
+				Thread.sleep(100);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
+
+		shooter.setActuatorOverride(0);
+
+		return onTarget;
 	}
 	private double findDistance ()
 	{
