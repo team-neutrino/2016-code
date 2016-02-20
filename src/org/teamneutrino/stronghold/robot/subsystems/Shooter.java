@@ -165,11 +165,6 @@ public class Shooter implements Runnable
 
 	public void setFlippers(boolean triggered)
 	{
-		if (!running)
-		{
-			triggered = false;
-		}
-
 		flippersOpenCylinder.set(triggered);
 		flippersCloseCylinder.set(!triggered);
 	}

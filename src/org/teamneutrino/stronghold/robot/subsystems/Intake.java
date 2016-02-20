@@ -31,7 +31,6 @@ public class Intake
 			intakeSideToSideMotor = new Victor(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 			actuatorMotor = new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL);
 		}
-		intakeFrontToBackMotor.setInverted(true);
 		intakeSideToSideMotor.setInverted(true);
 		actuatorMotor.setInverted(true);
 

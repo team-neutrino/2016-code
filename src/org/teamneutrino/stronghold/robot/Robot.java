@@ -70,7 +70,9 @@ public class Robot extends SampleRobot
 	@Override
 	public void operatorControl()
 	{
-		intake.setSetpoint(-10);
+		int INTAKE_MID_POS = -3;
+		
+		intake.setSetpoint(INTAKE_MID_POS);
 		shooter.setSetpoint(45);
 
 		boolean shooterSpinPrev = false;
@@ -120,12 +122,12 @@ public class Robot extends SampleRobot
 				}
 			}
 			shooting = shooterSpinCurr;
-			shooter.setFlippers(gamepad.getRawButton(6) && (intakePosition < 10 || intakeOverrideEnabled));
 
 			// intake/outtake
 			if (!shooting && gamepad.getRawButton(5))
 			{
 				intaking = true;
+				outtaking = false;
 				shooter.setOverrideSpeed(-1);
 				if (shooterPosition < 10 || shooterOverrideEnabled)
 				{
@@ -135,11 +137,22 @@ public class Robot extends SampleRobot
 			else if (!shooting && gamepad.getRawAxis(2) > .6)
 			{
 				outtaking = true;
+				intaking = false;
 				intake.set(-1);
 				if (shooterPosition < 10 || shooterOverrideEnabled)
 				{
-					shooter.setOverrideSpeed(-1);
+					shooter.setOverrideSpeed(1);
 				}
+			}
+			else
+			{
+				if (!shooting)
+				{
+					shooter.setOverrideSpeed(0);
+				}
+				intake.set(0);
+				intaking = false;
+				outtaking = false;
 			}
 
 			// intake position
@@ -150,7 +163,7 @@ public class Robot extends SampleRobot
 			}
 			else if ((shooting && intakePosition > 0) || intaking || gamepadPOV == 270 || gamepad.getRawButton(2))
 			{
-				intake.setSetpoint(-10);
+				intake.setSetpoint(INTAKE_MID_POS);
 			}
 			else if (gamepadPOV == 0)
 			{
@@ -177,6 +190,23 @@ public class Robot extends SampleRobot
 			else if (gamepad.getRawButton(1))
 			{
 				shooter.setSetpoint(135);
+			}
+			
+			if (outtaking)
+			{
+				try
+				{
+					Thread.sleep(200);
+				}
+				catch (InterruptedException e)
+				{
+				}
+				shooter.setFlippers(true);
+				
+			}
+			else
+			{
+				shooter.setFlippers(shooting && gamepad.getRawButton(6) && (intakePosition < 10 || intakeOverrideEnabled));
 			}
 
 			// drive
