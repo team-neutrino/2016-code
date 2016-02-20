@@ -53,9 +53,9 @@ public class Constants
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 6; // TODO
 
 	// Intake Constants
-	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 7;
-	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 9;
-	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 6;
+	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
+	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 6;
+	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 360; // TODO
 	public static final double INTAKE_ENCODER_OFFSET = -103; // TODO
