@@ -88,7 +88,7 @@ public class Shooter implements Runnable
 	{
 		leftMotor.set(1);
 		rightMotor.set(1);
-//		reverse = false;
+		reverse = false;
 //
 //		if (!running)
 //		{
@@ -101,7 +101,7 @@ public class Shooter implements Runnable
 	{
 		leftMotor.set(-1);
 		rightMotor.set(-1);
-//		reverse = true;
+		reverse = true;
 //
 //		if (!running)
 //		{
@@ -160,6 +160,12 @@ public class Shooter implements Runnable
 
 	public void setFlippers(boolean triggered)
 	{
+		// TODO
+		
+//		if (!running)
+//		{
+//			triggered = false;
+//		}
 		flippersOpenCylinder.set(triggered);
 		flippersCloseCylinder.set(!triggered);
 	}

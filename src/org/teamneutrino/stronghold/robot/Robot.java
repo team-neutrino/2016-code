@@ -85,7 +85,6 @@ public class Robot extends SampleRobot
 			// shoot
 			shooter.setFlippers(gamepad.getRawButton(3));
 			
-			
 			// start shooter
 			if (gamepad.getRawButton(5))
 			{
@@ -109,6 +108,12 @@ public class Robot extends SampleRobot
 					shooter.stop();
 				}
 			}
+			
+			// manually move intake
+			intake.setActuatorOverride(gamepad.getRawAxis(1));
+			
+			// intake
+			intake.set((intakeActive ? 1 : 0));
 
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();

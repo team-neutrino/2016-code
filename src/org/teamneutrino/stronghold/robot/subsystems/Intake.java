@@ -3,9 +3,9 @@ package org.teamneutrino.stronghold.robot.subsystems;
 import org.teamneutrino.stronghold.robot.Constants;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Intake
@@ -21,9 +21,9 @@ public class Intake
 	{
 		if (Constants.REAL_BOT)
 		{
-			intakeFrontToBackMotor = new CANTalon(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
-			intakeSideToSideMotor = new CANTalon(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
-			actuatorMotor = new CANTalon(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL);
+			intakeFrontToBackMotor = new TalonSRX(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
+			intakeSideToSideMotor = new TalonSRX(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
+			actuatorMotor = new TalonSRX(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL);
 		}
 		else
 		{
@@ -31,6 +31,8 @@ public class Intake
 			intakeSideToSideMotor = new Victor(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 			actuatorMotor = new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL);
 		}
+		intakeFrontToBackMotor.setInverted(true);
+		intakeSideToSideMotor.setInverted(true);
 
 		encoder = new AnalogPotentiometer(Constants.INTAKE_ENCODER_CHANNEL, Constants.INTAKE_ENCODER_SCALE,
 				Constants.INTAKE_ENCODER_OFFSET);
@@ -40,10 +42,16 @@ public class Intake
 		actuationPID.setContinuous(true);
 	}
 
-	public void setAngle(double angle)
+	public void setSetpoint(double angle)
 	{
 		actuationPID.setSetpoint(angle);
 		actuationPID.enable();
+	}
+
+	public void setActuatorOverride(double speed)
+	{
+		actuationPID.disable();
+		actuatorMotor.set(speed);
 	}
 
 	public void set(double speed)
@@ -51,6 +59,7 @@ public class Intake
 		intakeFrontToBackMotor.set(speed);
 		intakeSideToSideMotor.set(speed);
 	}
+
 	public void intakeAngleOverride(double speed)
 	{
 		actuationPID.disable();

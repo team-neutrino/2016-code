@@ -13,8 +13,8 @@ public class Constants
 	public static final int THUMBWHEEL_SWITCH_BIT_8_CHANNEL = 7;
 
 	// Controllers
-	public static final int JOY_LEFT = 1;
-	public static final int JOY_RIGHT = 0;
+	public static final int JOY_LEFT = 0;
+	public static final int JOY_RIGHT = 1;
 	public static final int GAMEPAD = 2;
 
 	// Button Mapping - Joy sticks
@@ -50,9 +50,9 @@ public class Constants
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 6; // TODO
 
 	// Intake Constants
-	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
-	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 6;
-	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
+	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 7;
+	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 9;
+	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 6;
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 5; // TODO
 	public static final double INTAKE_ENCODER_OFFSET = 0; // TODO
