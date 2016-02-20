@@ -22,7 +22,7 @@ public class Constants
 	// Button Mapping - Game pad
 
 	// Camera Constants
-	public static final String CAMERA_NAME = "cam1";
+	public static final String CAMERA_NAME = "cam0";
 	public static final int CAMERA_DEFAULT_HUE_LOW = 101;
 	public static final int CAMERA_DEFAULT_HUE_HIGH = 136;
 	public static final int CAMERA_DEFAULT_SATURATION_LOW = 84;
