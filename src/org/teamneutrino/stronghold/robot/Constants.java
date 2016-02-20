@@ -32,6 +32,7 @@ public class Constants
 	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
 	public static final double CAMERA_TARGET_X = 120;
 	public static final double CAMERA_TARGET_Y = 300;
+	public static final double MIN_PARTICLE_SIZE = 10;
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
