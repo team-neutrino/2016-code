@@ -74,65 +74,10 @@ public class Robot extends SampleRobot
 	@Override
 	public void operatorControl()
 	{
-		boolean isShooterButtonPressed = false;
-		boolean wasShooterButtonPressed = false;
-		boolean isShooterActive = false;
 		while (isOperatorControl() && isEnabled())
 		{
-			// TODO move
-
 			// Shooter
-			if (isShooterButtonPressed != wasShooterButtonPressed)
-			{
-				wasShooterButtonPressed = isShooterButtonPressed;
-			}
-			isShooterButtonPressed = (joyLeft.getRawButton(1) || joyRight.getRawButton(1));
-			if (wasShooterButtonPressed)
-			{
-				if (isShooterActive)
-				{
-					shooter.stop();
-				}
-				else
-				{
-					shooter.start();
-				}
-			}
-
-			if (joyLeft.getRawButton(3) || joyRight.getRawButton(3))
-			{
-				shooter.setFlippers(true);
-			}
-			else
-			{
-				shooter.setFlippers(false);
-			}
-
-			if (joyLeft.getRawButton(2) || joyRight.getRawButton(2))
-			{
-				shooter.reverse();
-			}
-			else
-			{
-				shooter.stop();
-			}
-
-			if (gamepad.getRawButton(4))
-			{
-				shooter.setActuatorOverride(1);
-			}
-			else if (gamepad.getRawButton(1))
-			{
-				shooter.setActuatorOverride(-1);
-			}
-			else
-			{
-				shooter.setActuatorOverride(0);
-			}
-			
-			double intakeSpeed = gamepad.getY();
-			
-			intake.intakeAngleOverride(intakeSpeed);
+			shooter.setActuatorOverride(gamepad.getRawAxis(5));
 
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
