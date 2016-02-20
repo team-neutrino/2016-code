@@ -13,6 +13,7 @@ import com.ni.vision.NIVision.Rect;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -30,6 +31,8 @@ public class Camera implements Runnable
 	private double centerX;
 	private double centerY;
 	private Rect rectangle;
+	
+	private Solenoid lightPower;
 
 	enum OutputMode
 	{
@@ -38,12 +41,12 @@ public class Camera implements Runnable
 
 	public Camera()
 	{
-		hueLow = Constants.DEFAULT_HUE_LOW;
-		hueHigh = Constants.DEFAULT_HUE_HIGH;
-		saturationLow = Constants.DEFAULT_SATURATION_LOW;
-		saturationHigh = Constants.DEFAULT_SATURATION_HIGH;
-		luminenceLow = Constants.DEFAULT_LUMINENCE_LOW;
-		luminenceHigh = Constants.DEFAULT_LUMINENCE_HIGH;
+		hueLow = Constants.CAMERA_DEFAULT_HUE_LOW;
+		hueHigh = Constants.CAMERA_DEFAULT_HUE_HIGH;
+		saturationLow = Constants.CAMERA_DEFAULT_SATURATION_LOW;
+		saturationHigh = Constants.CAMERA_DEFAULT_SATURATION_HIGH;
+		luminenceLow = Constants.CAMERA_DEFAULT_LUMINENCE_LOW;
+		luminenceHigh = Constants.CAMERA_DEFAULT_LUMINENCE_HIGH;
 		rectangle = new Rect();
 
 		SmartDashboard.putNumber("Hue Low", hueLow);
@@ -60,6 +63,9 @@ public class Camera implements Runnable
 		outModeChooser.addDefault("Raw", OutputMode.RAW_IMAGE);
 		outModeChooser.addObject("Threshold", OutputMode.THRESHOLD_IMAGE);
 		SmartDashboard.putData("Image Stage", outModeChooser);
+		
+		lightPower = new Solenoid(Constants.CAMERA_LIGHT_POWER_CHANNEL);
+		lightPower.set(true);
 
 		new Thread(this).start();
 		new Thread(new SmartDashboardThread()).start();

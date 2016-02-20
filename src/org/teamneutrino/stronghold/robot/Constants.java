@@ -23,12 +23,13 @@ public class Constants
 
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam1";
-	public static final int DEFAULT_HUE_LOW = 101;
-	public static final int DEFAULT_HUE_HIGH = 136;
-	public static final int DEFAULT_SATURATION_LOW = 84;
-	public static final int DEFAULT_SATURATION_HIGH = 255;
-	public static final int DEFAULT_LUMINENCE_LOW = 34;
-	public static final int DEFAULT_LUMINENCE_HIGH = 255;
+	public static final int CAMERA_DEFAULT_HUE_LOW = 101;
+	public static final int CAMERA_DEFAULT_HUE_HIGH = 136;
+	public static final int CAMERA_DEFAULT_SATURATION_LOW = 84;
+	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
+	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 34;
+	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 255;
+	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
@@ -72,6 +73,8 @@ public class Constants
 	public static final double SHOOTER_TARGET_SPEED_TOLERANCE_RPM = 200;
 	public static final int SHOOTER_BEAMBREAK_RIGHT_CHANNEL = 8;
 	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = 9;
+	public static final int SHOOTER_BEAMBREAK_1_POWER_CHANNEL = 6;
+	public static final int SHOOTER_BEAMBREAK_2_POWER_CHANNEL = 7;
 	public static final double SHOOTER_PERCENT_POWER_PER_RPMILLI = 1/1500;
 	public static final double SHOOTER_K_P = .1; // TODO
 	public static final double SHOOTER_K_I = 0; // TODO
@@ -87,7 +90,8 @@ public class Constants
 	public static final int SHOOTER_FLIPPER_CLOSE_CYLINDER_CHANNEL = 2;
 
 	// Stinger Constants
-	public static final int STINGER_CYLINDER_CHANNEL = 1;
+	public static final int STINGER_CYLINDER_EXTEND_CHANNEL = 3;
+	public static final int STINGER_CYLINDER_RETRACT_CHANNEL = 4;
 
 	// Misc Constants
 	public static final int PNEUMATIC_PRESSURE_SENSOR_CHANNEL = 0;

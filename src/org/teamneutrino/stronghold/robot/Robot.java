@@ -13,7 +13,6 @@ import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
-import edu.wpi.first.wpilibj.Solenoid;
 
 public class Robot extends SampleRobot
 {
@@ -25,9 +24,6 @@ public class Robot extends SampleRobot
 	private AutoDriver driver;
 	private Intake intake;
 	private Shooter shooter;
-	private Solenoid shooterSensorPower1;
-	private Solenoid shooterSensorPower2;
-	private Solenoid shooterSensorPower3;
 
 	public Robot()
 	{
@@ -38,9 +34,6 @@ public class Robot extends SampleRobot
 		intake = new Intake();
 		driver = new AutoDriver(drive, shooter);
 		shooter = new Shooter();
-		shooterSensorPower1 = new Solenoid(1);
-		shooterSensorPower2 = new Solenoid(6);
-		shooterSensorPower3 = new Solenoid(7);
 		
 		// current monitor
 		// new CurrentMonitor();
