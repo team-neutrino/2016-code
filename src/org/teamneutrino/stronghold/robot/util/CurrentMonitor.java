@@ -19,6 +19,9 @@ public class CurrentMonitor implements Runnable
 	public CurrentMonitor()
 	{
 		subsystems = new ArrayList<SubsystemPower>();
+		
+		pdp = new PowerDistributionPanel();
+		pcm = new Compressor();
 
 		SubsystemPower drive = new SubsystemPower("Drive");
 		drive.addChannel(new PowerChannel("Left 1", Constants.DRIVE_LEFT_1_POWER_CHANNEL));
@@ -30,10 +33,15 @@ public class CurrentMonitor implements Runnable
 		subsystems.add(drive);
 		
 		SubsystemPower shooter = new SubsystemPower("Shooter");
-		drive.addChannel(new PowerChannel("Left", Constants.SHOOTER_LEFT_MOTOR_POWER_CHANNEL));
-		drive.addChannel(new PowerChannel("Right", Constants.SHOOTER_RIGHT_MOTOR_POWER_CHANNEL));
-		drive.addChannel(new PowerChannel("Actuator", Constants.SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL));
+		shooter.addChannel(new PowerChannel("Left", Constants.SHOOTER_LEFT_MOTOR_POWER_CHANNEL));
+		shooter.addChannel(new PowerChannel("Right", Constants.SHOOTER_RIGHT_MOTOR_POWER_CHANNEL));
+		shooter.addChannel(new PowerChannel("Actuator", Constants.SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL));
 		subsystems.add(shooter);
+		
+		SubsystemPower intake = new SubsystemPower("Intake");
+		intake.addChannel(new PowerChannel("Side to Side", Constants.INTAKE_SIDE_TO_SIDE_MOTOR_POWER_CHANNEL));
+		intake.addChannel(new PowerChannel("Front to Back", Constants.INTAKE_FRONT_TO_BACK_MOTOR_POWER_CHANNEL));
+		intake.addChannel(new PowerChannel("Actuator", Constants.INTAKE_ACUATOR_MOTOR_POWER_CHANNEL));
 		
 		// TODO intake
 		

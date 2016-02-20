@@ -42,36 +42,39 @@ public class Constants
 	public static final int ENCODER_RIGHT_B_CHANNEL = 3;
 	public static final double ENCODER_DISTANCE_PER_PULSE = (.5 * Math.PI) * 1.0 / 360 / 3;
 	public static final int DRIVE_LEFT_1_CHANNEL = 0;
-	public static final int DRIVE_LEFT_1_POWER_CHANNEL = 1; // TODO
+	public static final int DRIVE_LEFT_1_POWER_CHANNEL = 0; // TODO
 	public static final int DRIVE_LEFT_2_CHANNEL = 1;
-	public static final int DRIVE_LEFT_2_POWER_CHANNEL = 2; // TODO
+	public static final int DRIVE_LEFT_2_POWER_CHANNEL = 0; // TODO
 	public static final int DRIVE_LEFT_3_CHANNEL = 2;
-	public static final int DRIVE_LEFT_3_POWER_CHANNEL = 3; // TODO
+	public static final int DRIVE_LEFT_3_POWER_CHANNEL = 0; // TODO
 	public static final int DRIVE_RIGHT_1_CHANNEL = 3;
-	public static final int DRIVE_RIGHT_1_POWER_CHANNEL = 4; // TODO
+	public static final int DRIVE_RIGHT_1_POWER_CHANNEL = 0; // TODO
 	public static final int DRIVE_RIGHT_2_CHANNEL = 4;
-	public static final int DRIVE_RIGHT_2_POWER_CHANNEL = 5; // TODO
+	public static final int DRIVE_RIGHT_2_POWER_CHANNEL = 0; // TODO
 	public static final int DRIVE_RIGHT_3_CHANNEL = 5;
-	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 6; // TODO
+	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 0; // TODO
 
 	// Intake Constants
 	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
+	public static final int INTAKE_ACUATOR_MOTOR_POWER_CHANNEL = 0; // TODO
 	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 6;
+	public static final int INTAKE_FRONT_TO_BACK_MOTOR_POWER_CHANNEL = 0; // TODO
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
+	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_POWER_CHANNEL = 0; // TODO
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
-	public static final double INTAKE_ENCODER_SCALE = 360; // TODO
-	public static final double INTAKE_ENCODER_OFFSET = -103; // TODO
+	public static final double INTAKE_ENCODER_SCALE = 360;
+	public static final double INTAKE_ENCODER_OFFSET = -103;
 	public static final double INTAKE_ACTUATION_K_P = .025;
 	public static final double INTAKE_ACTUATION_K_I = 0;
 	public static final double INTAKE_ACTUATION_K_D = 0;
 
 	// Shooter Constants
 	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = 10;
-	public static final int SHOOTER_LEFT_MOTOR_POWER_CHANNEL = 7; // TODO
+	public static final int SHOOTER_LEFT_MOTOR_POWER_CHANNEL = 0; // TODO
 	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = 11;
-	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 8; // TODO
+	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 0; // TODO
 	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 8;
-	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 9; // TODO
+	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 0; // TODO
 	public static final int SHOOTER_REFRESH_RATE = 50;
 	public static final int SHOOTER_RPM = 1500;
 	public static final double SHOOTER_TARGET_SPEED_TOLERANCE_RPM = 200;
@@ -82,11 +85,10 @@ public class Constants
 	public static final double SHOOTER_PERCENT_POWER_PER_RPMILLI = 1/1500;
 	public static final double SHOOTER_K_P = .1; // TODO
 	public static final double SHOOTER_K_I = 0; // TODO
-	public static final double SHOOTER_REST_POSITION = 0; // TODO
 	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
-	public static final double SHOOTER_ENCODER_OFFSET = -114; // TODO
+	public static final double SHOOTER_ENCODER_OFFSET = -114;
 	public static final double SHOOTER_ACTUATION_K_P = .025;
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = 0;

@@ -39,7 +39,7 @@ public class Robot extends SampleRobot
 		driver = new AutoDriver(drive, shooter);
 
 		// current monitor
-		// new CurrentMonitor();
+		 new CurrentMonitor();
 
 		// set up auto modes
 		autoController = new AutoController();
