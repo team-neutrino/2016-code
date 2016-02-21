@@ -167,7 +167,7 @@ public class Robot extends SampleRobot
 			double gamepadPOV = gamepad.getPOV();
 			if (intakeOverrideEnabled)
 			{
-				intake.setActuatorOverride(-.25 * gamepad.getRawAxis(1));
+				intake.setActuatorOverride(-.6 * gamepad.getRawAxis(1));
 			}
 			else if ((shooting && intakePosition > 0) || intaking || gamepadPOV == 270 || gamepad.getRawButton(2))
 			{
