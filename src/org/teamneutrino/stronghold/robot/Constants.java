@@ -88,7 +88,7 @@ public class Constants
 	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
-	public static final double SHOOTER_ENCODER_OFFSET = -114;
+	public static final double SHOOTER_ENCODER_OFFSET = -112;
 	public static final double SHOOTER_ACTUATION_K_P = .025;
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = 0;

@@ -41,7 +41,7 @@ public class Robot extends SampleRobot
 		driver = new AutoDriver(drive, shooter);
 
 		// current monitor
-		 new CurrentMonitor();
+		new CurrentMonitor();
 
 		// set up auto modes
 		autoController = new AutoController();
@@ -73,7 +73,7 @@ public class Robot extends SampleRobot
 	public void operatorControl()
 	{
 		int INTAKE_MID_POS = -3;
-		
+
 		intake.setSetpoint(INTAKE_MID_POS);
 		shooter.setSetpoint(45);
 
@@ -90,7 +90,7 @@ public class Robot extends SampleRobot
 
 			double shooterPosition = shooter.getPosition();
 			double intakePosition = intake.getPosition();
-			
+
 			// overrides
 			if (joyRight.getRawButton(6))
 			{
@@ -179,7 +179,7 @@ public class Robot extends SampleRobot
 			}
 			else if (gamepadPOV == 180)
 			{
-				intake.setSetpoint(-40);
+				intake.setSetpoint(-20);
 			}
 
 			// shooter position
@@ -199,23 +199,31 @@ public class Robot extends SampleRobot
 			{
 				shooter.setSetpoint(135);
 			}
-			
+
 			if (outtaking)
 			{
-				shooter.startEjectThread();
+				// shooter.startEjectThread();
+				shooter.setFlippers(true);
 			}
 			else
 			{
-				shooter.setFlippers(shooting && gamepad.getRawButton(6) && (intakePosition < 10 || intakeOverrideEnabled));
+				shooter.setFlippers(
+						shooting && gamepad.getRawButton(6) && (intakePosition < 10 || intakeOverrideEnabled));
 			}
 
 			// drive
-			stinger.setStinger(joyLeft.getRawButton(1) || joyRight.getRawButton(1));
-			
+			stinger.setStinger(joyLeft.getRawButton(2) || joyRight.getRawButton(2));
+
 			double leftSpeed = -joyLeft.getY();
 			double rightSpeed = -joyRight.getY();
-			drive.setLeft(leftSpeed * Math.abs(leftSpeed));
-			drive.setRight(rightSpeed * Math.abs(rightSpeed));
+
+			boolean triggers = joyLeft.getRawButton(1) || joyRight.getRawButton(1);
+
+			leftSpeed = (triggers ? 1 : .5) * leftSpeed * Math.abs(leftSpeed);
+			rightSpeed = (triggers ? 1 : .5) * rightSpeed * Math.abs(rightSpeed);
+
+			drive.setLeft(leftSpeed);
+			drive.setRight(rightSpeed);
 			Thread.yield();
 		}
 	}

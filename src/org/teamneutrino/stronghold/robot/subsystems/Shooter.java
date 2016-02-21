@@ -53,7 +53,7 @@ public class Shooter implements Runnable
 	private static final int NO_SIGNAL_DETECTION_COUNT = 5;
 
 	private static final int FLUTTER_PEROID = 500;
-	private static final int FLUTTER_AMPLITUDE = 10;
+	private static final int FLUTTER_AMPLITUDE = 20;
 
 	public Shooter()
 	{
@@ -110,8 +110,8 @@ public class Shooter implements Runnable
 	{
 		if (!running && !ejectThreadRunning)
 		{
-			ejectThread.start();
 			ejectThreadRunning = true;
+			ejectThread.start();
 		}
 	}
 
@@ -173,8 +173,11 @@ public class Shooter implements Runnable
 		}
 
 		setpoint = angle;
-
-		actuationPID.setSetpoint(angle);
+		
+		if (!flutterEnabled)
+		{
+			actuationPID.setSetpoint(angle);
+		}
 		actuationPID.enable();
 	}
 

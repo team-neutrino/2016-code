@@ -22,7 +22,7 @@ public class Intake
 	private PIDController actuationPID;
 
 	private static final int FLUTTER_PEROID = 500;
-	private static final int FLUTTER_AMPLITUDE = 10;
+	private static final int FLUTTER_AMPLITUDE = 5;
 
 	public Intake()
 	{
@@ -65,7 +65,10 @@ public class Intake
 	{
 		setpoint = angle;
 		
-		actuationPID.setSetpoint(angle);
+		if (!flutterEnabled)
+		{
+			actuationPID.setSetpoint(angle);
+		}
 		actuationPID.enable();
 	}
 
