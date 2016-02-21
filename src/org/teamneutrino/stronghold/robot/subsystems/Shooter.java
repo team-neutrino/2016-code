@@ -108,9 +108,9 @@ public class Shooter implements Runnable
 
 	public void startEjectThread()
 	{
-		ejectThread.start();
 		if (!running && !ejectThreadRunning)
 		{
+			ejectThread.start();
 			ejectThreadRunning = true;
 		}
 	}
