@@ -40,6 +40,10 @@ public class Shooter implements Runnable
 	private boolean leftBeamBreakNoSignal;
 	private boolean rightBeamBreakNoSignal;
 
+	private boolean flutterEnabled;
+
+	private double setpoint;
+
 	private Thread speedThread;
 	private Thread ejectThread;
 
@@ -47,6 +51,9 @@ public class Shooter implements Runnable
 	private static final int CORRECTION_RPM = 2000;
 
 	private static final int NO_SIGNAL_DETECTION_COUNT = 5;
+
+	private static final int FLUTTER_PEROID = 500;
+	private static final int FLUTTER_AMPLITUDE = 10;
 
 	public Shooter()
 	{
@@ -91,11 +98,14 @@ public class Shooter implements Runnable
 		running = false;
 
 		setFlippers(false);
-		
+
+		flutterEnabled = false;
+
+		new Thread(new flutterThread()).start();
 		ejectThread = new Thread(new ejectThread());
 		speedThread = new Thread(this);
 	}
-	
+
 	public void startEjectThread()
 	{
 		ejectThread.start();
@@ -161,6 +171,9 @@ public class Shooter implements Runnable
 		{
 			angle = Constants.SHOOTER_ENCODER_MAX;
 		}
+
+		setpoint = angle;
+
 		actuationPID.setSetpoint(angle);
 		actuationPID.enable();
 	}
@@ -179,6 +192,11 @@ public class Shooter implements Runnable
 	{
 		flippersOpenCylinder.set(triggered);
 		flippersCloseCylinder.set(!triggered);
+	}
+
+	public void setFutter(boolean enabled)
+	{
+		flutterEnabled = enabled;
 	}
 
 	@Override
@@ -381,10 +399,9 @@ public class Shooter implements Runnable
 			DriverStation.reportError("Can't write file!", false);
 		}
 	}
-	
+
 	private class ejectThread implements Runnable
 	{
-
 		@Override
 		public void run()
 		{
@@ -395,10 +412,45 @@ public class Shooter implements Runnable
 			catch (InterruptedException e)
 			{
 			}
-			
+
 			setFlippers(true);
 			ejectThreadRunning = false;
 		}
-		
+	}
+
+	private class flutterThread implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			while (true)
+			{
+				try
+				{
+					Thread.sleep(FLUTTER_PEROID);
+				}
+				catch (InterruptedException e)
+				{
+				}
+
+				if (actuationPID.isEnabled() && flutterEnabled)
+				{
+					actuationPID.setSetpoint(setpoint + FLUTTER_AMPLITUDE);
+				}
+
+				try
+				{
+					Thread.sleep(FLUTTER_PEROID);
+				}
+				catch (InterruptedException e)
+				{
+				}
+
+				if (actuationPID.isEnabled() && flutterEnabled)
+				{
+					actuationPID.setSetpoint(setpoint);
+				}
+			}
+		}
 	}
 }

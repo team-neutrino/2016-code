@@ -15,7 +15,14 @@ public class Intake
 	private SpeedController actuatorMotor;
 	private AnalogPotentiometer encoder;
 
+	private boolean flutterEnabled;
+
+	private double setpoint;
+
 	private PIDController actuationPID;
+
+	private static final int FLUTTER_PEROID = 500;
+	private static final int FLUTTER_AMPLITUDE = 10;
 
 	public Intake()
 	{
@@ -40,11 +47,15 @@ public class Intake
 		actuationPID = new PIDController(Constants.INTAKE_ACTUATION_K_P, Constants.INTAKE_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 		actuationPID.setContinuous(true);
-		
+
 		// TODO remove
 		actuationPID.setOutputRange(-.25, .25);
+
+		flutterEnabled = false;
+
+		new Thread(new flutterThread()).start();
 	}
-	
+
 	public double getPosition()
 	{
 		return encoder.get();
@@ -52,6 +63,8 @@ public class Intake
 
 	public void setSetpoint(double angle)
 	{
+		setpoint = angle;
+		
 		actuationPID.setSetpoint(angle);
 		actuationPID.enable();
 	}
@@ -66,5 +79,46 @@ public class Intake
 	{
 		intakeFrontToBackMotor.set(speed);
 		intakeSideToSideMotor.set(speed);
+	}
+	
+	public void setFutter(boolean enabled)
+	{
+		flutterEnabled = enabled;
+	}
+
+	private class flutterThread implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			while (true)
+			{
+				try
+				{
+					Thread.sleep(FLUTTER_PEROID);
+				}
+				catch (InterruptedException e)
+				{
+				}
+
+				if (actuationPID.isEnabled() && flutterEnabled)
+				{
+					actuationPID.setSetpoint(setpoint + FLUTTER_AMPLITUDE);
+				}
+
+				try
+				{
+					Thread.sleep(FLUTTER_PEROID);
+				}
+				catch (InterruptedException e)
+				{
+				}
+
+				if (actuationPID.isEnabled() && flutterEnabled)
+				{
+					actuationPID.setSetpoint(setpoint);
+				}
+			}
+		}
 	}
 }

@@ -12,8 +12,10 @@ import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 import org.teamneutrino.stronghold.robot.subsystems.Stinger;
 import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends SampleRobot
 {
@@ -128,8 +130,10 @@ public class Robot extends SampleRobot
 			{
 				intaking = true;
 				outtaking = false;
+				shooter.setFutter(true);
+				intake.setFutter(true);
 				shooter.setOverrideSpeed(-1);
-				if (shooterPosition < 10 || shooterOverrideEnabled)
+				if (shooterPosition < 15 || shooterOverrideEnabled)
 				{
 					intake.set(1);
 				}
@@ -138,8 +142,10 @@ public class Robot extends SampleRobot
 			{
 				outtaking = true;
 				intaking = false;
+				shooter.setFutter(false);
+				intake.setFutter(false);
 				intake.set(-1);
-				if (shooterPosition < 10 || shooterOverrideEnabled)
+				if (shooterPosition < 15 || shooterOverrideEnabled)
 				{
 					shooter.setOverrideSpeed(1);
 				}
@@ -153,6 +159,8 @@ public class Robot extends SampleRobot
 				intake.set(0);
 				intaking = false;
 				outtaking = false;
+				shooter.setFutter(false);
+				intake.setFutter(false);
 			}
 
 			// intake position
