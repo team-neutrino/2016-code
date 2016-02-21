@@ -91,7 +91,8 @@ public class Shooter implements Runnable
 		running = false;
 
 		setFlippers(false);
-
+		
+		ejectThread = new Thread(new ejectThread());
 		speedThread = new Thread(this);
 	}
 	
