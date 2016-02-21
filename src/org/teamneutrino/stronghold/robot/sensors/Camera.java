@@ -171,7 +171,7 @@ public class Camera implements Runnable {
 						particles.remove(k);
 					}
 					maxArea = myArr[0].area;
-					System.out.println("Area: " + maxArea);
+					// System.out.println("Area: " + maxArea);
 					centerY = myArr[0].projectionX;
 					centerX = myArr[0].projectionY;
 					rectangle = myArr[0].boundingBox;
