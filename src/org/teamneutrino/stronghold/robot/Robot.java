@@ -181,7 +181,7 @@ public class Robot extends SampleRobot
 			{
 				intake.setSetpoint(-20);
 			}
-
+			
 			// shooter position
 			if (shooterOverrideEnabled)
 			{

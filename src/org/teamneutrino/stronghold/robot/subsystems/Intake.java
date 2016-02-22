@@ -49,7 +49,7 @@ public class Intake
 		actuationPID.setContinuous(true);
 
 		// TODO remove
-		actuationPID.setOutputRange(-.25, .25);
+		actuationPID.setOutputRange(-.3, .3);
 
 		flutterEnabled = false;
 
