@@ -44,8 +44,7 @@ public class Shooter implements Runnable
 
 	private double setpoint;
 
-	private Thread speedThread;
-	private Thread ejectThread;
+	private Thread flutterThread;
 
 	private static final int MILLISECONDS_PER_MINUTE = 60000;
 	private static final int CORRECTION_RPM = 2000;
@@ -101,9 +100,8 @@ public class Shooter implements Runnable
 
 		flutterEnabled = false;
 
-		new Thread(new flutterThread()).start();
-		ejectThread = new Thread(new ejectThread());
-		speedThread = new Thread(this);
+		flutterThread = new Thread(new FlutterThread());
+		flutterThread.start();
 	}
 
 	public void startEjectThread()
@@ -111,7 +109,7 @@ public class Shooter implements Runnable
 		if (!running && !ejectThreadRunning)
 		{
 			ejectThreadRunning = true;
-			ejectThread.start();
+			new Thread(new EjectThread()).start();
 		}
 	}
 
@@ -119,12 +117,12 @@ public class Shooter implements Runnable
 	{
 		leftMotor.set(1);
 		rightMotor.set(1);
-		//
-		// if (!running)
-		// {
-		// shooterSpeedThread.start();
-		// running = true;
-		// }
+
+//		if (!running)
+//		{
+//			new Thread(this).start();
+//			running = true;
+//		}
 		running = true;
 	}
 
@@ -173,7 +171,7 @@ public class Shooter implements Runnable
 		}
 
 		setpoint = angle;
-		
+
 		if (!flutterEnabled)
 		{
 			actuationPID.setSetpoint(angle);
@@ -199,7 +197,14 @@ public class Shooter implements Runnable
 
 	public void setFutter(boolean enabled)
 	{
-		flutterEnabled = enabled;
+		if (enabled && !flutterEnabled)
+		{
+			flutterEnabled = true;
+			flutterThread.interrupt();
+		}
+		{
+			flutterEnabled = false;
+		}
 	}
 
 	@Override
@@ -403,7 +408,7 @@ public class Shooter implements Runnable
 		}
 	}
 
-	private class ejectThread implements Runnable
+	private class EjectThread implements Runnable
 	{
 		@Override
 		public void run()
@@ -421,7 +426,7 @@ public class Shooter implements Runnable
 		}
 	}
 
-	private class flutterThread implements Runnable
+	private class FlutterThread implements Runnable
 	{
 		@Override
 		public void run()
