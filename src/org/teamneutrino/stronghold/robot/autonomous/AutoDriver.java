@@ -571,7 +571,7 @@ public class AutoDriver
 		double ang;
 		ang = shooter.getPosition();
 		maxHeight = maxHeight / Math.sin(ang*Math.PI/180);
-		return maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE;
+		return Math.sqrt((maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE)*(maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE) - (95/12)*(95/12));
 		//DISTANCE IS IN FEET
 	}
 }
