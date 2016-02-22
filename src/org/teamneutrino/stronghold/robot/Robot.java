@@ -235,15 +235,18 @@ public class Robot extends SampleRobot
 	@Override
 	public void test()
 	{
+		int counter = 0;
 		while(isTest())
 		{
 			shooter.setActuatorOverride(-gamepad.getRawAxis(4));
 			intake.setActuatorOverride(-.6 * gamepad.getRawAxis(1));
 			intakePosition = intake.getPosition();
 			shooterPosition = shooter.getPosition();
-			SmartDashboard.putNumber("Intake Position: ", intakePosition);
-			SmartDashboard.putNumber("Shooter Position: ", shooterPosition);
-			
+			if (counter > 10)
+			{
+				System.out.println("Intake Position: " + intakePosition + ", Shooter Position: " + shooterPosition);
+			}
+			counter++;
 		}
 	}
 }
