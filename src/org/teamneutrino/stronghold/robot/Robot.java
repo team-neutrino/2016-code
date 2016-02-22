@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends SampleRobot
 {
@@ -28,6 +29,9 @@ public class Robot extends SampleRobot
 	private Intake intake;
 	private Shooter shooter;
 	private Stinger stinger;
+	
+	private double intakePosition;
+	private double shooterPosition;
 
 	public Robot()
 	{
@@ -231,6 +235,15 @@ public class Robot extends SampleRobot
 	@Override
 	public void test()
 	{
-
+		while(isTest())
+		{
+			shooter.setActuatorOverride(-gamepad.getRawAxis(4));
+			intake.setActuatorOverride(-.6 * gamepad.getRawAxis(1));
+			intakePosition = intake.getPosition();
+			shooterPosition = shooter.getPosition();
+			SmartDashboard.putNumber("Intake Position: ", intakePosition);
+			SmartDashboard.putNumber("Shooter Position: ", shooterPosition);
+			
+		}
 	}
 }

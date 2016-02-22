@@ -142,7 +142,6 @@ public class Camera implements Runnable {
 							NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
 					int height = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 							NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
-					maxHeight = height;
 					int width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 							NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
 					Rect rect = new Rect(top, left, height, width);
@@ -175,6 +174,7 @@ public class Camera implements Runnable {
 					centerY = myArr[0].projectionX;
 					centerX = myArr[0].projectionY;
 					rectangle = myArr[0].boundingBox;
+					maxHeight = rectangle.height;
 				}
 				else
 				{
