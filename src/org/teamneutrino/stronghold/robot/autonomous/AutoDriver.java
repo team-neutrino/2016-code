@@ -10,6 +10,7 @@ import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * This class autonomously drives and operates the robot using feed back from
@@ -26,7 +27,6 @@ public class AutoDriver
 	private Camera cam;
 
 	private boolean shooterAimingThreadRunning;
-	private Thread shooterAimingThread;
 	private boolean waitUntilAimed;
 	private boolean aimed;
 
@@ -53,7 +53,7 @@ public class AutoDriver
 	private static final int TIMEOUT_REFRESH_RATE = 5;
 	private static final int SHOOTER_AIMING_THREAD_REFRESH_RATE = 5;
 
-	private static final double AIM_DRIVE_SPEED = .25;
+	private static final double AIM_DRIVE_SPEED = .1;
 	private static final double AIM_SHOOTER_ACTUATION_SPEED = .15;
 
 	private static final double AIM_ON_TARGET_THRESHOLD = 2;
@@ -74,7 +74,6 @@ public class AutoDriver
 
 		shooterAimingThreadRunning = false;
 		aimed = false;
-		shooterAimingThread = new Thread(new ShooterAimingThread());
 	}
 
 	/**
@@ -134,8 +133,7 @@ public class AutoDriver
 				rightCorrection = 0;
 				terminate = true;
 				// msg = "done";
-			}
-			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			} else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
@@ -145,28 +143,24 @@ public class AutoDriver
 				{
 					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				}
-				else
+				} else
 				{
 					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
 				}
-			}
-			else if (diff > 0)
+			} else if (diff > 0)
 			{
 				// msg = "veer right";
 				// veer right
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-			}
-			else if (diff < 0)
+			} else if (diff < 0)
 			{
 				// msg = "veer left";
 				// veer right
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 				rightCorrection = 1;
-			}
-			else
+			} else
 			{
 				// msg = "going straight";
 				// go straight
@@ -182,13 +176,11 @@ public class AutoDriver
 			{
 				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
-			}
-			else if (minDistance < RAMP_UP_DISTANCE)
+			} else if (minDistance < RAMP_UP_DISTANCE)
 			{
 				// ramp up
 				ramp = (minDistance / RAMP_UP_DISTANCE);
-			}
-			else if (remainDistance < RAMP_DOWN_DISTANCE)
+			} else if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
@@ -257,8 +249,7 @@ public class AutoDriver
 			try
 			{
 				Thread.sleep(TIMEOUT_REFRESH_RATE);
-			}
-			catch (InterruptedException e)
+			} catch (InterruptedException e)
 			{
 			}
 
@@ -331,8 +322,7 @@ public class AutoDriver
 				rightCorrection = 0;
 				terminate = true;
 				msg = "done";
-			}
-			else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
+			} else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
 			{
 				// gyro unplugged
 				drive.setLeft(0);
@@ -340,8 +330,7 @@ public class AutoDriver
 
 				DriverStation.reportError("Gyro is unplugged", false);
 				throw new GyroUnpluggedException("Gyro is unplgged");
-			}
-			else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			} else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
@@ -351,28 +340,24 @@ public class AutoDriver
 				{
 					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				}
-				else
+				} else
 				{
 					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
 					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
 				}
-			}
-			else if (diff > 0)
+			} else if (diff > 0)
 			{
 				msg = "veer right";
 				// veer right
 				leftCorrection = 1;
 				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-			}
-			else if (diff < 0)
+			} else if (diff < 0)
 			{
 				msg = "veer left";
 				// veer right
 				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 				rightCorrection = 1;
-			}
-			else
+			} else
 			{
 				msg = "going straight";
 				// go straight
@@ -388,13 +373,11 @@ public class AutoDriver
 			{
 				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(degreesTraveled / RAMP_UP_DISTANCE, degreesRemain / RAMP_DOWN_DISTANCE);
-			}
-			else if (degreesTraveled < RAMP_UP_DEGREES)
+			} else if (degreesTraveled < RAMP_UP_DEGREES)
 			{
 				// ramp up
 				ramp = (degreesTraveled / RAMP_UP_DEGREES);
-			}
-			else if (degreesRemain < RAMP_DOWN_DEGREES)
+			} else if (degreesRemain < RAMP_DOWN_DEGREES)
 			{
 				// ramp down
 				ramp = (degreesRemain / RAMP_DOWN_DEGREES);
@@ -433,11 +416,6 @@ public class AutoDriver
 		drive.setRight(0);
 	}
 
-	public void aim()
-	{
-		aim(true);
-	}
-
 	/**
 	 * Uses the camera to rotate the robot and shooter so that it is pointed
 	 * toward the goal.
@@ -452,14 +430,17 @@ public class AutoDriver
 
 		aimed = false;
 
-		shooterAimingThreadRunning = true;
-		if (waitUntilAimed)
+		if (!shooterAimingThreadRunning)
 		{
-			new ShooterAimingThread().run();
-		}
-		else
-		{
-			shooterAimingThread.start();
+			if (waitUntilAimed)
+			{
+				shooterAimingThreadRunning = true;
+				new ShooterAimingThread().run();
+			} else
+			{
+				shooterAimingThreadRunning = true;
+				new Thread(new ShooterAimingThread()).start();
+			}
 		}
 	}
 
@@ -486,8 +467,7 @@ public class AutoDriver
 				try
 				{
 					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				}
-				catch (InterruptedException e)
+				} catch (InterruptedException e)
 				{
 				}
 
@@ -496,7 +476,9 @@ public class AutoDriver
 				if (currFrame != prevFrame)
 				{
 					prevFrame = currFrame;
-					aimed = aimShooter();
+					boolean driveAimed = aimDrive();
+					boolean shooterAimed = aimShooter();
+					aimed = driveAimed && shooterAimed;
 				}
 			}
 
@@ -507,8 +489,7 @@ public class AutoDriver
 	private boolean aimDrive()
 	{
 		double targetX = cam.getTargetX();
-		System.out.println(targetX);
-		double error = targetX - Constants.CAMERA_TARGET_X;
+		double error = targetX - (Constants.CAMERA_TARGET_X + Constants.CAMERA_TARGET_X_OFFSET);
 		double speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
@@ -519,16 +500,25 @@ public class AutoDriver
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
+			
+			int time;
+			if (error > 10)
+			{
+				time = (int) ((error - 10) * 2  + 100);
+			}
+			else
+			{
+				time = 100;
+			}
 
 			try
 			{
-				Thread.sleep(100);
-			}
-			catch (InterruptedException e)
+				Thread.sleep(time);
+			} catch (InterruptedException e)
 			{
 			}
 		}
-		
+
 		drive.setLeft(0);
 		drive.setRight(0);
 
@@ -537,10 +527,9 @@ public class AutoDriver
 
 	private boolean aimShooter()
 	{
-
 		double targetY = cam.getTargetY();
 		System.out.println(targetY);
-		double error = targetY - Constants.CAMERA_TARGET_Y;
+		double error = targetY - (Constants.CAMERA_TARGET_Y + Constants.CAMERA_TARGET_Y_OFFSET);
 		double speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
@@ -549,13 +538,24 @@ public class AutoDriver
 
 		if (!onTarget)
 		{
+			System.out.println("hi" + System.currentTimeMillis());
+			
 			shooter.setActuatorOverride(speed);
+
+			int time;
+			if (error > 10)
+			{
+				time = (int) ((error - 10) * 2  + 100);
+			}
+			else
+			{
+				time = 100;
+			}
 
 			try
 			{
-				Thread.sleep(100);
-			}
-			catch (InterruptedException e)
+				Thread.sleep(time);
+			} catch (InterruptedException e)
 			{
 			}
 		}
@@ -564,14 +564,18 @@ public class AutoDriver
 
 		return onTarget;
 	}
-	private double findDistance ()
+
+	public double findDistance()
 	{
-		//AFTER FINDING THE LARGEST PARTICLE'S HEIGHT
+		// AFTER FINDING THE LARGEST PARTICLE'S HEIGHT
 		double maxHeight = cam.getHighestHeight();
 		double ang;
 		ang = shooter.getPosition();
-		maxHeight = maxHeight / Math.sin(ang*Math.PI/180);
-		return Math.sqrt((maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE)*(maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE) - (95/12)*(95/12));
-		//DISTANCE IS IN FEET
+		maxHeight = maxHeight / Math.sin(ang * Math.PI / 180);
+		System.out.println("Max Height: " + maxHeight);
+		Timer.delay(.5);
+		return Math.sqrt((maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE)
+				* (maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE));
+		// DISTANCE IS IN FEET
 	}
 }

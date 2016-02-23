@@ -25,7 +25,7 @@ public class TurnTowardGoal implements AutoMode
 	@Override
 	public void run()
 	{
-		driver.aim();
+		driver.aim(true);
 	}
 
 }

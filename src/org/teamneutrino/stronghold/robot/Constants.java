@@ -23,15 +23,17 @@ public class Constants
 
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam0";
-	public static final int CAMERA_DEFAULT_HUE_LOW = 101;
-	public static final int CAMERA_DEFAULT_HUE_HIGH = 136;
+	public static final int CAMERA_DEFAULT_HUE_LOW = 100;
+	public static final int CAMERA_DEFAULT_HUE_HIGH = 150;
 	public static final int CAMERA_DEFAULT_SATURATION_LOW = 84;
 	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
 	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 34;
 	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 255;
 	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
-	public static final double CAMERA_TARGET_X = 120;
-	public static final double CAMERA_TARGET_Y = 300;
+	public static final double CAMERA_TARGET_X = 240;
+	public static final double CAMERA_TARGET_X_OFFSET = -10;
+	public static final double CAMERA_TARGET_Y = 320;
+	public static final double CAMERA_TARGET_Y_OFFSET = -200;
 	public static final double MIN_PARTICLE_SIZE = 10;
 	public static final double CAMERA_DISTANCE_BASE = 1.17875473; //DISTANCE IN FEET AT WICH THE GOAL HEIGHT IS EQUAL TO THE IMAGE HEIGHT WHEN VIEWED AT 0 DEGREES
 
