@@ -183,7 +183,7 @@ public class Robot extends SampleRobot
 			}
 			else if (gamepadPOV == 180)
 			{
-				intake.setSetpoint(-20);
+				intake.setSetpoint(-19);
 			}
 			
 			// shooter position
@@ -197,17 +197,16 @@ public class Robot extends SampleRobot
 			}
 			else if (gamepad.getRawButton(3))
 			{
-				shooter.setSetpoint(45);
+				shooter.setSetpoint(30);
 			}
 			else if (gamepad.getRawButton(1))
 			{
-				shooter.setSetpoint(135);
+				shooter.setSetpoint(120);
 			}
 
 			if (outtaking)
 			{
-				// shooter.startEjectThread();
-				shooter.setFlippers(true);
+				 shooter.startEjectThread();
 			}
 			else
 			{

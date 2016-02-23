@@ -22,7 +22,7 @@ public class Intake
 	private PIDController actuationPID;
 
 	private static final int FLUTTER_PEROID = 500;
-	private static final int FLUTTER_AMPLITUDE = 5;
+	private static final int FLUTTER_AMPLITUDE = 2;
 
 	public Intake()
 	{
@@ -40,7 +40,7 @@ public class Intake
 		}
 		intakeSideToSideMotor.setInverted(true);
 		actuatorMotor.setInverted(true);
-
+               
 		encoder = new AnalogPotentiometer(Constants.INTAKE_ENCODER_CHANNEL, Constants.INTAKE_ENCODER_SCALE,
 				Constants.INTAKE_ENCODER_OFFSET);
 
@@ -49,7 +49,7 @@ public class Intake
 		actuationPID.setContinuous(true);
 
 		// TODO remove
-		actuationPID.setOutputRange(-.3, .3);
+		actuationPID.setOutputRange(-.8, .8);
 
 		flutterEnabled = false;
 

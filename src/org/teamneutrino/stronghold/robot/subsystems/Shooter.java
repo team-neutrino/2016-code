@@ -34,6 +34,8 @@ public class Shooter implements Runnable
 	private PIDController actuationPID;
 
 	private boolean running;
+	private boolean shooterOutfeed;
+	
 	private boolean ejectThreadRunning;
 	private boolean atTargetSpeed;
 
@@ -124,10 +126,12 @@ public class Shooter implements Runnable
 //			running = true;
 //		}
 		running = true;
+		shooterOutfeed = false;
 	}
 
 	public void setOverrideSpeed(double speed)
 	{
+		shooterOutfeed = speed > 0;
 		if (!running)
 		{
 			leftMotor.set(speed);
@@ -140,6 +144,7 @@ public class Shooter implements Runnable
 		leftMotor.set(0);
 		rightMotor.set(0);
 		running = false;
+		shooterOutfeed = false;
 	}
 
 	public boolean isRunning()
@@ -191,6 +196,10 @@ public class Shooter implements Runnable
 
 	public void setFlippers(boolean triggered)
 	{
+		if (!(running || shooterOutfeed))
+		{
+			triggered = false;
+		}
 		flippersOpenCylinder.set(triggered);
 		flippersCloseCylinder.set(!triggered);
 	}
@@ -413,16 +422,30 @@ public class Shooter implements Runnable
 		@Override
 		public void run()
 		{
+			waitForShooterOutfeed();
 			try
 			{
-				Thread.sleep(500);
+				Thread.sleep(1000);
 			}
 			catch (InterruptedException e)
 			{
 			}
-
 			setFlippers(true);
 			ejectThreadRunning = false;
+		}
+		
+		private void waitForShooterOutfeed()
+		{
+			while (!shooterOutfeed)
+			{
+				try
+				{
+					Thread.sleep(5);
+				}
+				catch (InterruptedException e)
+				{
+				}
+			}
 		}
 	}
 
