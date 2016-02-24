@@ -174,7 +174,7 @@ public class Camera implements Runnable {
 					centerY = myArr[0].projectionX;
 					centerX = myArr[0].projectionY;
 					rectangle = myArr[0].boundingBox;
-					maxHeight = rectangle.height;
+					maxHeight = rectangle.width;
 				}
 				else
 				{
