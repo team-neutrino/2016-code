@@ -572,15 +572,11 @@ public class AutoDriver
 
 	public double findDistance()
 	{
-		// AFTER FINDING THE LARGEST PARTICLE'S HEIGHT
-		double maxHeight = cam.getHighestHeight();
-		double ang;
-		ang = shooter.getPosition();
-		maxHeight = maxHeight / Math.sin(ang * Math.PI / 180);
-		System.out.println("Max Height: " + maxHeight);
-		Timer.delay(.5);
-		return Math.sqrt((maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE)
-				* (maxHeight / 640 * Constants.CAMERA_DISTANCE_BASE));
-		// DISTANCE IS IN FEET
+		double rectHeight = cam.getHighestHeight();
+		double goalHeight = rectHeight * Constants.GOAL_HEIGHT_MULTIPLIER;
+		double angle = shooter.getPosition();
+		double distancePixels = goalHeight/Math.tan(angle);
+		double distanceInches = 12 * (distancePixels/goalHeight);
+		return distanceInches;
 	}
 }
