@@ -448,6 +448,11 @@ public class AutoDriver
 	{
 		shooterAimingThreadRunning = false;
 	}
+	
+	public boolean isAiming()
+	{
+		return shooterAimingThreadRunning;
+	}
 
 	public boolean isAimed()
 	{
