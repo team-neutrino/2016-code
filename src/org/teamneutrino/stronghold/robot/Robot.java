@@ -253,7 +253,7 @@ public class Robot extends SampleRobot
 				double rightSpeed = -joyRight.getY();
 	
 				// fast mode
-				boolean triggers = joyLeft.getRawButton(1) || joyRight.getRawButton(1);
+				boolean triggers = true;//joyLeft.getRawButton(1) || joyRight.getRawButton(1);
 	
 				leftSpeed = (triggers ? 1 : .5) * leftSpeed * Math.abs(leftSpeed);
 				rightSpeed = (triggers ? 1 : .5) * rightSpeed * Math.abs(rightSpeed);
