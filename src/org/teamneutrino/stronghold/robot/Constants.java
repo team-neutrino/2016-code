@@ -2,7 +2,7 @@ package org.teamneutrino.stronghold.robot;
 
 public class Constants
 {
-	public static final boolean REAL_BOT = true;
+	public static final boolean REAL_BOT = false;
 
 	// Autonomous Constants
 	public static final double AUTO_MOVE_SPEED = .25;
