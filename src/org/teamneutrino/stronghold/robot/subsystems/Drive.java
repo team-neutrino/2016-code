@@ -14,6 +14,10 @@ public class Drive
 	private SpeedController left2;
 	private SpeedController right3;
 	private SpeedController left3;
+	
+	private boolean fastMode;
+	private int leftSpeed;
+	private double rightSpeed;
 
 	public Drive()
 	{
@@ -25,6 +29,13 @@ public class Drive
 			left2 = new CANTalon(Constants.DRIVE_LEFT_2_CHANNEL);
 			right3 = new CANTalon(Constants.DRIVE_RIGHT_3_CHANNEL);
 			left3 = new CANTalon(Constants.DRIVE_LEFT_3_CHANNEL);
+			
+			setBreakMode(false, left1);
+			setBreakMode(false, right1);
+			setBreakMode(true, left2);
+			setBreakMode(true, right2);
+			setBreakMode(true, left3);
+			setBreakMode(true, right3);
 		}
 		else
 		{
@@ -36,6 +47,8 @@ public class Drive
 			left3 = new Victor(Constants.DRIVE_LEFT_3_CHANNEL);
 		}
 		
+		fastMode = false;
+		
 		right1.setInverted(true);
 		right2.setInverted(true);
 		right3.setInverted(true);
@@ -43,16 +56,50 @@ public class Drive
 
 	public void setRight(double speed)
 	{
-		right1.set(speed);
+		rightSpeed = speed;
+		if (fastMode)
+		{
+			right1.set(speed);
+		}
 		right2.set(speed);
 		right3.set(speed);
 	}
 
 	public void setLeft(double speed)
 	{
-		left1.set(speed);
+		leftSpeed = (int) speed;
+		if (fastMode)
+		{
+			left1.set(speed);
+		}
 		left2.set(speed);
 		left3.set(speed);
+	}
+	
+	public void setFastMode(boolean enabled)
+	{
+		fastMode = enabled;
+		setBreakMode(enabled, left1);
+		setBreakMode(enabled, right1);
+		
+		if (enabled)
+		{
+			left1.set(leftSpeed);
+			right1.set(rightSpeed);
+		}
+		else
+		{
+			left1.set(0);
+			right1.set(0);
+		}
+	}
+	
+	private void setBreakMode(boolean enabled, SpeedController sp)
+	{
+		if (sp instanceof CANTalon)
+		{
+			((CANTalon) sp).enableBrakeMode(enabled);
+		}
 	}
 
 }
