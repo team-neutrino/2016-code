@@ -12,6 +12,7 @@ import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 import org.teamneutrino.stronghold.robot.subsystems.Stinger;
 import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 import org.teamneutrino.stronghold.robot.util.JoystickButtonManager;
+import org.teamneutrino.stronghold.robot.util.Util;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
@@ -201,26 +202,29 @@ public class Robot extends SampleRobot
 			}
 
 			// intake position
-			double gamepadPOV = gamepad.getPOV();
 			if (intakeOverrideEnabled)
 			{
 				// override mode
 				intake.setActuatorOverride(-.6 * gamepad.getRawAxis(1));
 			}
-			else if ((shooting && intakePosition > 0) || intaking || gamepadPOV == 270 || gamepadMan.getButtonState(2))
+			else
 			{
-				// mid
-				intake.setTargetPosition(Intake.Position.INTAKE);
-			}
-			else if (gamepadPOV == 0)
-			{
-				// up
-				intake.setTargetPosition(Intake.Position.UP);
-			}
-			else if (gamepadPOV == 180)
-			{
-				// down
-				intake.setTargetPosition(Intake.Position.DOWN);
+				double joyPosition = gamepad.getRawAxis(1);
+
+				if (Math.abs(joyPosition) < 0.2)
+				{
+					intake.setTargetPosition(Intake.Position.INTAKE);
+				}
+				else if (joyPosition >= 0.2)
+				{
+					intake.setSetpoint(Util.scale(joyPosition, 0.2, 1, Intake.Position.INTAKE.location,
+							Intake.Position.UP.location));
+				}
+				else
+				{
+					intake.setSetpoint(Util.scale(joyPosition, -0.2, -1, Intake.Position.INTAKE.location,
+							Intake.Position.DOWN.location));
+				}
 			}
 
 			// shooter position
