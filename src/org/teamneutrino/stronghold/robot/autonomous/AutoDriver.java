@@ -418,28 +418,16 @@ public class AutoDriver
 	/**
 	 * Uses the camera to rotate the robot and shooter so that it is pointed
 	 * toward the goal.
-	 * 
-	 * @param waitUntilAimed
-	 *            if this is true, the robot will aim for the goal and return
-	 *            once it is aimed
 	 */
-	public void aim(boolean waitUntilAimed)
+	public void aim()
 	{
-		this.waitUntilAimed = waitUntilAimed;
 
 		aimed = false;
 
 		if (!shooterAimingThreadRunning)
 		{
-			if (waitUntilAimed)
-			{
-				shooterAimingThreadRunning = true;
-				new ShooterAimingThread().run();
-			} else
-			{
-				shooterAimingThreadRunning = true;
-				new Thread(new ShooterAimingThread()).start();
-			}
+			shooterAimingThreadRunning = true;
+			new Thread(new ShooterAimingThread()).start();
 		}
 	}
 

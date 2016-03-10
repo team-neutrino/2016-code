@@ -134,7 +134,7 @@ public class Robot extends SampleRobot
 			boolean isAiming = driver.isAiming();
 			if ((joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && !isAiming)
 			{
-				driver.aim(false);
+				driver.aim();
 				isAiming = true;
 			}
 			else if (!(joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && isAiming)
