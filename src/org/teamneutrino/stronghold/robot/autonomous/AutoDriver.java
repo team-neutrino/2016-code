@@ -26,8 +26,8 @@ public class AutoDriver
 	private Camera cam;
 
 	private boolean shooterAimingThreadRunning;
-	private boolean waitUntilAimed;
-	private boolean aimed;
+	private boolean driveAimed;
+	private boolean shooterAimed;
 
 	private static final int TIMEOUT = 100000;
 
@@ -72,7 +72,8 @@ public class AutoDriver
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 
 		shooterAimingThreadRunning = false;
-		aimed = false;
+		driveAimed = false;
+		shooterAimed = false;
 	}
 
 	/**
@@ -422,12 +423,14 @@ public class AutoDriver
 	public void aim()
 	{
 
-		aimed = false;
+		shooterAimed = false;
+		driveAimed = false;
 
 		if (!shooterAimingThreadRunning)
 		{
 			shooterAimingThreadRunning = true;
 			new Thread(new ShooterAimingThread()).start();
+			new Thread(new DriveAimingThread()).start();
 		}
 	}
 
@@ -443,10 +446,9 @@ public class AutoDriver
 
 	public boolean isAimed()
 	{
-		return shooterAimingThreadRunning && aimed;
+		return isAiming() && shooterAimed && driveAimed;
 	}
 
-	// TODO auto timeout
 	private class ShooterAimingThread implements Runnable
 	{
 		@Override
@@ -454,7 +456,35 @@ public class AutoDriver
 		{
 			int prevFrame = 0;
 			int currFrame = 0;
-			while (shooterAimingThreadRunning && !(aimed && waitUntilAimed))
+			while (shooterAimingThreadRunning)
+			{
+				try
+				{
+					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
+				} catch (InterruptedException e)
+				{
+				}
+
+				// check for new frame
+				currFrame = cam.getCurrentFrame();
+				if (currFrame != prevFrame)
+				{
+					shooterAimed = aimShooter();
+				}
+			}
+
+			shooterAimingThreadRunning = false;
+		}
+	}
+
+	private class DriveAimingThread implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			int prevFrame = 0;
+			int currFrame = 0;
+			while (shooterAimingThreadRunning)
 			{
 				try
 				{
@@ -468,9 +498,7 @@ public class AutoDriver
 				if (currFrame != prevFrame)
 				{
 					prevFrame = currFrame;
-					boolean driveAimed = aimDrive();
-					boolean shooterAimed = aimShooter();
-					aimed = driveAimed && shooterAimed;
+					driveAimed = aimDrive();
 				}
 			}
 
@@ -530,8 +558,6 @@ public class AutoDriver
 
 		if (!onTarget)
 		{
-			System.out.println("hi" + System.currentTimeMillis());
-			
 			shooter.setActuatorOverride(speed);
 
 			int time;

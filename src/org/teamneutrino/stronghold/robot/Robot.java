@@ -93,6 +93,8 @@ public class Robot extends SampleRobot
 
 		boolean outtakingPrev = false;
 		boolean outtaking = false;
+		
+		driver.stopAim();
 
 		while (isOperatorControl() && isEnabled())
 		{
@@ -140,7 +142,7 @@ public class Robot extends SampleRobot
 			else if (!(joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && isAiming)
 			{
 				driver.stopAim();
-				isAiming = true;
+				isAiming = false;
 			}
 
 			// Shooter Spinup & Shoot
