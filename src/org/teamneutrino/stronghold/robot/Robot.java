@@ -82,10 +82,8 @@ public class Robot extends SampleRobot
 		gamepadMan = new JoystickButtonManager(gamepad);
 		gamepadMan.updateButtons();
 
-		int INTAKE_MID_POS = -3;
-
-		intake.setSetpoint(INTAKE_MID_POS);
-		shooter.setSetpoint(45);
+		intake.setSetpoint(shooter.getPosition());
+		shooter.setSetpoint(shooter.getPosition());
 
 		boolean shooterSpinPrev = false;
 
@@ -212,17 +210,17 @@ public class Robot extends SampleRobot
 			else if ((shooting && intakePosition > 0) || intaking || gamepadPOV == 270 || gamepadMan.getButtonState(2))
 			{
 				// mid
-				intake.setSetpoint(INTAKE_MID_POS);
+				intake.setTargetPosition(Intake.Position.INTAKE);
 			}
 			else if (gamepadPOV == 0)
 			{
 				// up
-				intake.setSetpoint(90);
+				intake.setTargetPosition(Intake.Position.UP);
 			}
 			else if (gamepadPOV == 180)
 			{
 				// down
-				intake.setSetpoint(-19);
+				intake.setTargetPosition(Intake.Position.DOWN);
 			}
 
 			// shooter position
@@ -236,15 +234,15 @@ public class Robot extends SampleRobot
 			}
 			else if (intaking || outtaking || gamepadMan.getButtonState(4) || gamepadMan.getButtonState(2))
 			{
-				shooter.setSetpoint(0);
+				shooter.setTargetPosition(Shooter.Position.INTAKE);
 			}
 			else if (gamepadMan.getButtonState(3))
 			{
-				shooter.setSetpoint(30);
+				shooter.setTargetPosition(Shooter.Position.FRONT);
 			}
 			else if (gamepadMan.getButtonState(1))
 			{
-				shooter.setSetpoint(120);
+				shooter.setTargetPosition(Shooter.Position.BACK);
 			}
 
 			if (outtaking)

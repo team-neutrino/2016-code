@@ -23,6 +23,18 @@ public class Intake
 
 	private static final int FLUTTER_PEROID = 500;
 	private static final int FLUTTER_AMPLITUDE = 2;
+	
+	public enum Position
+	{
+		DOWN(-19), INTAKE(-3), UP(90);
+
+		public final double location;
+
+		Position(int location)
+		{
+			this.location = location;
+		}
+	}
 
 	public Intake()
 	{
@@ -59,6 +71,11 @@ public class Intake
 	public double getPosition()
 	{
 		return encoder.get();
+	}
+	
+	public void setTargetPosition(Position position)
+	{
+		setSetpoint(position.location);
 	}
 
 	public void setSetpoint(double angle)

@@ -35,7 +35,7 @@ public class Shooter implements Runnable
 
 	private boolean running;
 	private boolean shooterOutfeed;
-	
+
 	private boolean ejectThreadRunning;
 	private boolean atTargetSpeed;
 
@@ -55,6 +55,18 @@ public class Shooter implements Runnable
 
 	private static final int FLUTTER_PEROID = 500;
 	private static final int FLUTTER_AMPLITUDE = 20;
+
+	public enum Position
+	{
+		INTAKE(0), FRONT(30), BACK(120);
+
+		public final double location;
+
+		Position(int location)
+		{
+			this.location = location;
+		}
+	}
 
 	public Shooter()
 	{
@@ -120,11 +132,11 @@ public class Shooter implements Runnable
 		leftMotor.set(1);
 		rightMotor.set(1);
 
-//		if (!running)
-//		{
-//			new Thread(this).start();
-//			running = true;
-//		}
+		// if (!running)
+		// {
+		// new Thread(this).start();
+		// running = true;
+		// }
 		running = true;
 		shooterOutfeed = false;
 	}
@@ -161,6 +173,11 @@ public class Shooter implements Runnable
 	{
 		actuationPID.disable();
 		actuatorMotor.set(speed);
+	}
+	
+	public void setTargetPosition(Position position)
+	{
+		setSetpoint(position.location);
 	}
 
 	public void setSetpoint(double angle)
@@ -433,7 +450,7 @@ public class Shooter implements Runnable
 			setFlippers(true);
 			ejectThreadRunning = false;
 		}
-		
+
 		private void waitForShooterOutfeed()
 		{
 			while (!shooterOutfeed)
