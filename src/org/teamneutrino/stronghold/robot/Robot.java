@@ -89,7 +89,7 @@ public class Robot extends SampleRobot
 
 		boolean shooterOverrideEnabled = false;
 		boolean intakeOverrideEnabled = false;
-		
+
 		boolean outtakingPrev = false;
 		boolean outtaking = false;
 
