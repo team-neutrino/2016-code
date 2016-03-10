@@ -174,7 +174,7 @@ public class Shooter implements Runnable
 		actuationPID.disable();
 		actuatorMotor.set(speed);
 	}
-	
+
 	public void setTargetPosition(Position position)
 	{
 		setSetpoint(position.location);

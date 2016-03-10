@@ -21,9 +21,11 @@ public class Intake
 
 	private PIDController actuationPID;
 
+	private Thread flutterThread;
+
 	private static final int FLUTTER_PEROID = 500;
 	private static final int FLUTTER_AMPLITUDE = 2;
-	
+
 	public enum Position
 	{
 		DOWN(-19), INTAKE(-3), UP(90);
@@ -52,7 +54,7 @@ public class Intake
 		}
 		intakeSideToSideMotor.setInverted(true);
 		actuatorMotor.setInverted(true);
-               
+
 		encoder = new AnalogPotentiometer(Constants.INTAKE_ENCODER_CHANNEL, Constants.INTAKE_ENCODER_SCALE,
 				Constants.INTAKE_ENCODER_OFFSET);
 
@@ -65,14 +67,15 @@ public class Intake
 
 		flutterEnabled = false;
 
-		new Thread(new flutterThread()).start();
+		flutterThread = new Thread(new FlutterThread());
+		flutterThread.start();
 	}
 
 	public double getPosition()
 	{
 		return encoder.get();
 	}
-	
+
 	public void setTargetPosition(Position position)
 	{
 		setSetpoint(position.location);
@@ -81,7 +84,7 @@ public class Intake
 	public void setSetpoint(double angle)
 	{
 		setpoint = angle;
-		
+
 		if (!flutterEnabled)
 		{
 			actuationPID.setSetpoint(angle);
@@ -100,13 +103,20 @@ public class Intake
 		intakeFrontToBackMotor.set(speed);
 		intakeSideToSideMotor.set(speed);
 	}
-	
+
 	public void setFutter(boolean enabled)
 	{
-		flutterEnabled = enabled;
+		if (enabled && !flutterEnabled)
+		{
+			flutterEnabled = true;
+			flutterThread.interrupt();
+		}
+		{
+			flutterEnabled = false;
+		}
 	}
 
-	private class flutterThread implements Runnable
+	private class FlutterThread implements Runnable
 	{
 		@Override
 		public void run()
