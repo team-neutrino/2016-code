@@ -43,8 +43,6 @@ public class CurrentMonitor implements Runnable
 		intake.addChannel(new PowerChannel("Front to Back", Constants.INTAKE_FRONT_TO_BACK_MOTOR_POWER_CHANNEL));
 		intake.addChannel(new PowerChannel("Actuator", Constants.INTAKE_ACUATOR_MOTOR_POWER_CHANNEL));
 		
-		// TODO intake
-		
 		new Thread(this).start();
 	}
 
