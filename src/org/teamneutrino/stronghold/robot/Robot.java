@@ -93,7 +93,7 @@ public class Robot extends SampleRobot
 
 		boolean outtakingPrev = false;
 		boolean outtaking = false;
-		
+
 		driver.stopAim();
 
 		while (isOperatorControl() && isEnabled())
@@ -277,8 +277,8 @@ public class Robot extends SampleRobot
 				double rightSpeed = -joyRight.getY();
 
 				// fast mode
-				drive.setFastMode((joyLeftMan.getButtonState(1) && joyLeftMan.getButtonChanged(1))
-						|| (joyRightMan.getButtonState(1) && joyLeftMan.getButtonChanged(1)));
+				if (joyLeftMan.getButtonChanged(1) || joyRightMan.getButtonChanged(1))
+					drive.setFastMode(joyLeftMan.getButtonState(1) || joyRightMan.getButtonState(1));
 
 				leftSpeed = leftSpeed * Math.abs(leftSpeed);
 				rightSpeed = rightSpeed * Math.abs(rightSpeed);

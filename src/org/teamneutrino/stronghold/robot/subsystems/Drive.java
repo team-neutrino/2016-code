@@ -84,11 +84,13 @@ public class Drive
 		
 		if (enabled)
 		{
+			System.out.println("fast mode enabled");
 			left1.set(leftSpeed);
 			right1.set(rightSpeed);
 		}
 		else
 		{
+			System.out.println("fast mode disabled");
 			left1.set(0);
 			right1.set(0);
 		}

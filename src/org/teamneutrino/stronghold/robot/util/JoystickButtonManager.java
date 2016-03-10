@@ -24,18 +24,18 @@ public class JoystickButtonManager
 		for (int i = 0; i < states.length; i++)
 		{
 			boolean oldState = states[i];
-			states[i] = joy.getRawButton(i);
+			states[i] = joy.getRawButton(i + 1);
 			changed[i] = oldState != states[i];
 		}
 	}
 
 	public boolean getButtonChanged(int buttonNum)
 	{
-		return changed[buttonNum];
+		return changed[buttonNum - 1];
 	}
 
 	public boolean getButtonState(int buttonNum)
 	{
-		return states[buttonNum];
+		return states[buttonNum - 1];
 	}
 }
