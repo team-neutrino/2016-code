@@ -10,7 +10,6 @@ import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * This class autonomously drives and operates the robot using feed back from
