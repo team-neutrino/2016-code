@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class CurrentMonitor implements Runnable
+public class CurrentMonitor
 {
 	private PowerDistributionPanel pdp;
 	private Compressor pcm;
@@ -19,7 +19,7 @@ public class CurrentMonitor implements Runnable
 	public CurrentMonitor()
 	{
 		subsystems = new ArrayList<SubsystemPower>();
-		
+
 		pdp = new PowerDistributionPanel();
 		pcm = new Compressor();
 
@@ -31,46 +31,40 @@ public class CurrentMonitor implements Runnable
 		drive.addChannel(new PowerChannel("Right 2", Constants.DRIVE_RIGHT_2_POWER_CHANNEL));
 		drive.addChannel(new PowerChannel("Right 3", Constants.DRIVE_RIGHT_3_POWER_CHANNEL));
 		subsystems.add(drive);
-		
+
 		SubsystemPower shooter = new SubsystemPower("Shooter");
 		shooter.addChannel(new PowerChannel("Left", Constants.SHOOTER_LEFT_MOTOR_POWER_CHANNEL));
 		shooter.addChannel(new PowerChannel("Right", Constants.SHOOTER_RIGHT_MOTOR_POWER_CHANNEL));
 		shooter.addChannel(new PowerChannel("Actuator", Constants.SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL));
 		subsystems.add(shooter);
-		
+
 		SubsystemPower intake = new SubsystemPower("Intake");
 		intake.addChannel(new PowerChannel("Side to Side", Constants.INTAKE_SIDE_TO_SIDE_MOTOR_POWER_CHANNEL));
 		intake.addChannel(new PowerChannel("Front to Back", Constants.INTAKE_FRONT_TO_BACK_MOTOR_POWER_CHANNEL));
 		intake.addChannel(new PowerChannel("Actuator", Constants.INTAKE_ACUATOR_MOTOR_POWER_CHANNEL));
-		
-		new Thread(this).start();
 	}
 
-	@Override
-	public void run()
+	public void send()
 	{
-		while (true)
+		try
 		{
-			try
-			{
-				Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
-			}
-			catch (InterruptedException e)
-			{
-			}
-
-			// Subsystems
-			for (SubsystemPower subsystem : subsystems)
-			{
-				outputSubsystem(subsystem);
-			}
-
-			// PCM
-			SmartDashboard.putNumber("Compressor Current", pcm.getCompressorCurrent());
-			
-			// Overall Current
-			SmartDashboard.putNumber("Total Current", pdp.getTotalCurrent() + pcm.getCompressorCurrent());
+			Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
 		}
+		catch (InterruptedException e)
+		{
+		}
+
+		// Subsystems
+		for (SubsystemPower subsystem : subsystems)
+		{
+			outputSubsystem(subsystem);
+		}
+
+		// PCM
+		SmartDashboard.putNumber("Compressor Current", pcm.getCompressorCurrent());
+
+		// Overall Current
+		SmartDashboard.putNumber("Total Current", pdp.getTotalCurrent() + pcm.getCompressorCurrent());
 	}
 
 	private void outputSubsystem(SubsystemPower subsystem)
@@ -87,14 +81,14 @@ public class CurrentMonitor implements Runnable
 		else
 		{
 			double totalCurrent = 0;
-			
+
 			for (PowerChannel channel : channels)
 			{
 				double current = pdp.getCurrent(channel.getChannel());
 				totalCurrent += current;
 				SmartDashboard.putNumber(subsystem.getName() + " - " + channel.getName() + " Current", current);
 			}
-			
+
 			SmartDashboard.putNumber(subsystem.getName() + " Current", totalCurrent);
 		}
 	}

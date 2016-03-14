@@ -10,8 +10,8 @@ import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 import org.teamneutrino.stronghold.robot.subsystems.Stinger;
-import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 import org.teamneutrino.stronghold.robot.util.JoystickButtonManager;
+import org.teamneutrino.stronghold.robot.util.SmartDashboardOutputs;
 import org.teamneutrino.stronghold.robot.util.Util;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -43,9 +43,8 @@ public class Robot extends SampleRobot
 		shooter = new Shooter();
 		stinger = new Stinger();
 		driver = new AutoDriver(drive, shooter);
-
-		// current monitor
-		new CurrentMonitor();
+		
+		new SmartDashboardOutputs(shooter, intake);
 
 		// set up auto modes
 		autoController = new AutoController();
