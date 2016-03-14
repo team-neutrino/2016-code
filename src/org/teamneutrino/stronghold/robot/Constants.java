@@ -104,5 +104,5 @@ public class Constants
 
 	// Misc Constants
 	public static final int PNEUMATIC_PRESSURE_SENSOR_CHANNEL = 0;
-	public static final int DRIVER_STATION_REFRESH_RATE = 1000;
+	public static final int DRIVER_STATION_REFRESH_RATE = 250;
 }
