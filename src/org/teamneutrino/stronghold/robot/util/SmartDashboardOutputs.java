@@ -15,8 +15,8 @@ public class SmartDashboardOutputs implements Runnable
 	public SmartDashboardOutputs(Shooter shooter, Intake intake)
 	{
 		currMon = new CurrentMonitor();
-		this.shooter = new Shooter();
-		this.intake = new Intake();
+		this.shooter = shooter;
+		this.intake = intake;
 
 		new Thread(this).start();
 	}
