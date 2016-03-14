@@ -7,7 +7,7 @@ public class Constants
 	// Autonomous Constants
 	public static final double AUTO_MOVE_SPEED = .25;
 	public static final int GYRO_CHANNEL = 0;
-	public static final double GOAL_HEIGHT_MULTIPLIER = 0;  //TODO
+	public static final double GOAL_HEIGHT_MULTIPLIER = 6.6/1.2;  //TODO
 	public static final int THUMBWHEEL_SWITCH_BIT_1_CHANNEL = 4;
 	public static final int THUMBWHEEL_SWITCH_BIT_2_CHANNEL = 5;
 	public static final int THUMBWHEEL_SWITCH_BIT_4_CHANNEL = 6;

@@ -155,13 +155,17 @@ public class Camera implements Runnable {
 				ParticleReport min = null;
 
 				// Get largest area
-				if (nParticles > 0) {
+				if (nParticles > 0) 
+				{
 					areParticlesPresent = true;
-					for (int i = 0; i < particles.size();) {
+					for (int i = 0; i < particles.size();) 
+					{
 						min = particles.get(i);
 						int k = i;
-						for (int j = 0; j < particles.size(); ++j) {
-							if (particles.get(j).area < min.area) {
+						for (int j = 0; j < particles.size(); ++j) 
+						{
+							if (particles.get(j).area < min.area) 
+							{
 								k = j;
 								min = particles.get(j);
 							}
@@ -192,6 +196,7 @@ public class Camera implements Runnable {
 				CameraServer.getInstance().setImage(raw);
 			}
 		}
+		
 	}
 
 	private class SmartDashboardThread implements Runnable {
@@ -220,4 +225,5 @@ public class Camera implements Runnable {
 			}
 		}
 	}
+	
 }

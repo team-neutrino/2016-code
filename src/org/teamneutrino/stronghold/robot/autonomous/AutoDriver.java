@@ -575,6 +575,7 @@ public class AutoDriver
 				Thread.sleep(time);
 			} catch (InterruptedException e)
 			{
+				
 			}
 		}
 
@@ -585,8 +586,8 @@ public class AutoDriver
 
 	public double findDistance()
 	{
-		double rectHeight = cam.getHighestHeight();
-		double goalHeight = rectHeight * Constants.GOAL_HEIGHT_MULTIPLIER;
+		double goalHeightPixels = cam.getHighestHeight();
+		double goalHeight = goalHeightPixels * Constants.GOAL_HEIGHT_MULTIPLIER;
 		double angle = shooter.getPosition();
 		double distancePixels = goalHeight/Math.tan(angle);
 		double distanceInches = 12 * (distancePixels/goalHeight);
