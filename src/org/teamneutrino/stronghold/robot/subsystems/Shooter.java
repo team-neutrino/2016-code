@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import org.teamneutrino.stronghold.robot.Constants;
+import org.teamneutrino.stronghold.robot.util.SpeedControllerDeadbandEliminated;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
@@ -80,7 +81,7 @@ public class Shooter implements Runnable
 		{
 			leftMotor = new Victor(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
-			actuatorMotor = new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL);
+			actuatorMotor = new SpeedControllerDeadbandEliminated(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL), -0.028, 0.045, -0.005, 0.005);
 		}
 		rightMotor.setInverted(true);
 
@@ -103,7 +104,7 @@ public class Shooter implements Runnable
 		actuationPID.setContinuous(true);
 
 		// TODO remove
-		actuationPID.setOutputRange(-.5, .5);
+		actuationPID.setOutputRange(-Constants.SHOOTER_ACTUATION_MAX_SPEED, Constants.SHOOTER_ACTUATION_MAX_SPEED);
 
 		leftBeamBreakNoSignal = false;
 		rightBeamBreakNoSignal = false;
