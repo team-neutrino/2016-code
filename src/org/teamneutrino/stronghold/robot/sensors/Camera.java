@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
-public class Camera implements Runnable {
+public class Camera implements Runnable
+{
 	private int hueLow;
 	private int hueHigh;
 	private int saturationLow;
@@ -39,11 +39,13 @@ public class Camera implements Runnable {
 
 	private int currentFrame;
 
-	enum OutputMode {
+	enum OutputMode
+	{
 		RAW_IMAGE, THRESHOLD_IMAGE, RECTANGLE_OVERLAY
 	}
 
-	public Camera() {
+	public Camera()
+	{
 		hueLow = Constants.CAMERA_DEFAULT_HUE_LOW;
 		hueHigh = Constants.CAMERA_DEFAULT_HUE_HIGH;
 		saturationLow = Constants.CAMERA_DEFAULT_SATURATION_LOW;
@@ -76,28 +78,34 @@ public class Camera implements Runnable {
 		new Thread(new SmartDashboardThread()).start();
 	}
 
-	public int getCurrentFrame() {
+	public int getCurrentFrame()
+	{
 		return currentFrame;
 	}
 
-	public double getTargetX() {
+	public double getTargetX()
+	{
 		return centerX;
 	}
 
-	public double getTargetY() {
+	public double getTargetY()
+	{
 		return centerY;
 	}
 
-	public double getTargetArea() {
+	public double getTargetArea()
+	{
 		return maxArea;
 	}
 
-	public double getHighestHeight() {
+	public double getHighestHeight()
+	{
 		return maxHeight;
 	}
 
 	@Override
-	public void run() {
+	public void run()
+	{
 		int session;
 		Image image;
 		Image raw;
@@ -114,21 +122,25 @@ public class Camera implements Runnable {
 		NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
 		NIVision.IMAQdxConfigureGrab(session);
 		NIVision.IMAQdxStartAcquisition(session);
-		while (true) {
+		while (true)
+		{
 			NIVision.IMAQdxGrab(session, image, 1);
 			NIVision.imaqDuplicate(raw, image);
 
-			if (outMode == OutputMode.RAW_IMAGE) {
+			if (outMode == OutputMode.RAW_IMAGE)
+			{
 				CameraServer.getInstance().setImage(image);
 			}
 			NIVision.imaqColorThreshold(image, image, 255, NIVision.ColorMode.HSL, new Range(hueLow, hueHigh),
 					new Range(saturationLow, saturationHigh), new Range(luminenceLow, luminenceHigh));
 			int numParticles = NIVision.imaqCountParticles(image, 0);
-			if (numParticles > 0) {
+			if (numParticles > 0)
+			{
 				int nParticles = 0;
 				// Measure particles
 				Vector<ParticleReport> particles = new Vector<ParticleReport>();
-				for (int particleIndex = 0; particleIndex < numParticles; particleIndex++) {
+				for (int particleIndex = 0; particleIndex < numParticles; particleIndex++)
+				{
 					ParticleReport par = new ParticleReport();
 					par.area = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 							NIVision.MeasurementType.MT_CONVEX_HULL_AREA);
@@ -146,7 +158,8 @@ public class Camera implements Runnable {
 							NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
 					Rect rect = new Rect(top, left, height, width);
 					par.boundingBox = rect;
-					if (par.area > Constants.MIN_PARTICLE_SIZE) {
+					if (par.area > Constants.MIN_PARTICLE_SIZE)
+					{
 						particles.add(par);
 						nParticles++;
 					}
@@ -155,16 +168,16 @@ public class Camera implements Runnable {
 				ParticleReport min = null;
 
 				// Get largest area
-				if (nParticles > 0) 
+				if (nParticles > 0)
 				{
 					areParticlesPresent = true;
-					for (int i = 0; i < particles.size();) 
+					for (int i = 0; i < particles.size();)
 					{
 						min = particles.get(i);
 						int k = i;
-						for (int j = 0; j < particles.size(); ++j) 
+						for (int j = 0; j < particles.size(); ++j)
 						{
-							if (particles.get(j).area < min.area) 
+							if (particles.get(j).area < min.area)
 							{
 								k = j;
 								min = particles.get(j);
@@ -186,26 +199,36 @@ public class Camera implements Runnable {
 				}
 				currentFrame++;
 			}
-			if (outMode == OutputMode.THRESHOLD_IMAGE) {
+			if (outMode == OutputMode.THRESHOLD_IMAGE)
+			{
 				CameraServer.getInstance().setImage(image);
 			}
-			if (outMode == OutputMode.RECTANGLE_OVERLAY && areParticlesPresent) {
+			if (outMode == OutputMode.RECTANGLE_OVERLAY && areParticlesPresent)
+			{
 
 				NIVision.imaqDrawShapeOnImage(raw, raw, rectangle, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
 
 				CameraServer.getInstance().setImage(raw);
 			}
+			image.free();
+			raw.free();
 		}
-		
+
 	}
 
-	private class SmartDashboardThread implements Runnable {
+	private class SmartDashboardThread implements Runnable
+	{
 		@Override
-		public void run() {
-			while (true) {
-				try {
+		public void run()
+		{
+			while (true)
+			{
+				try
+				{
 					Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e)
+				{
 				}
 
 				hueLow = (int) SmartDashboard.getNumber("Hue Low", hueLow);
@@ -225,5 +248,5 @@ public class Camera implements Runnable {
 			}
 		}
 	}
-	
+
 }
