@@ -81,7 +81,7 @@ public class Shooter implements Runnable
 		{
 			leftMotor = new Victor(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
-			actuatorMotor = new SpeedControllerDeadbandEliminated(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL), -0.028, 0.045, -0.005, 0.005);
+			actuatorMotor = new SpeedControllerDeadbandEliminated(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL), -0.088, 0.105, -0.005, 0.005);
 		}
 		rightMotor.setInverted(true);
 

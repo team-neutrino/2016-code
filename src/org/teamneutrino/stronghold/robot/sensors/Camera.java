@@ -107,13 +107,11 @@ public class Camera implements Runnable
 	public void run()
 	{
 		int session;
-		Image image;
-		Image raw;
 
 		boolean areParticlesPresent = false;
 
-		image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
 				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value") + 5;
