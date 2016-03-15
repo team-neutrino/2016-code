@@ -1,7 +1,7 @@
 package org.teamneutrino.stronghold.robot.subsystems;
 
 import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.util.Util;
+import org.teamneutrino.stronghold.robot.util.SpeedControllerDeadbandEliminated;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.PIDController;
@@ -51,7 +51,8 @@ public class Intake
 		{
 			intakeFrontToBackMotor = new Victor(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
 			intakeSideToSideMotor = new Victor(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
-			actuatorMotor = new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL);
+			// deadband for victor is about 10.6% on each side
+			actuatorMotor = new SpeedControllerDeadbandEliminated(new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.106, .106, -.005, .005);
 		}
 		intakeFrontToBackMotor.setInverted(true);
 		actuatorMotor.setInverted(true);
@@ -59,11 +60,9 @@ public class Intake
 		encoder = new AnalogPotentiometer(Constants.INTAKE_ENCODER_CHANNEL, Constants.INTAKE_ENCODER_SCALE,
 				Constants.INTAKE_ENCODER_OFFSET);
 
-		actuationPID = new PIDController(Constants.INTAKE_ACTUATION_K_P_DOWN, Constants.INTAKE_ACTUATION_K_I,
+		actuationPID = new PIDController(Constants.INTAKE_ACTUATION_K_P, Constants.INTAKE_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 		actuationPID.setContinuous(true);
-
-		actuationPID.setOutputRange(-Constants.INTAKE_AUCTATION_MAX_SPEED, Constants.INTAKE_AUCTATION_MAX_SPEED);
 
 		flutterEnabled = false;
 
@@ -94,8 +93,7 @@ public class Intake
 	public void setSetpoint(double angle)
 	{
 		setpoint = angle;
-
-		actuationPID.setPID(Util.scale(angle, Intake.Position.DOWN.location, Intake.Position.UP.location, Constants.INTAKE_ACTUATION_K_P_DOWN, Constants.INTAKE_ACTUATION_K_P_UP), Constants.INTAKE_ACTUATION_K_I, Constants.INTAKE_ACTUATION_K_D);
+		
 		if (!flutterEnabled)
 		{
 			actuationPID.setSetpoint(angle);

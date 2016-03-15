@@ -103,7 +103,7 @@ public class Shooter implements Runnable
 		actuationPID.setContinuous(true);
 
 		// TODO remove
-		actuationPID.setOutputRange(-.25, .25);
+		actuationPID.setOutputRange(-.5, .5);
 
 		leftBeamBreakNoSignal = false;
 		rightBeamBreakNoSignal = false;
