@@ -67,9 +67,10 @@ public class Constants
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 360;
 	public static final double INTAKE_ENCODER_OFFSET = -205;
-	public static final double INTAKE_ACTUATION_K_P = .035;
-	public static final double INTAKE_ACTUATION_K_I = 0.002;
-	public static final double INTAKE_ACTUATION_K_D = 10;
+	public static final double INTAKE_AUCTATION_MAX_SPEED = 1;
+	public static final double INTAKE_ACTUATION_K_P = .01;//.035;
+	public static final double INTAKE_ACTUATION_K_I = .001;
+	public static final double INTAKE_ACTUATION_K_D = .01;
 
 	// Shooter Constants
 	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = 10;

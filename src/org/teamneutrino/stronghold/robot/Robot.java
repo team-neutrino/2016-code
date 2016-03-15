@@ -207,7 +207,7 @@ public class Robot extends SampleRobot
 			}
 			else
 			{
-				double joyPosition = gamepad.getRawAxis(1);
+				double joyPosition = -gamepad.getRawAxis(1);
 
 				if (Math.abs(joyPosition) < 0.2)
 				{

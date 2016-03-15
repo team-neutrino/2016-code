@@ -210,6 +210,11 @@ public class Shooter implements Runnable
 	{
 		return encoder.get();
 	}
+	
+	public double getOffset()
+	{
+		return getSetpoint() - getPosition();
+	}
 
 	public void setFlippers(boolean triggered)
 	{
@@ -228,6 +233,7 @@ public class Shooter implements Runnable
 			flutterEnabled = true;
 			flutterThread.interrupt();
 		}
+		else
 		{
 			flutterEnabled = false;
 		}

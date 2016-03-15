@@ -36,6 +36,8 @@ public class SmartDashboardOutputs implements Runnable
 			
 			SmartDashboard.putNumber("Shooter Position", shooter.getPosition());
 			SmartDashboard.putNumber("Intake Position", intake.getPosition());
+			SmartDashboard.putNumber("Shooter Offset", shooter.getOffset());
+			SmartDashboard.putNumber("Intake Offset", intake.getOffset());
 			
 			currMon.send();
 		}

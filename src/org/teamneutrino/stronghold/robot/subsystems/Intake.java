@@ -62,8 +62,7 @@ public class Intake
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 		actuationPID.setContinuous(true);
 
-		// TODO remove
-		actuationPID.setOutputRange(-.8, .8);
+		actuationPID.setOutputRange(-Constants.INTAKE_AUCTATION_MAX_SPEED, Constants.INTAKE_AUCTATION_MAX_SPEED);
 
 		flutterEnabled = false;
 
@@ -71,9 +70,19 @@ public class Intake
 		flutterThread.start();
 	}
 
+	public double getSetpoint()
+	{
+		return actuationPID.getSetpoint();
+	}
+	
 	public double getPosition()
 	{
 		return encoder.get();
+	}
+	
+	public double getOffset()
+	{
+		return getSetpoint() - getPosition();
 	}
 
 	public void setTargetPosition(Position position)
@@ -111,6 +120,7 @@ public class Intake
 			flutterEnabled = true;
 			flutterThread.interrupt();
 		}
+		else
 		{
 			flutterEnabled = false;
 		}
