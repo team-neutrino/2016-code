@@ -53,7 +53,7 @@ public class Intake
 			intakeSideToSideMotor = new Victor(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 			actuatorMotor = new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL);
 		}
-		intakeSideToSideMotor.setInverted(true);
+		intakeFrontToBackMotor.setInverted(true);
 		actuatorMotor.setInverted(true);
 
 		encoder = new AnalogPotentiometer(Constants.INTAKE_ENCODER_CHANNEL, Constants.INTAKE_ENCODER_SCALE,
@@ -112,7 +112,7 @@ public class Intake
 	public void set(double speed)
 	{
 		intakeFrontToBackMotor.set(speed);
-		intakeSideToSideMotor.set(speed);
+		intakeSideToSideMotor.set(Math.abs(speed));
 	}
 
 	public void setFutter(boolean enabled)
