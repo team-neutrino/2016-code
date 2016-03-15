@@ -449,6 +449,7 @@ public class AutoDriver
 		return isAiming() && shooterAimed && driveAimed;
 	}
 
+	// TODO tell the shooter to go to a specific position instead of using time
 	private class ShooterAimingThread implements Runnable
 	{
 		@Override
@@ -477,6 +478,7 @@ public class AutoDriver
 		}
 	}
 
+	// TODO use gyro
 	private class DriveAimingThread implements Runnable
 	{
 		@Override
