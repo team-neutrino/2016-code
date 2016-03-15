@@ -51,7 +51,7 @@ public class Intake
 		{
 			intakeFrontToBackMotor = new Victor(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
 			intakeSideToSideMotor = new Victor(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
-			// deadband for victor is about 10.6% on each side
+			// deadband for victor 884 is about 10.6% on each side
 			actuatorMotor = new SpeedControllerDeadbandEliminated(new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.106, .106, -.005, .005);
 		}
 		intakeFrontToBackMotor.setInverted(true);
