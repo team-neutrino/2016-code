@@ -1,6 +1,7 @@
 package org.teamneutrino.stronghold.robot.subsystems;
 
 import org.teamneutrino.stronghold.robot.Constants;
+import org.teamneutrino.stronghold.robot.util.Util;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.PIDController;
@@ -58,7 +59,7 @@ public class Intake
 		encoder = new AnalogPotentiometer(Constants.INTAKE_ENCODER_CHANNEL, Constants.INTAKE_ENCODER_SCALE,
 				Constants.INTAKE_ENCODER_OFFSET);
 
-		actuationPID = new PIDController(Constants.INTAKE_ACTUATION_K_P, Constants.INTAKE_ACTUATION_K_I,
+		actuationPID = new PIDController(Constants.INTAKE_ACTUATION_K_P_DOWN, Constants.INTAKE_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 		actuationPID.setContinuous(true);
 
@@ -94,6 +95,7 @@ public class Intake
 	{
 		setpoint = angle;
 
+		actuationPID.setPID(Util.scale(angle, Intake.Position.DOWN.location, Intake.Position.UP.location, Constants.INTAKE_ACTUATION_K_P_DOWN, Constants.INTAKE_ACTUATION_K_P_UP), Constants.INTAKE_ACTUATION_K_I, Constants.INTAKE_ACTUATION_K_D);
 		if (!flutterEnabled)
 		{
 			actuationPID.setSetpoint(angle);
