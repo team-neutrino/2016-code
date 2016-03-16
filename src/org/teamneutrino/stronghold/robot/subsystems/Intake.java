@@ -46,7 +46,7 @@ public class Intake
 			intakeFrontToBackMotor = new TalonSRX(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
 			intakeSideToSideMotor = new TalonSRX(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 			// TODO find deadband
-			actuatorMotor = new SpeedControllerController(new TalonSRX(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.1, .1, -.1, .1);
+			actuatorMotor = new SpeedControllerController(new TalonSRX(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.005, .005, -.005, .005);
 		}
 		else
 		{

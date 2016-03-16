@@ -71,18 +71,25 @@ public class Shooter implements Runnable
 
 	public Shooter()
 	{
+		double motorDeadband = .1;
 		if (Constants.REAL_BOT)
 		{
 			leftMotor = new CANTalon(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new CANTalon(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
 			// TODO find deadband
-			actuatorMotor = new SpeedControllerController(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL), -.1, .1, -.1, .1);
+			double talonMinDeadband = 0;
+			double talonMaxDeadband = 0;
+			actuatorMotor = new SpeedControllerController(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
+					talonMinDeadband - motorDeadband, talonMaxDeadband + motorDeadband, -0.005, 0.005);
 		}
 		else
 		{
 			leftMotor = new Victor(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
-			actuatorMotor = new SpeedControllerController(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL), -0.088, 0.105, -0.005, 0.005);
+			double victorMinDeadband = -.028;
+			double victorMaxDeadband = .045;
+			actuatorMotor = new SpeedControllerController(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
+					victorMinDeadband - motorDeadband, victorMaxDeadband + motorDeadband, -0.005, 0.005);
 		}
 		rightMotor.setInverted(true);
 
