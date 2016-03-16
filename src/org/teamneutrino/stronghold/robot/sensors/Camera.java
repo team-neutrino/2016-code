@@ -110,8 +110,6 @@ public class Camera implements Runnable
 
 		boolean areParticlesPresent = false;
 
-		Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
 				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value") + 5;
@@ -122,6 +120,9 @@ public class Camera implements Runnable
 		NIVision.IMAQdxStartAcquisition(session);
 		while (true)
 		{
+			Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+			Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+
 			NIVision.IMAQdxGrab(session, image, 1);
 			NIVision.imaqDuplicate(raw, image);
 
