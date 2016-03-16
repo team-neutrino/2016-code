@@ -106,6 +106,10 @@ public class Camera implements Runnable
 	@Override
 	public void run()
 	{
+		// kill the thread
+		if (true)
+		throw new NullPointerException();
+
 		int session;
 
 		boolean areParticlesPresent = false;

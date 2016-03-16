@@ -54,8 +54,8 @@ public class Shooter implements Runnable
 
 	private static final int NO_SIGNAL_DETECTION_COUNT = 5;
 
-	private static final int FLUTTER_PEROID = 500;
-	private static final int FLUTTER_AMPLITUDE = 20;
+	private static final int FLUTTER_PEROID = 1;
+	private static final int FLUTTER_AMPLITUDE = 10;
 
 	public enum Position
 	{

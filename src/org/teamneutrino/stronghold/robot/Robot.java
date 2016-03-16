@@ -167,7 +167,7 @@ public class Robot extends SampleRobot
 				// intake
 				intaking = true;
 				outtaking = false;
-//				shooter.setFutter(true);
+				shooter.setFutter(true);
 				shooter.setOverrideSpeed(-1);
 				if (shooterPosition < 15 || shooterOverrideEnabled)
 				{
@@ -179,7 +179,7 @@ public class Robot extends SampleRobot
 				// outtake
 				outtaking = true;
 				intaking = false;
-//				shooter.setFutter(false);
+				shooter.setFutter(false);
 				intake.set(-1);
 				if (shooterPosition < 15 || shooterOverrideEnabled)
 				{
@@ -196,7 +196,7 @@ public class Robot extends SampleRobot
 				intake.set(0);
 				intaking = false;
 				outtaking = false;
-//				shooter.setFutter(false);
+				shooter.setFutter(false);
 			}
 
 			// intake position

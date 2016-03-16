@@ -24,6 +24,7 @@ public class SpeedControllerDeadbandEliminated implements SpeedController
 	public void pidWrite(double output)
 	{
 		set(output);
+		System.out.println("Setting " + output);
 	}
 
 	@Override
