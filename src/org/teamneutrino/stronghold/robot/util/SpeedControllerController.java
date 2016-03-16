@@ -2,7 +2,7 @@ package org.teamneutrino.stronghold.robot.util;
 
 import edu.wpi.first.wpilibj.SpeedController;
 
-public class SpeedControllerDeadbandEliminated implements SpeedController
+public class SpeedControllerController implements SpeedController
 {
 	SpeedController controller;
 	double oldDeadbandMin;
@@ -10,7 +10,9 @@ public class SpeedControllerDeadbandEliminated implements SpeedController
 	double newDeadbandMin;
 	double newDeadbandMax;
 	
-	public SpeedControllerDeadbandEliminated(SpeedController controller, double oldDeadbandMin, double oldDeadbandMax, 
+	boolean pidEnable;
+	
+	public SpeedControllerController(SpeedController controller, double oldDeadbandMin, double oldDeadbandMax, 
 			double newDeadbandMin, double newDeadbandMax)
 	{
 		this.controller = controller;
@@ -18,13 +20,17 @@ public class SpeedControllerDeadbandEliminated implements SpeedController
 		this.oldDeadbandMax = oldDeadbandMax;
 		this.newDeadbandMin = newDeadbandMin;
 		this.newDeadbandMax = newDeadbandMax;
+		
+		pidEnable = true;
 	}
 	
 	@Override
 	public void pidWrite(double output)
 	{
-		set(output);
-		System.out.println("Setting " + output);
+		if (pidEnable)
+		{
+			set(output);
+		}
 	}
 
 	@Override
@@ -43,7 +49,6 @@ public class SpeedControllerDeadbandEliminated implements SpeedController
 	public void set(double speed)
 	{
 		controller.set(scale(speed));
-
 	}
 
 	@Override
@@ -69,6 +74,16 @@ public class SpeedControllerDeadbandEliminated implements SpeedController
 	public void stopMotor()
 	{
 		controller.stopMotor();
+	}
+	
+	public void enablePID()
+	{
+		pidEnable = true;
+	}
+	
+	public void disablePID()
+	{
+		pidEnable = false;
 	}
 	
 	private double scale(double speed)

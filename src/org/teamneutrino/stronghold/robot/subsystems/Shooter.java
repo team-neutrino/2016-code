@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.util.SpeedControllerDeadbandEliminated;
+import org.teamneutrino.stronghold.robot.util.SpeedControllerController;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
@@ -20,7 +20,7 @@ public class Shooter implements Runnable
 {
 	private SpeedController leftMotor;
 	private SpeedController rightMotor;
-	private SpeedController actuatorMotor;
+	private SpeedControllerController actuatorMotor;
 
 	private Counter beambreakLeft;
 	private Counter beambreakRight;
@@ -75,13 +75,14 @@ public class Shooter implements Runnable
 		{
 			leftMotor = new CANTalon(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new CANTalon(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
-			actuatorMotor = new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL);
+			// TODO find deadband
+			actuatorMotor = new SpeedControllerController(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL), -.1, .1, -.1, .1);
 		}
 		else
 		{
 			leftMotor = new Victor(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
-			actuatorMotor = new SpeedControllerDeadbandEliminated(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL), -0.088, 0.105, -0.005, 0.005);
+			actuatorMotor = new SpeedControllerController(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL), -0.088, 0.105, -0.005, 0.005);
 		}
 		rightMotor.setInverted(true);
 
@@ -173,6 +174,7 @@ public class Shooter implements Runnable
 	public void setActuatorOverride(double speed)
 	{
 		actuationPID.disable();
+		actuatorMotor.disablePID();
 		actuatorMotor.set(speed);
 	}
 
@@ -199,12 +201,13 @@ public class Shooter implements Runnable
 		{
 			actuationPID.setSetpoint(angle);
 		}
+		actuatorMotor.enablePID();
 		actuationPID.enable();
 	}
 
 	public double getSetpoint()
 	{
-		return actuationPID.getSetpoint();
+		return setpoint;
 	}
 
 	public double getPosition()
