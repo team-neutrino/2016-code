@@ -29,7 +29,6 @@ public class Robot extends SampleRobot
 	private Intake intake;
 	private Shooter shooter;
 	private Stinger stinger;
-	private PressureSensor pressure;
 
 	private JoystickButtonManager joyLeftMan;
 	private JoystickButtonManager joyRightMan;
@@ -45,9 +44,8 @@ public class Robot extends SampleRobot
 		shooter = new Shooter();
 		stinger = new Stinger();
 		driver = new AutoDriver(drive, shooter);
-		pressure = new PressureSensor();
 
-		new SmartDashboardOutputs(shooter, intake, pressure);
+		new SmartDashboardOutputs(shooter, intake);
 
 		// set up auto modes
 		autoController = new AutoController();
@@ -249,6 +247,7 @@ public class Robot extends SampleRobot
 				}
 			} else
 			{
+				shooter.stopEjectThread();
 				shooter.setFlippers(
 						shooting && gamepadMan.getButtonState(6) && (intakePosition < 10 || intakeOverrideEnabled));
 			}
