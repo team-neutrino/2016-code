@@ -13,6 +13,7 @@ import com.ni.vision.NIVision.Rect;
 import com.ni.vision.NIVision.ShapeMode;
 
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +35,9 @@ public class Camera implements Runnable
 	private double ang;
 	private double distanceFromGoal;
 	private Rect rectangle;
+	private Image image;
+	private Image raw;
+	int session;
 
 	private Solenoid lightPower;
 
@@ -53,6 +57,13 @@ public class Camera implements Runnable
 		luminenceLow = Constants.CAMERA_DEFAULT_LUMINENCE_LOW;
 		luminenceHigh = Constants.CAMERA_DEFAULT_LUMINENCE_HIGH;
 		rectangle = new Rect();
+		image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
+				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
+		
+		
+		NIVision.IMAQdxConfigureGrab(session);
 
 		currentFrame = 0;
 
@@ -107,24 +118,17 @@ public class Camera implements Runnable
 	public void run()
 	{
 		// kill the thread
-//		if (true)
-//		throw new NullPointerException();
+		// if (true)
+		// throw new NullPointerException();
 
 		boolean areParticlesPresent = false;
-		
-		Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
-		int session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
-				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value") + 5;
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::WhiteBalance::Mode", "Auto");
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "Manual");
 		NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
-		NIVision.IMAQdxConfigureGrab(session);
 		NIVision.IMAQdxStartAcquisition(session);
-		
-		while (true)
+
+		while (DriverStation.getInstance().isDSAttached())
 		{
 			NIVision.IMAQdxGrab(session, image, 1);
 			NIVision.imaqDuplicate(raw, image);
@@ -194,8 +198,7 @@ public class Camera implements Runnable
 					centerX = myArr[0].projectionY;
 					rectangle = myArr[0].boundingBox;
 					maxHeight = rectangle.width;
-				}
-				else
+				} else
 				{
 					areParticlesPresent = false;
 				}
@@ -212,9 +215,10 @@ public class Camera implements Runnable
 
 				CameraServer.getInstance().setImage(raw);
 			}
+
 			Thread.yield();
 		}
-
+		NIVision.IMAQdxStopAcquisition(session);
 	}
 
 	private class SmartDashboardThread implements Runnable
@@ -227,8 +231,7 @@ public class Camera implements Runnable
 				try
 				{
 					Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
-				}
-				catch (InterruptedException e)
+				} catch (InterruptedException e)
 				{
 				}
 

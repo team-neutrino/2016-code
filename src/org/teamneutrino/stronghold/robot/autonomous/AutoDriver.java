@@ -560,6 +560,7 @@ public class AutoDriver
 
 		if (!onTarget)
 		{
+			System.out.println("--AIMING--");
 			shooter.setActuatorOverride(speed);
 
 			int time;
@@ -582,17 +583,18 @@ public class AutoDriver
 		}
 
 		shooter.setActuatorOverride(0);
-
+		
 		return onTarget;
 	}
 
 	public double findDistance()
 	{
 		double goalHeightPixels = cam.getHighestHeight();
-		double goalHeight = goalHeightPixels * Constants.GOAL_HEIGHT_MULTIPLIER;
-		double angle = shooter.getPosition();
-		double distancePixels = goalHeight/Math.tan(angle);
-		double distanceInches = 12 * (distancePixels/goalHeight);
+//		double goalHeight = goalHeightPixels * Constants.GOAL_HEIGHT_MULTIPLIER;
+//		double angle = shooter.getPosition();
+//		double distancePixels = goalHeight/Math.tan(angle);
+//		double distanceInches = 12 * (distancePixels/goalHeight);
+		double distanceInches = (12*1280)/(2*goalHeightPixels*Math.tan(Math.toRadians(32.25)));
 		return distanceInches;
 	}
 }
