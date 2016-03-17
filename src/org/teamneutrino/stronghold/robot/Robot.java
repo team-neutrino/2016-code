@@ -17,6 +17,7 @@ import org.teamneutrino.stronghold.robot.util.Util;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends SampleRobot
 {
@@ -67,6 +68,7 @@ public class Robot extends SampleRobot
 		while (isDisabled())
 		{
 			System.out.println("Distance: " + driver.findDistance());
+			Timer.delay(.1);
 		}
 	}
 
