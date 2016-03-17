@@ -14,12 +14,12 @@ public class SmartDashboardOutputs implements Runnable
 	Intake intake;
 	PressureSensor pressure;
 	
-	public SmartDashboardOutputs(Shooter shooter, Intake intake, PressureSensor pressure)
+	public SmartDashboardOutputs(Shooter shooter, Intake intake)
 	{
 		currMon = new CurrentMonitor();
 		this.shooter = shooter;
 		this.intake = intake;
-		this.pressure = pressure;
+		this.pressure = new PressureSensor();
 		
 		new Thread(this).start();
 	}
@@ -41,7 +41,7 @@ public class SmartDashboardOutputs implements Runnable
 			SmartDashboard.putNumber("Intake Position", intake.getPosition());
 			SmartDashboard.putNumber("Shooter Offset", shooter.getOffset());
 			SmartDashboard.putNumber("Intake Offset", intake.getOffset());
-			SmartDashboard.putNumber("Current Pressure", pressure.getPressure());
+			SmartDashboard.putNumber("Pnumatic Pressure", pressure.getPressure());
 			
 			currMon.send();
 		}
