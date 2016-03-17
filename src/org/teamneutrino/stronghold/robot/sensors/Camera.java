@@ -107,14 +107,15 @@ public class Camera implements Runnable
 	public void run()
 	{
 		// kill the thread
-		if (true)
-		throw new NullPointerException();
-
-		int session;
+//		if (true)
+//		throw new NullPointerException();
 
 		boolean areParticlesPresent = false;
+		
+		Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+		Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
-		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
+		int session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
 				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value") + 5;
 		NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::WhiteBalance::Mode", "Auto");
@@ -122,11 +123,9 @@ public class Camera implements Runnable
 		NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
 		NIVision.IMAQdxConfigureGrab(session);
 		NIVision.IMAQdxStartAcquisition(session);
+		
 		while (true)
 		{
-			Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-			Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-
 			NIVision.IMAQdxGrab(session, image, 1);
 			NIVision.imaqDuplicate(raw, image);
 
@@ -213,8 +212,7 @@ public class Camera implements Runnable
 
 				CameraServer.getInstance().setImage(raw);
 			}
-			image.free();
-			raw.free();
+			Thread.yield();
 		}
 
 	}
