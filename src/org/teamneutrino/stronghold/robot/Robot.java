@@ -256,6 +256,7 @@ public class Robot extends SampleRobot
 			}
 			else
 			{
+				shooter.stopEjectThread();
 				shooter.setFlippers(
 						shooting && gamepadMan.getButtonState(6) && (intakePosition < 10 || intakeOverrideEnabled));
 			}

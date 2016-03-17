@@ -136,6 +136,11 @@ public class Shooter implements Runnable
 		}
 	}
 
+	public void stopEjectThread()
+	{
+		ejectThreadRunning = false;
+	}
+	
 	public void start()
 	{
 		leftMotor.set(1);
@@ -464,8 +469,27 @@ public class Shooter implements Runnable
 			catch (InterruptedException e)
 			{
 			}
-			setFlippers(true);
-			ejectThreadRunning = false;
+			
+			while (ejectThreadRunning)
+			{
+				try
+				{
+					for (int i = 0; i < 3 && ejectThreadRunning; i++)
+					{
+						setFlippers(true);
+						Thread.sleep(100);
+						setFlippers(false);
+						Thread.sleep(100);
+					}
+					
+					Thread.sleep(500);
+				}
+				catch (InterruptedException e)
+				{
+				}
+			}
+
+			setFlippers(false);
 		}
 
 		private void waitForShooterOutfeed()
