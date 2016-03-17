@@ -6,7 +6,6 @@ import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
 import org.teamneutrino.stronghold.robot.autonomous.modes.MoveForward;
 import org.teamneutrino.stronghold.robot.autonomous.modes.TestMode;
 import org.teamneutrino.stronghold.robot.autonomous.modes.TurnTowardGoal;
-import org.teamneutrino.stronghold.robot.sensors.PressureSensor;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
