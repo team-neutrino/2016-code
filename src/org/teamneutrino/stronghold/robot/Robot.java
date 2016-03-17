@@ -6,6 +6,7 @@ import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
 import org.teamneutrino.stronghold.robot.autonomous.modes.MoveForward;
 import org.teamneutrino.stronghold.robot.autonomous.modes.TestMode;
 import org.teamneutrino.stronghold.robot.autonomous.modes.TurnTowardGoal;
+import org.teamneutrino.stronghold.robot.sensors.PressureSensor;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
@@ -28,6 +29,7 @@ public class Robot extends SampleRobot
 	private Intake intake;
 	private Shooter shooter;
 	private Stinger stinger;
+	private PressureSensor pressure;
 
 	private JoystickButtonManager joyLeftMan;
 	private JoystickButtonManager joyRightMan;
@@ -43,8 +45,9 @@ public class Robot extends SampleRobot
 		shooter = new Shooter();
 		stinger = new Stinger();
 		driver = new AutoDriver(drive, shooter);
-		
-		new SmartDashboardOutputs(shooter, intake);
+		pressure = new PressureSensor();
+
+		new SmartDashboardOutputs(shooter, intake, pressure);
 
 		// set up auto modes
 		autoController = new AutoController();
@@ -63,7 +66,10 @@ public class Robot extends SampleRobot
 	@Override
 	public void disabled()
 	{
-
+		while (isDisabled())
+		{
+			System.out.println("Distance: " + driver.findDistance());
+		}
 	}
 
 	@Override
@@ -114,8 +120,7 @@ public class Robot extends SampleRobot
 			{
 				// enable intake override
 				intakeOverrideEnabled = true;
-			}
-			else if (joyRightMan.getButtonState(7))
+			} else if (joyRightMan.getButtonState(7))
 			{
 				// disable intake override
 				intakeOverrideEnabled = false;
@@ -124,8 +129,7 @@ public class Robot extends SampleRobot
 			{
 				// enable shooter override
 				shooterOverrideEnabled = true;
-			}
-			else if (joyRightMan.getButtonState(10))
+			} else if (joyRightMan.getButtonState(10))
 			{
 				// disable shooter override
 				shooterOverrideEnabled = false;
@@ -137,8 +141,7 @@ public class Robot extends SampleRobot
 			{
 				driver.aim();
 				isAiming = true;
-			}
-			else if (!(joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && isAiming)
+			} else if (!(joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && isAiming)
 			{
 				driver.stopAim();
 				isAiming = false;
@@ -153,8 +156,7 @@ public class Robot extends SampleRobot
 				if (shooterSpinCurr)
 				{
 					shooter.start();
-				}
-				else
+				} else
 				{
 					shooter.stop();
 				}
@@ -173,8 +175,7 @@ public class Robot extends SampleRobot
 				{
 					intake.set(1);
 				}
-			}
-			else if (!shooting && gamepad.getRawAxis(2) > .6)
+			} else if (!shooting && gamepad.getRawAxis(2) > .6)
 			{
 				// outtake
 				outtaking = true;
@@ -185,8 +186,7 @@ public class Robot extends SampleRobot
 				{
 					shooter.setOverrideSpeed(1);
 				}
-			}
-			else
+			} else
 			{
 				// no intake
 				if (!shooting)
@@ -204,21 +204,18 @@ public class Robot extends SampleRobot
 			{
 				// override mode
 				intake.setActuatorOverride(-.6 * gamepad.getRawAxis(1));
-			}
-			else
+			} else
 			{
 				double joyPosition = -gamepad.getRawAxis(1);
 
 				if (Math.abs(joyPosition) < 0.2)
 				{
 					intake.setTargetPosition(Intake.Position.INTAKE);
-				}
-				else if (joyPosition >= 0.2)
+				} else if (joyPosition >= 0.2)
 				{
 					intake.setSetpoint(Util.scale(joyPosition, 0.2, 1, Intake.Position.INTAKE.location,
 							Intake.Position.UP.location));
-				}
-				else
+				} else
 				{
 					intake.setSetpoint(Util.scale(joyPosition, -0.2, -1, Intake.Position.INTAKE.location,
 							Intake.Position.DOWN.location));
@@ -233,16 +230,13 @@ public class Robot extends SampleRobot
 			if (shooterOverrideEnabled)
 			{
 				shooter.setActuatorOverride(-gamepad.getRawAxis(5));
-			}
-			else if (intaking || outtaking || gamepadMan.getButtonState(4) || gamepadMan.getButtonState(2))
+			} else if (intaking || outtaking || gamepadMan.getButtonState(4) || gamepadMan.getButtonState(2))
 			{
 				shooter.setTargetPosition(Shooter.Position.INTAKE);
-			}
-			else if (gamepadMan.getButtonState(3))
+			} else if (gamepadMan.getButtonState(3))
 			{
 				shooter.setTargetPosition(Shooter.Position.FRONT);
-			}
-			else if (gamepadMan.getButtonState(1))
+			} else if (gamepadMan.getButtonState(1))
 			{
 				shooter.setTargetPosition(Shooter.Position.BACK);
 			}
@@ -253,8 +247,7 @@ public class Robot extends SampleRobot
 				{
 					shooter.startEjectThread();
 				}
-			}
-			else
+			} else
 			{
 				shooter.setFlippers(
 						shooting && gamepadMan.getButtonState(6) && (intakePosition < 10 || intakeOverrideEnabled));
@@ -290,5 +283,6 @@ public class Robot extends SampleRobot
 	@Override
 	public void test()
 	{
+		
 	}
 }
