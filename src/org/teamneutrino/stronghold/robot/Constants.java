@@ -23,7 +23,7 @@ public class Constants
 	// Button Mapping - Game pad
 
 	// Camera Constants
-	public static final String CAMERA_NAME = "cam1";
+	public static final String CAMERA_NAME = "cam0";
 	public static final int CAMERA_DEFAULT_HUE_LOW = 100;
 	public static final int CAMERA_DEFAULT_HUE_HIGH = 150;
 	public static final int CAMERA_DEFAULT_SATURATION_LOW = 84;
@@ -104,6 +104,6 @@ public class Constants
 	public static final int STINGER_CYLINDER_RETRACT_CHANNEL = 4;
 
 	// Misc Constants
-	public static final int PNEUMATIC_PRESSURE_SENSOR_CHANNEL = 0;
+	public static final int PNEUMATIC_PRESSURE_SENSOR_CHANNEL = 3;
 	public static final int DRIVER_STATION_REFRESH_RATE = 250;
 }

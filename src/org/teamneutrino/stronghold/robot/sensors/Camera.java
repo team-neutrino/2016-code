@@ -128,7 +128,7 @@ public class Camera implements Runnable
 		NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
 		NIVision.IMAQdxStartAcquisition(session);
 
-		while (DriverStation.getInstance().isDSAttached())
+		while (true)
 		{
 			NIVision.IMAQdxGrab(session, image, 1);
 			NIVision.imaqDuplicate(raw, image);
@@ -218,7 +218,7 @@ public class Camera implements Runnable
 
 			Thread.yield();
 		}
-		NIVision.IMAQdxStopAcquisition(session);
+//		NIVision.IMAQdxStopAcquisition(session);
 	}
 
 	private class SmartDashboardThread implements Runnable
