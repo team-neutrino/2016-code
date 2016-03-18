@@ -1,5 +1,6 @@
 package org.teamneutrino.stronghold.robot.util;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class JoystickButtonManager
@@ -31,11 +32,21 @@ public class JoystickButtonManager
 
 	public boolean getButtonChanged(int buttonNum)
 	{
+		if (buttonNum > changed.length)
+		{
+			DriverStation.reportError("Button [" + buttonNum + "] on Joystick not existant (unplugged?)", false);
+			return false;
+		}
 		return changed[buttonNum - 1];
 	}
 
 	public boolean getButtonState(int buttonNum)
 	{
+		if (buttonNum > changed.length)
+		{
+			DriverStation.reportError("Button [" + buttonNum + "] on Joystick not existant (unplugged?)", false);
+			return false;
+		}
 		return states[buttonNum - 1];
 	}
 }
