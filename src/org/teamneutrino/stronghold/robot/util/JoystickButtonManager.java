@@ -34,7 +34,7 @@ public class JoystickButtonManager
 	{
 		if (buttonNum > changed.length)
 		{
-			DriverStation.reportError("Button [" + buttonNum + "] on Joystick not existant (unplugged?)", false);
+			DriverStation.reportError("Button [" + buttonNum + "] on Joystick not existent (unplugged?)", false);
 			return false;
 		}
 		return changed[buttonNum - 1];
@@ -44,7 +44,7 @@ public class JoystickButtonManager
 	{
 		if (buttonNum > changed.length)
 		{
-			DriverStation.reportError("Button [" + buttonNum + "] on Joystick not existant (unplugged?)", false);
+			DriverStation.reportError("Button [" + buttonNum + "] on Joystick not existent (unplugged?)", false);
 			return false;
 		}
 		return states[buttonNum - 1];
