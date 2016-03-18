@@ -252,6 +252,7 @@ public class Shooter implements Runnable
 		else
 		{
 			flutterEnabled = false;
+			actuationPID.setSetpoint(setpoint);
 		}
 	}
 

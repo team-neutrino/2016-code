@@ -126,6 +126,7 @@ public class Intake
 		else
 		{
 			flutterEnabled = false;
+			actuationPID.setSetpoint(setpoint);
 		}
 	}
 
