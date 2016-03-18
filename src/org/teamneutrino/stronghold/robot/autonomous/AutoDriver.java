@@ -47,9 +47,9 @@ public class AutoDriver
 	private static final double RAMP_UP_DEGREES = 90;
 	private static final double RAMP_DOWN_DEGREES = 180;
 
-	private static final int ENCODER_UNPLUGGED_TIMEOUT = 250;
+	private static final int ENCODER_UNPLUGGED_TIMEOUT = 500;
 
-	private static final double GYRO_UNPLUGGED_TIMEOUT = 250;
+	private static final double GYRO_UNPLUGGED_TIMEOUT = 1000;
 	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
 
 	private static final int TIMEOUT_REFRESH_RATE = 5;
@@ -111,7 +111,7 @@ public class AutoDriver
 		boolean terminate = false;
 		double startTime = System.currentTimeMillis();
 
-		// int count = 0;
+		int count = 0;
 
 		double rightDistancePrev = 0;
 		double leftDistancePrev = 0;
@@ -121,7 +121,7 @@ public class AutoDriver
 
 		while (!terminate)
 		{
-			// count++;
+			count++;
 			double rightDistance = Math.abs(encRight.getDistance());
 			double leftDistance = Math.abs(encLeft.getDistance());
 			double maxDistance = Math.max(leftDistance, rightDistance);
@@ -131,7 +131,7 @@ public class AutoDriver
 			double leftCorrection;
 
 			// unplugged detection
-			if (leftDistancePrev == leftDistance)
+			if (Math.abs(leftDistancePrev - leftDistance) < .001)
 			{
 				if (leftEncoderUnpluggedTime == 0)
 				{
@@ -143,7 +143,7 @@ public class AutoDriver
 				leftEncoderUnpluggedTime = 0;
 			}
 
-			if (rightDistancePrev == rightDistance)
+			if (Math.abs(rightDistancePrev - rightDistance) < .001)
 			{
 				if (rightEncoderUnpluggedTime == 0)
 				{
@@ -155,13 +155,15 @@ public class AutoDriver
 				rightEncoderUnpluggedTime = 0;
 			}
 
-			if (leftEncoderUnpluggedTime != 0 && (System.currentTimeMillis() - leftEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
+			if (leftEncoderUnpluggedTime != 0
+					&& (System.currentTimeMillis() - leftEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
 			{
 				DriverStation.reportError("left encoder unplugged", false);
 				leftEncoderUnplugged = true;
 			}
 
-			if (rightEncoderUnpluggedTime != 0 && (System.currentTimeMillis() - rightEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
+			if (rightEncoderUnpluggedTime != 0
+					&& (System.currentTimeMillis() - rightEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
 			{
 				DriverStation.reportError("right encoder unplugged", false);
 				rightEncoderUnplugged = true;
@@ -170,7 +172,7 @@ public class AutoDriver
 			rightDistancePrev = rightDistance;
 			leftDistancePrev = leftDistance;
 
-			// String msg;
+			String msg;
 
 			double diff = rightDistance - leftDistance;
 
@@ -182,7 +184,7 @@ public class AutoDriver
 				leftCorrection = 0;
 				rightCorrection = 0;
 				terminate = true;
-				// msg = "done";
+				msg = "done";
 			}
 			else if (leftEncoderUnplugged && rightEncoderUnplugged)
 			{
@@ -197,21 +199,21 @@ public class AutoDriver
 			{
 				if (diff > 0)
 				{
-					// msg = "veer right";
+					msg = "veer right";
 					// veer right
 					leftCorrection = 1;
 					rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
 				}
 				else if (diff < 0)
 				{
-					// msg = "veer left";
+					msg = "veer left";
 					// veer right
 					leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 					rightCorrection = 1;
 				}
 				else
 				{
-					// msg = "going straight";
+					msg = "going straight";
 					// go straight
 					leftCorrection = 1;
 					rightCorrection = 1;
@@ -219,6 +221,7 @@ public class AutoDriver
 			}
 			else
 			{
+				msg = "going straight (encoder unplugged)";
 				leftCorrection = 1;
 				rightCorrection = 1;
 			}
@@ -257,8 +260,8 @@ public class AutoDriver
 			drive.setRight(rightSpeed);
 
 			// if (count % 10 == 0)
-			// System.out.println(msg + " Right Distance: " + rightDistance + "
-			// Right Speed: " + rightSpeed
+			// System.out.println(msg + " Right Distance: " + rightDistance +
+			// "Right Speed: " + rightSpeed
 			// + " Left Distance: " + leftDistance + " Left Speed: " + leftSpeed
 			// + " Ramp: " + ramp);
 
@@ -375,7 +378,7 @@ public class AutoDriver
 			double leftCorrection;
 
 			// unplugged detection
-			if (leftDistancePrev == leftDistance)
+			if (Math.abs(leftDistancePrev - leftDistance) < .001)
 			{
 				if (leftEncoderUnpluggedTime == 0)
 				{
@@ -387,7 +390,7 @@ public class AutoDriver
 				leftEncoderUnpluggedTime = 0;
 			}
 
-			if (rightDistancePrev == rightDistance)
+			if (Math.abs(rightDistancePrev - rightDistance) < .001)
 			{
 				if (rightEncoderUnpluggedTime == 0)
 				{
@@ -399,13 +402,15 @@ public class AutoDriver
 				rightEncoderUnpluggedTime = 0;
 			}
 
-			if (leftEncoderUnpluggedTime != 0 && (System.currentTimeMillis() - leftEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
+			if (leftEncoderUnpluggedTime != 0
+					&& (System.currentTimeMillis() - leftEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
 			{
 				DriverStation.reportError("left encoder unplugged", false);
 				leftEncoderUnplugged = true;
 			}
 
-			if (rightEncoderUnpluggedTime != 0 && (System.currentTimeMillis() - rightEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
+			if (rightEncoderUnpluggedTime != 0
+					&& (System.currentTimeMillis() - rightEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
 			{
 				DriverStation.reportError("right encoder unplugged", false);
 				rightEncoderUnplugged = true;
@@ -480,17 +485,19 @@ public class AutoDriver
 
 			double ramp = 1;
 
-			if ((degreesTraveled < RAMP_UP_DEGREES) && (degreesRemain < RAMP_DOWN_DEGREES))
-			{
-				// both ramp up and ramp down are in effect, pick the min
-				ramp = Math.min(degreesTraveled / RAMP_UP_DISTANCE, degreesRemain / RAMP_DOWN_DISTANCE);
-			}
-			else if (degreesTraveled < RAMP_UP_DEGREES)
-			{
-				// ramp up
-				ramp = (degreesTraveled / RAMP_UP_DEGREES);
-			}
-			else if (degreesRemain < RAMP_DOWN_DEGREES)
+			// don't ramp up
+//			if ((degreesTraveled < RAMP_UP_DEGREES) && (degreesRemain < RAMP_DOWN_DEGREES))
+//			{
+//				// both ramp up and ramp down are in effect, pick the min
+//				ramp = Math.min(degreesTraveled / RAMP_UP_DISTANCE, degreesRemain / RAMP_DOWN_DISTANCE);
+//			}
+//			else if (degreesTraveled < RAMP_UP_DEGREES)
+//			{
+//				// ramp up
+//				ramp = (degreesTraveled / RAMP_UP_DEGREES);
+//			}
+//			else
+			if (degreesRemain < RAMP_DOWN_DEGREES)
 			{
 				// ramp down
 				ramp = (degreesRemain / RAMP_DOWN_DEGREES);
