@@ -35,8 +35,6 @@ public class Camera implements Runnable
 	private double ang;
 	private double distanceFromGoal;
 	private Rect rectangle;
-	private Image image;
-	private Image raw;
 	int session;
 
 	private Solenoid lightPower;
@@ -57,8 +55,6 @@ public class Camera implements Runnable
 		luminenceLow = Constants.CAMERA_DEFAULT_LUMINENCE_LOW;
 		luminenceHigh = Constants.CAMERA_DEFAULT_LUMINENCE_HIGH;
 		rectangle = new Rect();
-		image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
-		raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 		session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
 				NIVision.IMAQdxCameraControlMode.CameraControlModeController);
 		
@@ -130,6 +126,9 @@ public class Camera implements Runnable
 
 		while (true)
 		{
+			Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+			Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
+			
 			NIVision.IMAQdxGrab(session, image, 1);
 			NIVision.imaqDuplicate(raw, image);
 
@@ -215,10 +214,12 @@ public class Camera implements Runnable
 
 				CameraServer.getInstance().setImage(raw);
 			}
+			
+			raw.free();
+			image.free();
 
 			Thread.yield();
 		}
-//		NIVision.IMAQdxStopAcquisition(session);
 	}
 
 	private class SmartDashboardThread implements Runnable

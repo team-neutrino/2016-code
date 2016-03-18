@@ -66,7 +66,7 @@ public class Constants
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_POWER_CHANNEL = 5;
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 360;
-	public static final double INTAKE_ENCODER_OFFSET = -205;
+	public static final double INTAKE_ENCODER_OFFSET = -210;
 	public static final double INTAKE_ACTUATION_K_P = .005;
 	public static final double INTAKE_ACTUATION_K_I = 0;
 	public static final double INTAKE_ACTUATION_K_D = .001;
