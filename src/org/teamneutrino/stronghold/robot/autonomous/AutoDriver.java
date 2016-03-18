@@ -29,6 +29,9 @@ public class AutoDriver
 	private boolean driveAimed;
 	private boolean shooterAimed;
 
+	private boolean leftEncoderUnplugged;
+	private boolean rightEncoderUnplugged;
+
 	private static final int TIMEOUT = 100000;
 
 	// smaller number, more correction; bigger number, less correction
@@ -44,7 +47,7 @@ public class AutoDriver
 	private static final double RAMP_UP_DEGREES = 90;
 	private static final double RAMP_DOWN_DEGREES = 180;
 
-	private static final double ENCODER_UNPLUGGED_THRESHOLD = .5;
+	private static final int ENCODER_UNPLUGGED_TIMEOUT = 250;
 
 	private static final double GYRO_UNPLUGGED_TIMEOUT = 250;
 	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
@@ -110,6 +113,12 @@ public class AutoDriver
 
 		// int count = 0;
 
+		double rightDistancePrev = 0;
+		double leftDistancePrev = 0;
+
+		long rightEncoderUnpluggedTime = 0;
+		long leftEncoderUnpluggedTime = 0;
+
 		while (!terminate)
 		{
 			// count++;
@@ -120,6 +129,47 @@ public class AutoDriver
 
 			double rightCorrection;
 			double leftCorrection;
+
+			// unplugged detection
+			if (leftDistancePrev == leftDistance)
+			{
+				if (leftEncoderUnpluggedTime == 0)
+				{
+					leftEncoderUnpluggedTime = System.currentTimeMillis();
+				}
+			}
+			else
+			{
+				leftEncoderUnpluggedTime = 0;
+			}
+
+			if (rightDistancePrev == rightDistance)
+			{
+				if (rightEncoderUnpluggedTime == 0)
+				{
+					rightEncoderUnpluggedTime = System.currentTimeMillis();
+				}
+			}
+			else
+			{
+				rightEncoderUnpluggedTime = 0;
+			}
+
+			if (leftEncoderUnpluggedTime != 0 && (System.currentTimeMillis() - leftEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
+			{
+				DriverStation.reportError("left encoder unplugged", false);
+				leftEncoderUnplugged = true;
+			}
+
+			if (rightEncoderUnpluggedTime != 0 && (System.currentTimeMillis() - rightEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
+			{
+				DriverStation.reportError("right encoder unplugged", false);
+				rightEncoderUnplugged = true;
+			}
+
+			rightDistancePrev = rightDistance;
+			leftDistancePrev = leftDistance;
+
 			// String msg;
 
 			double diff = rightDistance - leftDistance;
@@ -133,37 +183,42 @@ public class AutoDriver
 				rightCorrection = 0;
 				terminate = true;
 				// msg = "done";
-			} else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			}
+			else if (leftEncoderUnplugged && rightEncoderUnplugged)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
 				drive.setRight(0);
 
-				if (diff >= 0)
+				DriverStation.reportError("both encoders unplugged", false);
+				throw new EncoderUnpluggedException("both encoders unplugged");
+			}
+			else if (!(leftEncoderUnplugged || rightEncoderUnplugged))
+			{
+				if (diff > 0)
 				{
-					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
-					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				} else
-				{
-					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
-					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
+					// msg = "veer right";
+					// veer right
+					leftCorrection = 1;
+					rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
 				}
-			} else if (diff > 0)
+				else if (diff < 0)
+				{
+					// msg = "veer left";
+					// veer right
+					leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
+					rightCorrection = 1;
+				}
+				else
+				{
+					// msg = "going straight";
+					// go straight
+					leftCorrection = 1;
+					rightCorrection = 1;
+				}
+			}
+			else
 			{
-				// msg = "veer right";
-				// veer right
-				leftCorrection = 1;
-				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-			} else if (diff < 0)
-			{
-				// msg = "veer left";
-				// veer right
-				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
-				rightCorrection = 1;
-			} else
-			{
-				// msg = "going straight";
-				// go straight
 				leftCorrection = 1;
 				rightCorrection = 1;
 			}
@@ -176,11 +231,13 @@ public class AutoDriver
 			{
 				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
-			} else if (minDistance < RAMP_UP_DISTANCE)
+			}
+			else if (minDistance < RAMP_UP_DISTANCE)
 			{
 				// ramp up
 				ramp = (minDistance / RAMP_UP_DISTANCE);
-			} else if (remainDistance < RAMP_DOWN_DISTANCE)
+			}
+			else if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
@@ -249,7 +306,8 @@ public class AutoDriver
 			try
 			{
 				Thread.sleep(TIMEOUT_REFRESH_RATE);
-			} catch (InterruptedException e)
+			}
+			catch (InterruptedException e)
 			{
 			}
 
@@ -296,11 +354,17 @@ public class AutoDriver
 		boolean terminate = false;
 		double startTime = System.currentTimeMillis();
 
-		int count = 0;
+		// int count = 0;
+
+		double rightDistancePrev = 0;
+		double leftDistancePrev = 0;
+
+		long rightEncoderUnpluggedTime = 0;
+		long leftEncoderUnpluggedTime = 0;
 
 		while (!terminate)
 		{
-			count++;
+			// count++;
 			double rightDistance = Math.abs(encRight.getDistance());
 			double leftDistance = Math.abs(encLeft.getDistance());
 			double degreesTraveled = Math.abs(gyro.getAngle());
@@ -309,7 +373,48 @@ public class AutoDriver
 
 			double rightCorrection;
 			double leftCorrection;
-			String msg;
+
+			// unplugged detection
+			if (leftDistancePrev == leftDistance)
+			{
+				if (leftEncoderUnpluggedTime == 0)
+				{
+					leftEncoderUnpluggedTime = System.currentTimeMillis();
+				}
+			}
+			else
+			{
+				leftEncoderUnpluggedTime = 0;
+			}
+
+			if (rightDistancePrev == rightDistance)
+			{
+				if (rightEncoderUnpluggedTime == 0)
+				{
+					rightEncoderUnpluggedTime = System.currentTimeMillis();
+				}
+			}
+			else
+			{
+				rightEncoderUnpluggedTime = 0;
+			}
+
+			if (leftEncoderUnpluggedTime != 0 && (System.currentTimeMillis() - leftEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
+			{
+				DriverStation.reportError("left encoder unplugged", false);
+				leftEncoderUnplugged = true;
+			}
+
+			if (rightEncoderUnpluggedTime != 0 && (System.currentTimeMillis() - rightEncoderUnpluggedTime) > ENCODER_UNPLUGGED_TIMEOUT)
+			{
+				DriverStation.reportError("right encoder unplugged", false);
+				rightEncoderUnplugged = true;
+			}
+
+			rightDistancePrev = rightDistance;
+			leftDistancePrev = leftDistance;
+
+			// String msg;
 
 			double diff = rightDistance - leftDistance;
 
@@ -321,8 +426,9 @@ public class AutoDriver
 				leftCorrection = 0;
 				rightCorrection = 0;
 				terminate = true;
-				msg = "done";
-			} else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
+				// msg = "done";
+			}
+			else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
 			{
 				// gyro unplugged
 				drive.setLeft(0);
@@ -330,37 +436,42 @@ public class AutoDriver
 
 				DriverStation.reportError("Gyro is unplugged", false);
 				throw new GyroUnpluggedException("Gyro is unplgged");
-			} else if (diff >= ENCODER_UNPLUGGED_THRESHOLD)
+			}
+			else if (leftEncoderUnplugged && rightEncoderUnplugged)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
 				drive.setRight(0);
 
-				if (diff >= 0)
+				DriverStation.reportError("both encoders unplugged", false);
+				throw new EncoderUnpluggedException("both encoders unplugged");
+			}
+			else if (!(leftEncoderUnplugged || rightEncoderUnplugged))
+			{
+				if (diff > 0)
 				{
-					DriverStation.reportError("Right is ahead of left (left encoder unplugged)", false);
-					throw new EncoderUnpluggedException("Right is ahead of left (left encoder unplugged)");
-				} else
-				{
-					DriverStation.reportError("Left is ahead of Right (right encoder unplugged)", false);
-					throw new EncoderUnpluggedException("Left is ahead of Right (right encoder unplugged)");
+					// msg = "veer right";
+					// veer right
+					leftCorrection = 1;
+					rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
 				}
-			} else if (diff > 0)
+				else if (diff < 0)
+				{
+					// msg = "veer left";
+					// veer right
+					leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
+					rightCorrection = 1;
+				}
+				else
+				{
+					// msg = "going straight";
+					// go straight
+					leftCorrection = 1;
+					rightCorrection = 1;
+				}
+			}
+			else
 			{
-				msg = "veer right";
-				// veer right
-				leftCorrection = 1;
-				rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-			} else if (diff < 0)
-			{
-				msg = "veer left";
-				// veer right
-				leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
-				rightCorrection = 1;
-			} else
-			{
-				msg = "going straight";
-				// go straight
 				leftCorrection = 1;
 				rightCorrection = 1;
 			}
@@ -373,11 +484,13 @@ public class AutoDriver
 			{
 				// both ramp up and ramp down are in effect, pick the min
 				ramp = Math.min(degreesTraveled / RAMP_UP_DISTANCE, degreesRemain / RAMP_DOWN_DISTANCE);
-			} else if (degreesTraveled < RAMP_UP_DEGREES)
+			}
+			else if (degreesTraveled < RAMP_UP_DEGREES)
 			{
 				// ramp up
 				ramp = (degreesTraveled / RAMP_UP_DEGREES);
-			} else if (degreesRemain < RAMP_DOWN_DEGREES)
+			}
+			else if (degreesRemain < RAMP_DOWN_DEGREES)
 			{
 				// ramp down
 				ramp = (degreesRemain / RAMP_DOWN_DEGREES);
@@ -396,10 +509,12 @@ public class AutoDriver
 			drive.setLeft(leftSpeed);
 			drive.setRight(rightSpeed);
 
-			if (count % 10 == 0)
-				System.out.println(msg + "    Degrees Traveled: " + degreesTraveled + "    Right Distance: "
-						+ rightDistance + "    Right Speed: " + rightSpeed + "    Left Distance: " + leftDistance
-						+ "    Left Speed: " + leftSpeed + "    Ramp: " + ramp);
+			// if (count % 10 == 0)
+			// System.out.println(msg + " Degrees Traveled: " + degreesTraveled
+			// + " Right Distance: "
+			// + rightDistance + " Right Speed: " + rightSpeed + " Left
+			// Distance: " + leftDistance
+			// + " Left Speed: " + leftSpeed + " Ramp: " + ramp);
 
 			// timeout
 			if ((currTime - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
@@ -438,7 +553,7 @@ public class AutoDriver
 	{
 		shooterAimingThreadRunning = false;
 	}
-	
+
 	public boolean isAiming()
 	{
 		return shooterAimingThreadRunning;
@@ -462,7 +577,8 @@ public class AutoDriver
 				try
 				{
 					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 				}
 
@@ -491,7 +607,8 @@ public class AutoDriver
 				try
 				{
 					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 				}
 
@@ -522,11 +639,11 @@ public class AutoDriver
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
-			
+
 			int time;
 			if (error > 10)
 			{
-				time = (int) ((error - 10) * 2  + 100);
+				time = (int) ((error - 10) * 2 + 100);
 			}
 			else
 			{
@@ -536,7 +653,8 @@ public class AutoDriver
 			try
 			{
 				Thread.sleep(time);
-			} catch (InterruptedException e)
+			}
+			catch (InterruptedException e)
 			{
 			}
 		}
@@ -566,7 +684,7 @@ public class AutoDriver
 			int time;
 			if (error > 10)
 			{
-				time = (int) ((error - 10) * 2  + 100);
+				time = (int) ((error - 10) * 2 + 100);
 			}
 			else
 			{
@@ -576,25 +694,27 @@ public class AutoDriver
 			try
 			{
 				Thread.sleep(time);
-			} catch (InterruptedException e)
+			}
+			catch (InterruptedException e)
 			{
-				
+
 			}
 		}
 
 		shooter.setActuatorOverride(0);
-		
+
 		return onTarget;
 	}
 
 	public double findDistance()
 	{
 		double goalHeightPixels = cam.getHighestHeight();
-//		double goalHeight = goalHeightPixels * Constants.GOAL_HEIGHT_MULTIPLIER;
-//		double angle = shooter.getPosition();
-//		double distancePixels = goalHeight/Math.tan(angle);
-//		double distanceInches = 12 * (distancePixels/goalHeight);
-		double distanceInches = (12*1280)/(2*goalHeightPixels*Math.tan(Math.toRadians(32.25)));
+		// double goalHeight = goalHeightPixels *
+		// Constants.GOAL_HEIGHT_MULTIPLIER;
+		// double angle = shooter.getPosition();
+		// double distancePixels = goalHeight/Math.tan(angle);
+		// double distanceInches = 12 * (distancePixels/goalHeight);
+		double distanceInches = (12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25)));
 		return distanceInches;
 	}
 }
