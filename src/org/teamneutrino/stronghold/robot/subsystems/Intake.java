@@ -1,7 +1,7 @@
 package org.teamneutrino.stronghold.robot.subsystems;
 
 import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.util.SpeedControllerController;
+import org.teamneutrino.stronghold.robot.util.SpeedControllerPID;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.PIDController;
@@ -13,7 +13,7 @@ public class Intake
 {
 	private SpeedController intakeFrontToBackMotor;
 	private SpeedController intakeSideToSideMotor;
-	private SpeedControllerController actuatorMotor;
+	private SpeedControllerPID actuatorMotor;
 	private AnalogPotentiometer encoder;
 
 	private boolean flutterEnabled;
@@ -46,14 +46,14 @@ public class Intake
 			intakeFrontToBackMotor = new TalonSRX(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
 			intakeSideToSideMotor = new TalonSRX(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 			// TODO find deadband
-			actuatorMotor = new SpeedControllerController(new TalonSRX(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.005, .005, -.005, .005);
+			actuatorMotor = new SpeedControllerPID(new TalonSRX(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.005, .005, -.005, .005);
 		}
 		else
 		{
 			intakeFrontToBackMotor = new Victor(Constants.INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL);
 			intakeSideToSideMotor = new Victor(Constants.INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL);
 			// deadband for victor 884 is about 10.6% on each side
-			actuatorMotor = new SpeedControllerController(new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.106, .106, -.005, .005);
+			actuatorMotor = new SpeedControllerPID(new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.106, .106, -.005, .005);
 		}
 		intakeFrontToBackMotor.setInverted(true);
 		actuatorMotor.setInverted(true);

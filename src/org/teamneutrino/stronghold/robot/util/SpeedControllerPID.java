@@ -2,7 +2,7 @@ package org.teamneutrino.stronghold.robot.util;
 
 import edu.wpi.first.wpilibj.SpeedController;
 
-public class SpeedControllerController implements SpeedController
+public class SpeedControllerPID implements SpeedController
 {
 	SpeedController controller;
 	double oldDeadbandMin;
@@ -12,7 +12,7 @@ public class SpeedControllerController implements SpeedController
 	
 	boolean pidEnable;
 	
-	public SpeedControllerController(SpeedController controller, double oldDeadbandMin, double oldDeadbandMax, 
+	public SpeedControllerPID(SpeedController controller, double oldDeadbandMin, double oldDeadbandMax, 
 			double newDeadbandMin, double newDeadbandMax)
 	{
 		this.controller = controller;
@@ -29,26 +29,26 @@ public class SpeedControllerController implements SpeedController
 	{
 		if (pidEnable)
 		{
-			set(output);
+			set(scale(output));
 		}
 	}
 
 	@Override
 	public double get()
 	{
-		return reverseScale(controller.get());
+		return controller.get();
 	}
 
 	@Override
 	public void set(double speed, byte syncGroup)
 	{
-		controller.set(scale(speed), syncGroup);
+		controller.set(speed, syncGroup);
 	}
 
 	@Override
 	public void set(double speed)
 	{
-		controller.set(scale(speed));
+		controller.set(speed);
 	}
 
 	@Override
@@ -102,25 +102,6 @@ public class SpeedControllerController implements SpeedController
 		{
 			// speed is above the deadband
 			return Util.scale(speed, newDeadbandMax, 1, oldDeadbandMax, 1);
-		}
-	}
-	
-	private double reverseScale(double speed)
-	{
-		if (speed <= oldDeadbandMin)
-		{
-			// speed is below the deadband
-			return Util.scale(speed, -1, oldDeadbandMin, -1, newDeadbandMin);
-		}
-		else if (speed > oldDeadbandMin && speed < oldDeadbandMax)
-		{
-			// speed is within the deadband
-			return Util.scale(speed, oldDeadbandMin, oldDeadbandMax, newDeadbandMin, newDeadbandMax);
-		}
-		else
-		{
-			// speed is above the deadband
-			return Util.scale(speed, oldDeadbandMax, 1, newDeadbandMax, 1);
 		}
 	}
 }

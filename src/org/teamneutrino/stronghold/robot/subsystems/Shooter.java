@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.util.SpeedControllerController;
+import org.teamneutrino.stronghold.robot.util.SpeedControllerPID;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
@@ -20,7 +20,7 @@ public class Shooter implements Runnable
 {
 	private SpeedController leftMotor;
 	private SpeedController rightMotor;
-	private SpeedControllerController actuatorMotor;
+	private SpeedControllerPID actuatorMotor;
 
 	private Counter beambreakLeft;
 	private Counter beambreakRight;
@@ -79,7 +79,7 @@ public class Shooter implements Runnable
 			// TODO find deadband
 			double talonMinDeadband = 0;
 			double talonMaxDeadband = 0;
-			actuatorMotor = new SpeedControllerController(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
+			actuatorMotor = new SpeedControllerPID(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
 					talonMinDeadband - motorDeadband, talonMaxDeadband + motorDeadband, -0.005, 0.005);
 		}
 		else
@@ -88,7 +88,7 @@ public class Shooter implements Runnable
 			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
 			double victorMinDeadband = -.028;
 			double victorMaxDeadband = .045;
-			actuatorMotor = new SpeedControllerController(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
+			actuatorMotor = new SpeedControllerPID(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
 					victorMinDeadband - motorDeadband, victorMaxDeadband + motorDeadband, -0.005, 0.005);
 		}
 		rightMotor.setInverted(true);
