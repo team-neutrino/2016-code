@@ -65,11 +65,7 @@ public class Robot extends SampleRobot
 	@Override
 	public void disabled()
 	{
-		while (isDisabled())
-		{
-			System.out.println("Distance: " + driver.findDistance());
-			Timer.delay(.1);
-		}
+		
 	}
 
 	@Override
