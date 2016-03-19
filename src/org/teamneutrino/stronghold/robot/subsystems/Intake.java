@@ -29,7 +29,7 @@ public class Intake
 
 	public enum Position
 	{
-		DOWN(-19), INTAKE(-3), UP(90);
+		DOWN(-25), INTAKE(-3), UP(90);
 
 		public final double location;
 
