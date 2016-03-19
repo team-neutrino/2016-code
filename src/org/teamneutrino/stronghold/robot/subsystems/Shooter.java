@@ -59,11 +59,11 @@ public class Shooter implements Runnable
 
 	public enum Position
 	{
-		INTAKE(0), FRONT(30), BACK(115);
+		INTAKE(0), FRONT(30), BACK(115), SHOOT(68.5);
 
 		public final double location;
 
-		Position(int location)
+		Position(double location)
 		{
 			this.location = location;
 		}
@@ -465,7 +465,7 @@ public class Shooter implements Runnable
 			waitForShooterOutfeed();
 			try
 			{
-				Thread.sleep(1000);
+				Thread.sleep(1500);
 			}
 			catch (InterruptedException e)
 			{
@@ -483,7 +483,7 @@ public class Shooter implements Runnable
 						Thread.sleep(100);
 					}
 					
-					Thread.sleep(500);
+					Thread.sleep(750);
 				}
 				catch (InterruptedException e)
 				{

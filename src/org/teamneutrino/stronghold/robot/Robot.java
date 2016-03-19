@@ -222,9 +222,12 @@ public class Robot extends SampleRobot
 			if (shooterOverrideEnabled)
 			{
 				shooter.setActuatorOverride(-gamepad.getRawAxis(5));
-			} else if (intaking || outtaking || gamepadMan.getButtonState(4) || gamepadMan.getButtonState(2))
+			} else if (intaking || outtaking || gamepadMan.getButtonState(4))
 			{
 				shooter.setTargetPosition(Shooter.Position.INTAKE);
+			} else if (gamepadMan.getButtonState(2))
+			{
+				shooter.setTargetPosition(Shooter.Position.SHOOT);
 			} else if (gamepadMan.getButtonState(3))
 			{
 				shooter.setTargetPosition(Shooter.Position.FRONT);

@@ -29,11 +29,11 @@ public class Intake
 
 	public enum Position
 	{
-		DOWN(-25), INTAKE(-3), UP(90);
+		DOWN(-30), INTAKE(-3), UP(90);
 
 		public final double location;
 
-		Position(int location)
+		Position(double location)
 		{
 			this.location = location;
 		}
