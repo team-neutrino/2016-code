@@ -3,7 +3,8 @@ package org.teamneutrino.stronghold.robot;
 import org.teamneutrino.stronghold.robot.autonomous.AutoController;
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
-import org.teamneutrino.stronghold.robot.autonomous.modes.Testing;
+import org.teamneutrino.stronghold.robot.autonomous.modes.DriveForwardIntakePosition;
+import org.teamneutrino.stronghold.robot.autonomous.modes.DriveForwardUpPositionHigh;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
@@ -46,7 +47,9 @@ public class Robot extends SampleRobot
 
 		// set up auto modes
 		autoController = new AutoController();
-		autoController.assignMode(0, new Testing(driver));
+		autoController.assignMode(0, new DoNothing());
+		autoController.assignMode(1, new DriveForwardIntakePosition(driver, shooter, intake));
+		autoController.assignMode(2, new DriveForwardUpPositionHigh(driver, shooter, intake));
 	}
 
 	@Override

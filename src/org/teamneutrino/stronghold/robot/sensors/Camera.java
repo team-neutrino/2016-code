@@ -114,8 +114,8 @@ public class Camera implements Runnable
 	public void run()
 	{
 		// kill the thread
-		// if (true)
-		// throw new NullPointerException();
+		 if (true)
+		 throw new NullPointerException();
 
 		boolean areParticlesPresent = false;
 		long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value") + 5;
