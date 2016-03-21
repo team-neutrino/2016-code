@@ -61,7 +61,7 @@ public class Robot extends SampleRobot
 	@Override
 	public void disabled()
 	{
-		
+		System.out.println("--- ROBOT DISABLED ---");
 	}
 
 	@Override
