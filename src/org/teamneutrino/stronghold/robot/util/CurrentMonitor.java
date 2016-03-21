@@ -68,6 +68,11 @@ public class CurrentMonitor
 		SmartDashboard.putNumber("Total Current", pdp.getTotalCurrent() + pcm.getCompressorCurrent());
 	}
 
+	public boolean getCurrentOver120()
+	{
+		return pdp.getTotalCurrent() > 120;
+	}
+
 	private void outputSubsystem(SubsystemPower subsystem)
 	{
 		ArrayList<PowerChannel> channels = subsystem.getChannels();
@@ -93,7 +98,7 @@ public class CurrentMonitor
 			SmartDashboard.putNumber(subsystem.getName() + " Current", totalCurrent);
 		}
 	}
-
+	
 	private class SubsystemPower
 	{
 		private String name;

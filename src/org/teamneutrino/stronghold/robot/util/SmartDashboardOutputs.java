@@ -14,9 +14,9 @@ public class SmartDashboardOutputs implements Runnable
 	Intake intake;
 	PressureSensor pressure;
 	
-	public SmartDashboardOutputs(Shooter shooter, Intake intake)
+	public SmartDashboardOutputs(CurrentMonitor currMon, Shooter shooter, Intake intake)
 	{
-		currMon = new CurrentMonitor();
+		this.currMon = currMon;
 		this.shooter = shooter;
 		this.intake = intake;
 		this.pressure = new PressureSensor();
