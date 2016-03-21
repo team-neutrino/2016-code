@@ -45,6 +45,7 @@ public class Robot extends SampleRobot
 		shooter = new Shooter();
 		stinger = new Stinger();
 		driver = new AutoDriver(drive, shooter);
+		currMon = new CurrentMonitor();
 
 		new SmartDashboardOutputs(currMon, shooter, intake);
 
