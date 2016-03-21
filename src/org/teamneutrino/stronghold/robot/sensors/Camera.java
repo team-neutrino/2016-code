@@ -242,16 +242,30 @@ public class Camera implements Runnable
 				saturationHigh = (int) SmartDashboard.getNumber("Saturation High", saturationHigh);
 				luminenceLow = (int) SmartDashboard.getNumber("Luminence Low", luminenceLow);
 				luminenceHigh = (int) SmartDashboard.getNumber("Luminence High", luminenceHigh);
+				distanceFromGoal = findDistance();
 				SmartDashboard.putNumber("Hue Low", hueLow);
 				SmartDashboard.putNumber("Hue High", hueHigh);
 				SmartDashboard.putNumber("Saturation Low", saturationLow);
 				SmartDashboard.putNumber("Saturation High", saturationHigh);
 				SmartDashboard.putNumber("Luminence Low", luminenceLow);
 				SmartDashboard.putNumber("Luminence High", luminenceHigh);
+				SmartDashboard.putNumber("Distance From Goal", distanceFromGoal);
 
 				outMode = (OutputMode) outModeChooser.getSelected();
 			}
 		}
+	}
+	
+	public double findDistance()
+	{
+		double goalHeightPixels = getHighestHeight();
+		// double goalHeight = goalHeightPixels *
+		// Constants.GOAL_HEIGHT_MULTIPLIER;
+		// double angle = shooter.getPosition();
+		// double distancePixels = goalHeight/Math.tan(angle);
+		// double distanceInches = 12 * (distancePixels/goalHeight);
+		double distanceInches = (12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25)));
+		return distanceInches;
 	}
 	
 	private class ParticleReport 
