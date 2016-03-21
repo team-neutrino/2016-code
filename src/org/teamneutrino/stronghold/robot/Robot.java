@@ -95,6 +95,10 @@ public class Robot extends SampleRobot
 
 		boolean outtakingPrev = false;
 		boolean outtaking = false;
+		
+		boolean overCurrent = false;
+		
+		long lastCurrentUpdateTime = 0;
 
 		driver.stopAim();
 
@@ -277,7 +281,11 @@ public class Robot extends SampleRobot
 				drive.setRight(rightSpeed);
 			}
 			
-			boolean overCurrent = currMon.getCurrentOver120();
+			if (System.currentTimeMillis() - lastCurrentUpdateTime > 50)
+			{
+				overCurrent = currMon.getCurrentOver120();
+			}
+			
 			gamepad.setRumble(RumbleType.kLeftRumble, (overCurrent ? 1f : 0f));
 			gamepad.setRumble(RumbleType.kRightRumble, (overCurrent ? 1f : 0f));
 
