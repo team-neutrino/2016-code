@@ -9,11 +9,13 @@ import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 import org.teamneutrino.stronghold.robot.subsystems.Stinger;
+import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 import org.teamneutrino.stronghold.robot.util.JoystickButtonManager;
 import org.teamneutrino.stronghold.robot.util.SmartDashboardOutputs;
 import org.teamneutrino.stronghold.robot.util.Util;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import edu.wpi.first.wpilibj.SampleRobot;
 
 public class Robot extends SampleRobot
@@ -27,6 +29,7 @@ public class Robot extends SampleRobot
 	private Intake intake;
 	private Shooter shooter;
 	private Stinger stinger;
+	private CurrentMonitor currMon;
 
 	private JoystickButtonManager joyLeftMan;
 	private JoystickButtonManager joyRightMan;
@@ -43,7 +46,7 @@ public class Robot extends SampleRobot
 		stinger = new Stinger();
 		driver = new AutoDriver(drive, shooter);
 
-		new SmartDashboardOutputs(shooter, intake);
+		new SmartDashboardOutputs(currMon, shooter, intake);
 
 		// set up auto modes
 		autoController = new AutoController();
@@ -55,24 +58,26 @@ public class Robot extends SampleRobot
 	@Override
 	public void robotInit()
 	{
-
+		System.out.println("--- INIT ---");
 	}
 
 	@Override
 	public void disabled()
 	{
-		System.out.println("--- ROBOT DISABLED ---");
+		System.out.println("--- DISABLED ---");
 	}
 
 	@Override
 	public void autonomous()
 	{
+		System.out.println("--- AUTO ---");
 		autoController.run();
 	}
 
 	@Override
 	public void operatorControl()
 	{
+		System.out.println("--- TELEOP ---");
 		joyLeftMan = new JoystickButtonManager(joyLeft);
 		joyLeftMan.updateButtons();
 		joyRightMan = new JoystickButtonManager(joyRight);
@@ -271,6 +276,10 @@ public class Robot extends SampleRobot
 				drive.setLeft(leftSpeed);
 				drive.setRight(rightSpeed);
 			}
+			
+			boolean overCurrent = currMon.getCurrentOver120();
+			gamepad.setRumble(RumbleType.kLeftRumble, (overCurrent ? 1f : 0f));
+			gamepad.setRumble(RumbleType.kRightRumble, (overCurrent ? 1f : 0f));
 
 			Thread.yield();
 		}
@@ -279,6 +288,6 @@ public class Robot extends SampleRobot
 	@Override
 	public void test()
 	{
-		
+		System.out.println("--- TEST ---");
 	}
 }
