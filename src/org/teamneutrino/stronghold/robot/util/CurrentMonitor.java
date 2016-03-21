@@ -42,6 +42,7 @@ public class CurrentMonitor
 		intake.addChannel(new PowerChannel("Side to Side", Constants.INTAKE_SIDE_TO_SIDE_MOTOR_POWER_CHANNEL));
 		intake.addChannel(new PowerChannel("Front to Back", Constants.INTAKE_FRONT_TO_BACK_MOTOR_POWER_CHANNEL));
 		intake.addChannel(new PowerChannel("Actuator", Constants.INTAKE_ACUATOR_MOTOR_POWER_CHANNEL));
+		subsystems.add(intake);
 	}
 
 	public void send()
