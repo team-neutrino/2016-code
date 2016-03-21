@@ -131,11 +131,15 @@ public class Camera implements Runnable
 			DriverStation.reportError("Error setting up camera:" + e.getMessage(), false);
 			e.printStackTrace();
 		}
+		
+		int frames = 0;
+		long lastFramerateUpdate = System.currentTimeMillis();
 
 		while (true)
 		{
 			try
 			{
+				frames++;
 				Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 				Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
@@ -232,6 +236,14 @@ public class Camera implements Runnable
 			{
 				DriverStation.reportError("Error getting image: " + e.getMessage(), false);
 				e.printStackTrace();
+			}
+			
+			long currTime = System.currentTimeMillis();
+			
+			if (currTime - lastFramerateUpdate > 1000)
+			{
+				SmartDashboard.putNumber("Framerate", frames);
+				frames = 0;
 			}
 
 			Thread.yield();

@@ -282,9 +282,12 @@ public class Robot extends SampleRobot
 				drive.setRight(rightSpeed);
 			}
 			
-			if (System.currentTimeMillis() - lastCurrentUpdateTime > 50)
+			long currTime = System.currentTimeMillis();
+			
+			if (currTime - lastCurrentUpdateTime > 50)
 			{
 				overCurrent = currMon.getCurrentOver120();
+				lastCurrentUpdateTime = currTime;
 			}
 			
 			gamepad.setRumble(RumbleType.kLeftRumble, (overCurrent ? 1f : 0f));
