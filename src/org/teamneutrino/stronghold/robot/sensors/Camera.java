@@ -222,12 +222,13 @@ public class Camera implements Runnable
 								NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
 						par.width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
+						particles.add(par);
 					}
 					currentFrame++;
 				}
 
 				Particle largestParticle = null;
-
+				
 				for (Particle particle : particles)
 				{
 					if (particle.area >= Constants.MIN_PARTICLE_SIZE
@@ -240,14 +241,18 @@ public class Camera implements Runnable
 				if (outMode == OutputMode.THRESHOLD_IMAGE)
 				{
 					CameraServer.getInstance().setImage(image);
+					System.out.println("Threashold Image");
 				}
 
-				if (outMode == OutputMode.RECTANGLE_OVERLAY && largestParticle != null)
+				if (outMode == OutputMode.RECTANGLE_OVERLAY)
 				{
-					Rect rect = new Rect(largestParticle.top, largestParticle.left, largestParticle.height,
-							largestParticle.width);
-					NIVision.imaqDrawShapeOnImage(raw, raw, rect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
-					rect.free();
+					if (largestParticle != null)
+					{
+						Rect rect = new Rect(largestParticle.top, largestParticle.left, largestParticle.height,
+								largestParticle.width);
+						NIVision.imaqDrawShapeOnImage(raw, raw, rect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
+						rect.free();
+					}
 
 					CameraServer.getInstance().setImage(raw);
 				}
@@ -306,8 +311,8 @@ public class Camera implements Runnable
 				SmartDashboard.putNumber("Luminence High", luminenceHigh);
 				SmartDashboard.putNumber("Distance From Goal", getDistance());
 				SmartDashboard.putNumber("Pixels Per Degree", getPixelsPerDegree());
-				SmartDashboard.putNumber("Target X", target.x);
-				SmartDashboard.putNumber("Target Y", target.y);
+				SmartDashboard.putNumber("Target X", (target == null ? 0 : target.x));
+				SmartDashboard.putNumber("Target Y", (target == null ? 0 : target.y));
 
 				outMode = (OutputMode) outModeChooser.getSelected();
 			}
