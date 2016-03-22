@@ -65,12 +65,14 @@ public class CurrentMonitor
 		SmartDashboard.putNumber("Compressor Current", pcm.getCompressorCurrent());
 
 		// Overall Current
-		SmartDashboard.putNumber("Total Current", pdp.getTotalCurrent() + pcm.getCompressorCurrent());
+		double totalCurrent = pdp.getTotalCurrent() + pcm.getCompressorCurrent();
+		SmartDashboard.putNumber("Total Current", totalCurrent);
+		SmartDashboard.putBoolean("Current Over 120", totalCurrent > 120);
 	}
 
 	public boolean getCurrentOver120()
 	{
-		return pdp.getTotalCurrent() > 120;
+		return pdp.getTotalCurrent() + pcm.getCompressorCurrent() > 120;
 	}
 
 	private void outputSubsystem(SubsystemPower subsystem)
