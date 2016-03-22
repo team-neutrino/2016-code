@@ -143,7 +143,9 @@ public class Robot extends SampleRobot
 			// auto aiming
 			boolean isAiming = driver.isAiming();
 			boolean aimingTriggered = (joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && camera.targetInFrame();
-
+			
+			System.out.println(camera.targetInFrame());
+			
 			if (aimingTriggered && !isAiming)
 			{
 				driver.aim();

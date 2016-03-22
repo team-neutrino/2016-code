@@ -108,5 +108,5 @@ public class Constants
 	// Misc Constants
 	public static final int PNEUMATIC_PRESSURE_SENSOR_CHANNEL = 3;
 	public static final int DRIVER_STATION_REFRESH_RATE = 250;
-	public static final boolean USE_CAMERA = true;
+	public static final boolean USE_TIME_FOR_SHOOTER_AIMING = true;
 }

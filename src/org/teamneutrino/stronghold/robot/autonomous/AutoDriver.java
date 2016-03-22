@@ -528,7 +528,7 @@ public class AutoDriver
 	 */
 	public void aim()
 	{
-
+		System.out.println("Starting aim");
 		shooterAimed = false;
 		driveAimed = false;
 
@@ -659,7 +659,7 @@ public class AutoDriver
 		double speed;
 		double distToShootRatio = Constants.DISTANCE_TO_SHOOTER_ANGLE_RATIO;
 		
-		if (!Constants.USE_CAMERA)
+		if (!Constants.USE_TIME_FOR_SHOOTER_AIMING)
 		{
 			targetY = cam.getTargetY();
 			System.out.println(targetY);
@@ -667,12 +667,11 @@ public class AutoDriver
 			speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
 			boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;;
 
-			// bound speed between -1 and 1
-			speed = AIM_SHOOTER_ACTUATION_SPEED * Math.max(-1, Math.min(1, speed));
-
 			if (!onTarget)
 			{
-				System.out.println("--AIMING--");
+				// bound speed between -1 and 1
+				speed = AIM_SHOOTER_ACTUATION_SPEED * Math.max(-1, Math.min(1, speed));
+				
 				shooter.setActuatorOverride(speed);
 
 				int time;
@@ -705,7 +704,7 @@ public class AutoDriver
 			
 			if (!onTarget)
 			{
-				shooter.setSetpoint(cam.getOffsetDegrees());
+				shooter.setSetpoint(shooter.getPosition() + cam.getOffsetDegrees());
 			}
 			
 			return onTarget;

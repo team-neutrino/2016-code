@@ -237,6 +237,8 @@ public class Camera implements Runnable
 						largestParticle = particle;
 					}
 				}
+				
+				target = largestParticle;
 
 				if (outMode == OutputMode.THRESHOLD_IMAGE)
 				{
