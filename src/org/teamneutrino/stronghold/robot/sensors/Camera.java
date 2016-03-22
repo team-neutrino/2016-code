@@ -140,6 +140,9 @@ public class Camera implements Runnable
 		return target.width;
 	}
 
+	/**
+	 * @return Distance in Inches
+	 */
 	public double getDistance()
 	{
 		double goalHeightPixels = getTargetHeight();
@@ -154,13 +157,11 @@ public class Camera implements Runnable
 		return pixelsPerDegree;
 	}
 
-	public double getAngleForShooter()
+	public double getOffsetDegrees()
 	{
-		double angleToMove = 0;
 		double currOffsetPixels = getTargetY() - Constants.CAMERA_TARGET_Y;
-		double currOffsetDegrees = getPixelsPerDegree() / currOffsetPixels;
-		angleToMove = currOffsetDegrees;
-		return angleToMove;
+		double currOffsetDegrees = currOffsetPixels / getPixelsPerDegree();
+		return currOffsetDegrees;
 	}
 
 	@Override

@@ -701,11 +701,11 @@ public class AutoDriver
 			double targetYPos = cam.getTargetY();
 			targetY = Constants.CAMERA_TARGET_Y * distToShootRatio;
 			double pixelsOff = targetYPos - targetY;
-			boolean onTarget = (Math.abs(pixelsOff)< AIM_PROPORTIONAL_OFFSET_THRESHOLD) || cam.getAngleForShooter() == shooter.getSetpoint();
+			boolean onTarget = (Math.abs(pixelsOff)< AIM_PROPORTIONAL_OFFSET_THRESHOLD) || cam.getOffsetDegrees() == shooter.getSetpoint();
 			
 			if (!onTarget)
 			{
-				shooter.setSetpoint(cam.getAngleForShooter());
+				shooter.setSetpoint(cam.getOffsetDegrees());
 			}
 			
 			return onTarget;
