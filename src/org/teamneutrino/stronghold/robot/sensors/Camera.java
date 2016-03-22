@@ -1,6 +1,6 @@
 package org.teamneutrino.stronghold.robot.sensors;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.teamneutrino.stronghold.robot.Constants;
 
@@ -28,18 +28,14 @@ public class Camera implements Runnable
 	private int luminenceHigh;
 	private SendableChooser outModeChooser;
 	private OutputMode outMode;
-	private double maxArea;
-	private double maxHeight;
-	private double centerX;
-	private double centerY;
-	private double ang;
-	private double distanceFromGoal;
-	private Rect rectangle;
-	int session;
+	private Particle target;
+	private int session;
 
 	private Solenoid lightPower;
 
 	private int currentFrame;
+
+	private int frameCount;
 
 	enum OutputMode
 	{
@@ -54,7 +50,6 @@ public class Camera implements Runnable
 		saturationHigh = Constants.CAMERA_DEFAULT_SATURATION_HIGH;
 		luminenceLow = Constants.CAMERA_DEFAULT_LUMINENCE_LOW;
 		luminenceHigh = Constants.CAMERA_DEFAULT_LUMINENCE_HIGH;
-		rectangle = new Rect();
 		try
 		{
 			session = NIVision.IMAQdxOpenCamera(Constants.CAMERA_NAME,
@@ -83,7 +78,8 @@ public class Camera implements Runnable
 
 			new Thread(this).start();
 			new Thread(new SmartDashboardThread()).start();
-		} catch (VisionException e)
+		}
+		catch (VisionException e)
 		{
 			DriverStation.reportError("Camera Not Found", false);
 		}
@@ -94,31 +90,82 @@ public class Camera implements Runnable
 		return currentFrame;
 	}
 
+	public boolean targetInFrame()
+	{
+		return target != null;
+	}
+
 	public double getTargetX()
 	{
-		return centerX;
+		if (target == null)
+		{
+			return 0;
+		}
+		return target.x;
 	}
 
 	public double getTargetY()
 	{
-		return centerY;
+		if (target == null)
+		{
+			return 0;
+		}
+		return target.y;
 	}
 
 	public double getTargetArea()
 	{
-		return maxArea;
+		if (target == null)
+		{
+			return 0;
+		}
+		return target.area;
 	}
 
-	public double getHighestHeight()
+	public double getTargetHeight()
 	{
-		return maxHeight;
+		if (target == null)
+		{
+			return 0;
+		}
+		return target.height;
+	}
+
+	public double getTargetWidth()
+	{
+		if (target == null)
+		{
+			return 0;
+		}
+		return target.width;
+	}
+
+	public double getDistance()
+	{
+		double goalHeightPixels = getTargetHeight();
+		double distanceInches = ((12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25))));
+		double scaledDistance = distanceInches * (109d / 144d);
+		return scaledDistance;
+	}
+
+	public double getPixelsPerDegree()
+	{
+		double pixelsPerDegree = (-8.46883d / 12d) * (getDistance() - 124d) - 36.009d;
+		return pixelsPerDegree;
+	}
+
+	public double getAngleForShooter()
+	{
+		double angleToMove = 0;
+		double currOffsetPixels = getTargetY() - Constants.CAMERA_TARGET_Y;
+		double currOffsetDegrees = getPixelsPerDegree() / currOffsetPixels;
+		angleToMove = currOffsetDegrees;
+		return angleToMove;
 	}
 
 	@Override
 	public void run()
 	{
-		boolean areParticlesPresent = false;
-
 		try
 		{
 			long val = NIVision.IMAQdxGetAttributeMinimumI64(session, "CameraAttributes::Exposure::Value") + 5;
@@ -126,20 +173,18 @@ public class Camera implements Runnable
 			NIVision.IMAQdxSetAttributeString(session, "CameraAttributes::Exposure::Mode", "Manual");
 			NIVision.IMAQdxSetAttributeI64(session, "CameraAttributes::Exposure::Value", val);
 			NIVision.IMAQdxStartAcquisition(session);
-		} catch (VisionException e)
+		}
+		catch (VisionException e)
 		{
 			DriverStation.reportError("Error setting up camera:" + e.getMessage(), false);
 			e.printStackTrace();
 		}
-		
-		int frames = 0;
-		long lastFramerateUpdate = System.currentTimeMillis();
 
 		while (true)
 		{
 			try
 			{
-				frames++;
+				frameCount++;
 				Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 				Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
@@ -153,97 +198,66 @@ public class Camera implements Runnable
 				NIVision.imaqColorThreshold(image, image, 255, NIVision.ColorMode.HSL, new Range(hueLow, hueHigh),
 						new Range(saturationLow, saturationHigh), new Range(luminenceLow, luminenceHigh));
 				int numParticles = NIVision.imaqCountParticles(image, 0);
+
+				ArrayList<Particle> particles = new ArrayList<Particle>();
+
 				if (numParticles > 0)
 				{
-					int nParticles = 0;
-					// Measure particles
-					Vector<ParticleReport> particles = new Vector<ParticleReport>();
+					// Get particles and put in particle report
 					for (int particleIndex = 0; particleIndex < numParticles; particleIndex++)
 					{
-						ParticleReport par = new ParticleReport();
+						Particle par = new Particle();
 						par.area = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_CONVEX_HULL_AREA);
-						par.projectionX = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+						par.x = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_CENTER_OF_MASS_X);
-						par.projectionY = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+						par.y = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_CENTER_OF_MASS_Y);
-						int top = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+						par.top = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
-						int left = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+						par.left = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_LEFT);
-						int height = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+						par.height = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
-						int width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
+						par.width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
-						Rect rect = new Rect(top, left, height, width);
-						par.boundingBox = rect;
-						if (par.area > Constants.MIN_PARTICLE_SIZE)
-						{
-							particles.add(par);
-							nParticles++;
-						}
-					}
-					ParticleReport[] myArr = new ParticleReport[particles.size()];
-					ParticleReport min = null;
-
-					// Get largest area
-					if (nParticles > 0)
-					{
-						areParticlesPresent = true;
-						for (int i = 0; i < particles.size();)
-						{
-							min = particles.get(i);
-							int k = i;
-							for (int j = 0; j < particles.size(); ++j)
-							{
-								if (particles.get(j).area < min.area)
-								{
-									k = j;
-									min = particles.get(j);
-								}
-							}
-							myArr[i] = min;
-							particles.remove(k);
-						}
-						maxArea = myArr[0].area;
-						// System.out.println("Area: " + maxArea);
-						centerY = myArr[0].projectionX;
-						centerX = myArr[0].projectionY;
-						rectangle = myArr[0].boundingBox;
-						maxHeight = rectangle.width;
-					} else
-					{
-						areParticlesPresent = false;
 					}
 					currentFrame++;
 				}
+
+				Particle largestParticle = null;
+
+				for (Particle particle : particles)
+				{
+					if (particle.area >= Constants.MIN_PARTICLE_SIZE
+							&& (largestParticle == null || particle.area > largestParticle.area))
+					{
+						largestParticle = particle;
+					}
+				}
+
 				if (outMode == OutputMode.THRESHOLD_IMAGE)
 				{
 					CameraServer.getInstance().setImage(image);
 				}
-				if (outMode == OutputMode.RECTANGLE_OVERLAY && areParticlesPresent)
-				{
 
-					NIVision.imaqDrawShapeOnImage(raw, raw, rectangle, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT,
-							0.0f);
+				if (outMode == OutputMode.RECTANGLE_OVERLAY && largestParticle != null)
+				{
+					Rect rect = new Rect(largestParticle.top, largestParticle.left, largestParticle.height,
+							largestParticle.width);
+					NIVision.imaqDrawShapeOnImage(raw, raw, rect, DrawMode.PAINT_VALUE, ShapeMode.SHAPE_RECT, 0.0f);
+					rect.free();
 
 					CameraServer.getInstance().setImage(raw);
 				}
 
 				raw.free();
 				image.free();
-			} catch (VisionException e)
+			}
+			catch (VisionException e)
 			{
 				DriverStation.reportError("Error getting image: " + e.getMessage(), false);
 				e.printStackTrace();
-			}
-			
-			long currTime = System.currentTimeMillis();
-			
-			if (currTime - lastFramerateUpdate > 1000)
-			{
-				SmartDashboard.putNumber("Framerate", frames);
-				frames = 0;
 			}
 
 			Thread.yield();
@@ -255,12 +269,25 @@ public class Camera implements Runnable
 		@Override
 		public void run()
 		{
+			long lastFramerateUpdate = System.currentTimeMillis();
+
 			while (true)
 			{
+				long currTime = System.currentTimeMillis();
+
+				if (currTime - lastFramerateUpdate > 5000)
+				{
+					double frameRate = frameCount * 1000 / ((double) (currTime - lastFramerateUpdate));
+					SmartDashboard.putNumber("Framerate", frameRate);
+					lastFramerateUpdate = currTime;
+					frameCount = 0;
+				}
+
 				try
 				{
 					Thread.sleep(Constants.DRIVER_STATION_REFRESH_RATE);
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 				}
 
@@ -270,56 +297,30 @@ public class Camera implements Runnable
 				saturationHigh = (int) SmartDashboard.getNumber("Saturation High", saturationHigh);
 				luminenceLow = (int) SmartDashboard.getNumber("Luminence Low", luminenceLow);
 				luminenceHigh = (int) SmartDashboard.getNumber("Luminence High", luminenceHigh);
-				distanceFromGoal = findDistance();
 				SmartDashboard.putNumber("Hue Low", hueLow);
 				SmartDashboard.putNumber("Hue High", hueHigh);
 				SmartDashboard.putNumber("Saturation Low", saturationLow);
 				SmartDashboard.putNumber("Saturation High", saturationHigh);
 				SmartDashboard.putNumber("Luminence Low", luminenceLow);
 				SmartDashboard.putNumber("Luminence High", luminenceHigh);
-				SmartDashboard.putNumber("Distance From Goal", distanceFromGoal);
-				SmartDashboard.putNumber("Center X", centerX);
-				SmartDashboard.putNumber("Center Y", centerY);
-				SmartDashboard.putNumber("Pixels Per Degree", pixelsPerDegree());
+				SmartDashboard.putNumber("Distance From Goal", getDistance());
+				SmartDashboard.putNumber("Pixels Per Degree", getPixelsPerDegree());
+				SmartDashboard.putNumber("Target X", target.x);
+				SmartDashboard.putNumber("Target Y", target.y);
 
 				outMode = (OutputMode) outModeChooser.getSelected();
 			}
 		}
 	}
 
-	public double findDistance()
+	private class Particle
 	{
-		double goalHeightPixels = getHighestHeight();
-		// double goalHeight = goalHeightPixels *
-		// Constants.GOAL_HEIGHT_MULTIPLIER;
-		// double angle = shooter.getPosition();
-		// double distancePixels = goalHeight/Math.tan(angle);
-		// double distanceInches = 12 * (distancePixels/goalHeight);
-		double distanceInches = ((12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25))));
-		double scaledDistance = distanceInches * (109d/144d);
-		return scaledDistance;
-	}
-	
-	public double pixelsPerDegree()
-	{
-		double pixelsPerDegree = (-8.46883d/12d)*(findDistance()-124d)-36.009d;
-		return pixelsPerDegree;
-	}
-	
-	public double findAngleForShooter()
-	{
-		double angleToMove = 0;
-		double currOffsetPixels = getTargetY() - Constants.CAMERA_TARGET_Y;
-		double currOffsetDegrees = pixelsPerDegree()/currOffsetPixels;
-		angleToMove = currOffsetDegrees;
-		return angleToMove;
-	}
-
-	private class ParticleReport
-	{
-		public Rect boundingBox;
-		public int projectionY;
-		public int projectionX;
+		int y;
+		int x;
+		int top;
+		int left;
+		int width;
+		int height;
 		int area;
 	}
 }

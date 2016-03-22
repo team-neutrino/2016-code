@@ -658,7 +658,6 @@ public class AutoDriver
 		double error;
 		double speed;
 		double distToShootRatio = Constants.DISTANCE_TO_SHOOTER_ANGLE_RATIO;
-		double pPerDegree = cam.pixelsPerDegree();
 		
 		if (!Constants.USE_CAMERA)
 		{
@@ -702,11 +701,11 @@ public class AutoDriver
 			double targetYPos = cam.getTargetY();
 			targetY = Constants.CAMERA_TARGET_Y * distToShootRatio;
 			double pixelsOff = targetYPos - targetY;
-			boolean onTarget = (Math.abs(pixelsOff)< AIM_PROPORTIONAL_OFFSET_THRESHOLD) || cam.findAngleForShooter() == shooter.getSetpoint();
+			boolean onTarget = (Math.abs(pixelsOff)< AIM_PROPORTIONAL_OFFSET_THRESHOLD) || cam.getAngleForShooter() == shooter.getSetpoint();
 			
 			if (!onTarget)
 			{
-				shooter.setSetpoint(cam.findAngleForShooter());
+				shooter.setSetpoint(cam.getAngleForShooter());
 			}
 			
 			return onTarget;
