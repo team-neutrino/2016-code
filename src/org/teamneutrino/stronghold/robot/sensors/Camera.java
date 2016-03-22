@@ -278,6 +278,9 @@ public class Camera implements Runnable
 				SmartDashboard.putNumber("Luminence Low", luminenceLow);
 				SmartDashboard.putNumber("Luminence High", luminenceHigh);
 				SmartDashboard.putNumber("Distance From Goal", distanceFromGoal);
+				SmartDashboard.putNumber("Center X", centerX);
+				SmartDashboard.putNumber("Center Y", centerY);
+				SmartDashboard.putNumber("Pixels Per Degree", pixelsPerDegree());
 
 				outMode = (OutputMode) outModeChooser.getSelected();
 			}
@@ -295,6 +298,21 @@ public class Camera implements Runnable
 		double distanceInches = ((12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25))));
 		double scaledDistance = distanceInches * (109d/144d);
 		return scaledDistance;
+	}
+	
+	public double pixelsPerDegree()
+	{
+		double pixelsPerDegree = (-8.46883d/12d)*(findDistance()-124d)-36.009d;
+		return pixelsPerDegree;
+	}
+	
+	public double findAngleForShooter()
+	{
+		double angleToMove = 0;
+		double currOffsetPixels = getTargetY() - Constants.CAMERA_TARGET_Y;
+		double currOffsetDegrees = pixelsPerDegree()/currOffsetPixels;
+		angleToMove = currOffsetDegrees;
+		return angleToMove;
 	}
 
 	private class ParticleReport
