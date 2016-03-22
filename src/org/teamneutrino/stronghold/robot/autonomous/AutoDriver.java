@@ -62,11 +62,11 @@ public class AutoDriver
 
 	private static final double AIM_PROPORTIONAL_OFFSET_THRESHOLD = 20;
 
-	public AutoDriver(Drive drive, Shooter shooter)
+	public AutoDriver(Drive drive, Shooter shooter, Camera cam)
 	{
 		this.drive = drive;
 		this.shooter = shooter;
-		cam = new Camera();
+		this.cam = cam;
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		gyro = new AnalogGyro(Constants.GYRO_CHANNEL);
@@ -574,7 +574,7 @@ public class AutoDriver
 
 				// check for new frame
 				currFrame = cam.getCurrentFrame();
-				if (currFrame != prevFrame)
+				if (currFrame != prevFrame && cam.targetInFrame())
 				{
 					shooterAimed = aimShooter();
 				}
@@ -603,7 +603,7 @@ public class AutoDriver
 
 				// check for new frame
 				currFrame = cam.getCurrentFrame();
-				if (currFrame != prevFrame)
+				if (currFrame != prevFrame && cam.targetInFrame())
 				{
 					prevFrame = currFrame;
 					driveAimed = aimDrive();

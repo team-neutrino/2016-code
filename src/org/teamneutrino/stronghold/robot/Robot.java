@@ -5,6 +5,7 @@ import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DriveForwardIntakePosition;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DriveForwardUpPositionHigh;
+import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
@@ -29,6 +30,7 @@ public class Robot extends SampleRobot
 	private Intake intake;
 	private Shooter shooter;
 	private Stinger stinger;
+	private Camera camera;
 	private CurrentMonitor currMon;
 
 	private JoystickButtonManager joyLeftMan;
@@ -44,7 +46,8 @@ public class Robot extends SampleRobot
 		intake = new Intake();
 		shooter = new Shooter();
 		stinger = new Stinger();
-		driver = new AutoDriver(drive, shooter);
+		camera = new Camera();
+		driver = new AutoDriver(drive, shooter, camera);
 		currMon = new CurrentMonitor();
 
 		new SmartDashboardOutputs(currMon, shooter, intake);
@@ -139,11 +142,13 @@ public class Robot extends SampleRobot
 
 			// auto aiming
 			boolean isAiming = driver.isAiming();
-			if ((joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && !isAiming)
+			boolean aimingTriggered = (joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && camera.targetInFrame();
+
+			if (aimingTriggered && !isAiming)
 			{
 				driver.aim();
 				isAiming = true;
-			} else if (!(joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && isAiming)
+			} else if (!aimingTriggered && isAiming)
 			{
 				driver.stopAim();
 				isAiming = false;
