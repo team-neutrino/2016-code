@@ -292,9 +292,9 @@ public class Camera implements Runnable
 		// double angle = shooter.getPosition();
 		// double distancePixels = goalHeight/Math.tan(angle);
 		// double distanceInches = 12 * (distancePixels/goalHeight);
-		double distanceInches = ((12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25))))
-				* Constants.CAMERA_FOV_MULTIPLIER;
-		return distanceInches;
+		double distanceInches = ((12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25))));
+		double scaledDistance = distanceInches * (109d/144d);
+		return scaledDistance;
 	}
 
 	private class ParticleReport
