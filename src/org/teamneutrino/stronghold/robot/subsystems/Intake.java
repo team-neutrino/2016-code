@@ -55,7 +55,7 @@ public class Intake
 			// deadband for victor 884 is about 10.6% on each side
 			actuatorMotor = new SpeedControllerPID(new Victor(Constants.INTAKE_ACUATOR_MOTOR_CHANNEL), -.106, .106, -.005, .005);
 		}
-		intakeFrontToBackMotor.setInverted(true);
+		intakeSideToSideMotor.setInverted(true);
 		actuatorMotor.setInverted(true);
 
 		encoder = new AnalogPotentiometer(Constants.INTAKE_ENCODER_CHANNEL, Constants.INTAKE_ENCODER_SCALE,
