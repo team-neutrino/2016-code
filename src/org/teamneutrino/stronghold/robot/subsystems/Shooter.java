@@ -77,8 +77,8 @@ public class Shooter implements Runnable
 			leftMotor = new CANTalon(Constants.SHOOTER_LEFT_MOTOR_CHANNEL);
 			rightMotor = new CANTalon(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
 			// TODO find deadband
-			double talonMinDeadband = 0;
-			double talonMaxDeadband = 0;
+			double talonMinDeadband = -.041;
+			double talonMaxDeadband = .041;
 			actuatorMotor = new SpeedControllerPID(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
 					talonMinDeadband - motorDeadband, talonMaxDeadband + motorDeadband, -0.005, 0.005);
 		}
