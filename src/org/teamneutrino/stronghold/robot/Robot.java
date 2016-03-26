@@ -268,13 +268,15 @@ public class Robot extends SampleRobot
 			// stinger
 			if (!isAiming)
 			{
-				if (joyLeftMan.getButtonChanged(2) || joyRightMan.getButtonChanged(2))
-				{
-					stinger.setStinger(joyLeftMan.getButtonState(2) || joyRightMan.getButtonState(2));
-				}
-
 				double leftSpeed = -joyLeft.getY();
 				double rightSpeed = -joyRight.getY();
+
+				if (joyLeftMan.getButtonChanged(2) || joyRightMan.getButtonChanged(2))
+				{
+					leftSpeed = leftSpeed * .5;
+					rightSpeed = rightSpeed * .5;
+//					stinger.setStinger(joyLeftMan.getButtonState(2) || joyRightMan.getButtonState(2));
+				}
 
 				// fast mode
 				if (joyLeftMan.getButtonChanged(1) || joyRightMan.getButtonChanged(1))
