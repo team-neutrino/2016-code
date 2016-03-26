@@ -59,7 +59,7 @@ public class Shooter implements Runnable
 
 	public enum Position
 	{
-		INTAKE(0), FRONT(30), BACK(115), SHOOT(68.5);
+		INTAKE(0), FRONT(30), BACK(115), SHOOT(61);
 
 		public final double location;
 

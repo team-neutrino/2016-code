@@ -95,7 +95,7 @@ public class Constants
 	public static final double SHOOTER_ENCODER_MAX = 150;
 	public static final double SHOOTER_ENCODER_OFFSET = -121;
 	public static final double SHOOTER_ACTUATION_MAX_SPEED = .5;
-	public static final double SHOOTER_ACTUATION_K_P = .005;
+	public static final double SHOOTER_ACTUATION_K_P = .01;// practice .005;
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = .005;
 	public static final int SHOOTER_FLIPPER_OPEN_CYLINDER_CHANNEL = 5;
