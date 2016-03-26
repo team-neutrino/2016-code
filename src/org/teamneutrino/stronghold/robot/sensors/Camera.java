@@ -76,8 +76,8 @@ public class Camera implements Runnable
 			lightPower = new Solenoid(Constants.CAMERA_LIGHT_POWER_CHANNEL);
 			lightPower.set(true);
 
-			new Thread(this).start();
-			new Thread(new SmartDashboardThread()).start();
+//			new Thread(this).start();
+//			new Thread(new SmartDashboardThread()).start();
 		}
 		catch (VisionException e)
 		{
@@ -268,7 +268,13 @@ public class Camera implements Runnable
 				e.printStackTrace();
 			}
 
-			Thread.yield();
+			try
+			{
+				Thread.sleep(5);
+			}
+			catch (InterruptedException e)
+			{
+			}
 		}
 	}
 

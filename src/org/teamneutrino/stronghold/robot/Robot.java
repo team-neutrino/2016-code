@@ -144,8 +144,6 @@ public class Robot extends SampleRobot
 			boolean isAiming = driver.isAiming();
 			boolean aimingTriggered = (joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && camera.targetInFrame();
 			
-			System.out.println(camera.targetInFrame());
-			
 			if (aimingTriggered && !isAiming)
 			{
 				driver.aim();
@@ -300,7 +298,13 @@ public class Robot extends SampleRobot
 			gamepad.setRumble(RumbleType.kLeftRumble, (overCurrent ? 1f : 0f));
 			gamepad.setRumble(RumbleType.kRightRumble, (overCurrent ? 1f : 0f));
 
-			Thread.yield();
+			try
+			{
+				Thread.sleep(5);
+			}
+			catch (InterruptedException e)
+			{
+			}
 		}
 	}
 

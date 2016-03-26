@@ -95,6 +95,10 @@ public class AutoDriver
 	 */
 	public void moveDistance(double distance, double speed) throws EncoderUnpluggedException
 	{
+		if (true)
+		{
+			throw new EncoderUnpluggedException("Purposely unpluged encoders");
+		}
 		encLeft.reset();
 		encRight.reset();
 
@@ -223,15 +227,16 @@ public class AutoDriver
 
 			double ramp = 1;
 
-			if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance < RAMP_DOWN_DISTANCE))
-			{
-				// both ramp up and ramp down are in effect, pick the min
-				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
-			} else if (minDistance < RAMP_UP_DISTANCE)
-			{
-				// ramp up
-				ramp = (minDistance / RAMP_UP_DISTANCE);
-			} else if (remainDistance < RAMP_DOWN_DISTANCE)
+//			if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance < RAMP_DOWN_DISTANCE))
+//			{
+//				// both ramp up and ramp down are in effect, pick the min
+//				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
+//			} else if (minDistance < RAMP_UP_DISTANCE)
+//			{
+//				// ramp up
+//				ramp = (minDistance / RAMP_UP_DISTANCE);
+//			} else 
+				if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
