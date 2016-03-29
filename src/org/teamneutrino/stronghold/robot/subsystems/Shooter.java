@@ -48,6 +48,9 @@ public class Shooter implements Runnable
 	private double setpoint;
 
 	private Thread flutterThread;
+	
+	private double leftRPM;
+	private double rightRPM;
 
 	private static final int MILLISECONDS_PER_MINUTE = 60000;
 	private static final int CORRECTION_RPM = 2000;
@@ -146,11 +149,11 @@ public class Shooter implements Runnable
 		leftMotor.set(1);
 		rightMotor.set(1);
 
-		// if (!running)
-		// {
-		// new Thread(this).start();
-		// running = true;
-		// }
+		if (!running)
+		{
+			new Thread(this).start();
+			running = true;
+		}
 		running = true;
 		shooterOutfeed = false;
 	}
@@ -230,6 +233,16 @@ public class Shooter implements Runnable
 	public double getOffset()
 	{
 		return getSetpoint() - getPosition();
+	}
+	
+	public double getLeftRPM()
+	{
+		return leftRPM;
+	}
+	
+	public double getRightRPM()
+	{
+		return rightRPM;
 	}
 
 	public void setFlippers(boolean triggered)
@@ -326,6 +339,9 @@ public class Shooter implements Runnable
 
 			double RPMilliLeft = (((double) countLeft) / timeInterval);
 			double RPMilliRight = (((double) countRight) / timeInterval);
+			
+			leftRPM = RPMilliLeft * MILLISECONDS_PER_MINUTE;
+			rightRPM = RPMilliRight * MILLISECONDS_PER_MINUTE;
 
 			double RPMilliMin;
 			if (leftBeamBreakNoSignal)
@@ -382,8 +398,9 @@ public class Shooter implements Runnable
 				rightCorrection = 1;
 			}
 
-			leftMotor.set(targetPower * leftCorrection);
-			rightMotor.set(targetPower * rightCorrection);
+			// TODO add
+//			leftMotor.set(targetPower * leftCorrection);
+//			rightMotor.set(targetPower * rightCorrection);
 
 			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliTarget
 					+ " ," + RPMilliLeft + " ," + RPMilliRight + " ," + RPMilliMin + " ," + integral + " ," + error
