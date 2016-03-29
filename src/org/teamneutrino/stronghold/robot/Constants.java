@@ -93,7 +93,7 @@ public class Constants
 	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
-	public static final double SHOOTER_ENCODER_OFFSET = -121-145;
+	public static final double SHOOTER_ENCODER_OFFSET = -266; // Real robot = -121
 	public static final double SHOOTER_ACTUATION_MAX_SPEED = .5;
 	public static final double SHOOTER_ACTUATION_K_P = .005;
 	public static final double SHOOTER_ACTUATION_K_I = 0;
