@@ -62,9 +62,9 @@ public class Constants
 	// Intake Constants
 	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
 	public static final int INTAKE_ACUATOR_MOTOR_POWER_CHANNEL = 9;
-	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 10; //6;
+	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = (REAL_BOT ? 6 : 10);
 	public static final int INTAKE_FRONT_TO_BACK_MOTOR_POWER_CHANNEL = 6;
-	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 11; //7;
+	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = (REAL_BOT ? 7 : 11);
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_POWER_CHANNEL = 5;
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 360;
@@ -74,9 +74,9 @@ public class Constants
 	public static final double INTAKE_ACTUATION_K_D = .001;
 
 	// Shooter Constants
-	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = 6; //10;
+	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = (REAL_BOT ? 10 : 6);
 	public static final int SHOOTER_LEFT_MOTOR_POWER_CHANNEL = 4;
-	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = 7; //11;
+	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = (REAL_BOT ? 11 : 7);
 	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 11;
 	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 8;
 	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 8;
