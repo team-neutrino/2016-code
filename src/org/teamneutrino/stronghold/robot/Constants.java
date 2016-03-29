@@ -69,7 +69,7 @@ public class Constants
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 360;
 	public static final double INTAKE_ENCODER_OFFSET = -157;
-	public static final double INTAKE_ACTUATION_K_P = .02;// practice .005;
+	public static final double INTAKE_ACTUATION_K_P = (REAL_BOT ? .02 : .005);
 	public static final double INTAKE_ACTUATION_K_I = 0;
 	public static final double INTAKE_ACTUATION_K_D = .001;
 
@@ -93,9 +93,9 @@ public class Constants
 	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
-	public static final double SHOOTER_ENCODER_OFFSET = -121;
+	public static final double SHOOTER_ENCODER_OFFSET = (REAL_BOT ? -121 : -266);
 	public static final double SHOOTER_ACTUATION_MAX_SPEED = .5;
-	public static final double SHOOTER_ACTUATION_K_P = .01;// practice .005;
+	public static final double SHOOTER_ACTUATION_K_P = (REAL_BOT ? .01 : .005);
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = .005;
 	public static final int SHOOTER_FLIPPER_OPEN_CYLINDER_CHANNEL = 5;
