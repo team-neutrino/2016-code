@@ -302,7 +302,7 @@ public class Shooter implements Runnable
 			}
 
 			long currTime = System.currentTimeMillis();
-			int timeInterval = (int) (lastResetTime - currTime);
+			int timeInterval = (int) (currTime - lastResetTime);
 			lastResetTime = currTime;
 			int countLeft = beambreakLeft.get();
 			beambreakLeft.reset();
