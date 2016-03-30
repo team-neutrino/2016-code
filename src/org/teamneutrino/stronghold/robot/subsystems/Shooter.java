@@ -151,10 +151,10 @@ public class Shooter implements Runnable
 
 		if (!running)
 		{
-			new Thread(this).start();
 			running = true;
+			new Thread(this).start();
 		}
-		running = true;
+		
 		shooterOutfeed = false;
 	}
 
@@ -288,8 +288,8 @@ public class Shooter implements Runnable
 		beambreakLeft.reset();
 		beambreakRight.reset();
 
-		leftMotor.set(RPMiliToPower(RPMilliTarget));
-		rightMotor.set(RPMiliToPower(RPMilliTarget));
+//		leftMotor.set(RPMiliToPower(RPMilliTarget));
+//		rightMotor.set(RPMiliToPower(RPMilliTarget));
 
 		while (running && DriverStation.getInstance().isEnabled())
 		{
@@ -407,8 +407,8 @@ public class Shooter implements Runnable
 					+ " ," + targetPower + " ," + leftCorrection + " ," + rightCorrection + "\n";
 		}
 
-		leftMotor.set(0);
-		rightMotor.set(0);
+//		leftMotor.set(0);
+//		rightMotor.set(0);
 
 		running = false;
 
