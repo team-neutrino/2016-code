@@ -2,7 +2,7 @@ package org.teamneutrino.stronghold.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Encoder;
 
-public class DriveEncoders
+public class DriveEncoders implements Runnable
 {
 	Drive drive;
 	Encoder encoderLeft;
@@ -15,11 +15,26 @@ public class DriveEncoders
 		this.encoderRight = right;
 	}
 
-	public void setRight(double leftSpeed, double rightSpeed)
+	public void setTargetSpeed(double leftSpeed, double rightSpeed)
 	{
 		double encoderLeftSpeed = encoderLeft.getRate();
 		double encoderRightSpeed = encoderRight.getRate();
 		
 		
+	}
+
+	@Override
+	public void run()
+	{
+		while (true)
+		{
+			try
+			{
+				Thread.sleep(5);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
 	}
 }
