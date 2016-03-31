@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Encoder;
  * This class autonomously drives and operates the robot using feed back from
  * sensors.
  */
-public class AutoDriver
+public class AutoDriver implements Camera.NewFrameListener
 {
 	private Encoder encLeft;
 	private Encoder encRight;
@@ -53,7 +53,6 @@ public class AutoDriver
 	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
 
 	private static final int TIMEOUT_REFRESH_RATE = 5;
-	private static final int SHOOTER_AIMING_THREAD_REFRESH_RATE = 5;
 
 	private static final double AIM_DRIVE_SPEED = .1;
 
@@ -577,27 +576,40 @@ public class AutoDriver
 		return isAiming() && shooterAimed && driveAimed;
 	}
 
+	@Override
+	public void newFrame()
+	{
+		synchronized (this)
+		{
+			notifyAll();
+		}
+	}
+
 	// TODO tell the shooter to go to a specific position instead of using time
 	private class ShooterAimingThread implements Runnable
 	{
 		@Override
 		public void run()
 		{
-			int prevFrame = 0;
-			int currFrame = 0;
+			int prevFrameNum = 0;
+			int currFrameNum = 0;
 			while (shooterAimingThreadRunning)
 			{
-				try
+				// stop thread until new frame
+				synchronized (this)
 				{
-					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				}
-				catch (InterruptedException e)
-				{
+					try
+					{
+						wait();
+					}
+					catch (InterruptedException e)
+					{
+					}
 				}
 
 				// check for new frame
-				currFrame = cam.getCurrentFrame();
-				if (currFrame != prevFrame && cam.targetInFrame())
+				currFrameNum = cam.getFrameNum();
+				if (currFrameNum != prevFrameNum && cam.targetInFrame())
 				{
 					shooterAimed = aimShooter();
 				}
@@ -613,23 +625,27 @@ public class AutoDriver
 		@Override
 		public void run()
 		{
-			int prevFrame = 0;
-			int currFrame = 0;
+			int prevFrameNum = 0;
+			int currFrameNum = 0;
 			while (shooterAimingThreadRunning)
 			{
-				try
+				// stop thread until new frame
+				synchronized (this)
 				{
-					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				}
-				catch (InterruptedException e)
-				{
+					try
+					{
+						wait();
+					}
+					catch (InterruptedException e)
+					{
+					}
 				}
 
 				// check for new frame
-				currFrame = cam.getCurrentFrame();
-				if (currFrame != prevFrame && cam.targetInFrame())
+				currFrameNum = cam.getFrameNum();
+				if (currFrameNum != prevFrameNum && cam.targetInFrame())
 				{
-					prevFrame = currFrame;
+					prevFrameNum = currFrameNum;
 					driveAimed = aimDrive();
 				}
 			}

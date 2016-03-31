@@ -36,6 +36,8 @@ public class Camera implements Runnable
 	private int currentFrame;
 
 	private int frameCount;
+	
+	private NewFrameListener newFrameListener;
 
 	enum OutputMode
 	{
@@ -85,7 +87,7 @@ public class Camera implements Runnable
 		}
 	}
 
-	public int getCurrentFrame()
+	public int getFrameNum()
 	{
 		return currentFrame;
 	}
@@ -163,6 +165,11 @@ public class Camera implements Runnable
 		double currOffsetDegrees = currOffsetPixels / getPixelsPerDegree();
 		return currOffsetDegrees;
 	}
+	
+	public void setNewFrameListener(NewFrameListener newFrameListener)
+	{
+		this.newFrameListener = newFrameListener;
+	}
 
 	@Override
 	public void run()
@@ -185,7 +192,6 @@ public class Camera implements Runnable
 		{
 			try
 			{
-				frameCount++;
 				Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 				Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
@@ -267,6 +273,9 @@ public class Camera implements Runnable
 				DriverStation.reportError("Error getting image: " + e.getMessage(), false);
 				e.printStackTrace();
 			}
+			
+			frameCount++;
+			newFrameListener.newFrame();
 
 			try
 			{
@@ -276,6 +285,11 @@ public class Camera implements Runnable
 			{
 			}
 		}
+	}
+	
+	public interface NewFrameListener
+	{
+		public void newFrame();
 	}
 
 	private class SmartDashboardThread implements Runnable
