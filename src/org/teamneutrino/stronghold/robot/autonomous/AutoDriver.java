@@ -585,7 +585,6 @@ public class AutoDriver implements Camera.NewFrameListener
 		}
 	}
 
-	// TODO tell the shooter to go to a specific position instead of using time
 	private class ShooterAimingThread implements Runnable
 	{
 		@Override
@@ -619,7 +618,6 @@ public class AutoDriver implements Camera.NewFrameListener
 		}
 	}
 
-	// TODO use gyro
 	private class DriveAimingThread implements Runnable
 	{
 		@Override

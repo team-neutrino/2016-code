@@ -50,7 +50,7 @@ public class Robot extends SampleRobot
 		driver = new AutoDriver(drive, shooter, camera);
 		currMon = new CurrentMonitor();
 
-		new SmartDashboardOutputs(currMon, shooter, intake);
+		new SmartDashboardOutputs(currMon, shooter, intake, driver);
 
 		// set up auto modes
 		autoController = new AutoController();
