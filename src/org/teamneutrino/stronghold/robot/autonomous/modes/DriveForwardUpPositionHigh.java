@@ -44,7 +44,7 @@ public class DriveForwardUpPositionHigh implements AutoMode
 		}
 		catch (EncoderUnpluggedException e)
 		{
-			driver.moveTime(1750, 1);
+			driver.moveTime(4000, 1);
 		}
 	}
 

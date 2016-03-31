@@ -76,8 +76,8 @@ public class Camera implements Runnable
 			lightPower = new Solenoid(Constants.CAMERA_LIGHT_POWER_CHANNEL);
 			lightPower.set(true);
 
-//			new Thread(this).start();
-//			new Thread(new SmartDashboardThread()).start();
+			new Thread(this).start();
+			new Thread(new SmartDashboardThread()).start();
 		}
 		catch (VisionException e)
 		{
@@ -319,6 +319,7 @@ public class Camera implements Runnable
 				SmartDashboard.putNumber("Luminence High", luminenceHigh);
 				SmartDashboard.putNumber("Distance From Goal", getDistance());
 				SmartDashboard.putNumber("Pixels Per Degree", getPixelsPerDegree());
+				SmartDashboard.putNumber("Offset Degrees", getOffsetDegrees());
 				SmartDashboard.putNumber("Target X", (target == null ? 0 : target.x));
 				SmartDashboard.putNumber("Target Y", (target == null ? 0 : target.y));
 

@@ -2,7 +2,7 @@ package org.teamneutrino.stronghold.robot;
 
 public class Constants
 {
-	public static final boolean REAL_BOT = true;
+	public static final boolean REAL_BOT = false;
 
 	// Autonomous Constants
 	public static final double AUTO_MOVE_SPEED = .25;
@@ -38,7 +38,6 @@ public class Constants
 	public static final double MIN_PARTICLE_SIZE = 10;
 	public static final double CAMERA_DISTANCE_BASE = 1.17875473; //DISTANCE IN FEET AT WICH THE GOAL HEIGHT IS EQUAL TO THE IMAGE HEIGHT WHEN VIEWED AT 0 DEGREES
 	public static final double CAMERA_FOV_MULTIPLIER = 106d/144d;
-	public static final double DISTANCE_TO_SHOOTER_ANGLE_RATIO = 1; //TODO Get this ratio
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
@@ -62,21 +61,21 @@ public class Constants
 	// Intake Constants
 	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
 	public static final int INTAKE_ACUATOR_MOTOR_POWER_CHANNEL = 9;
-	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = 6;
+	public static final int INTAKE_FRONT_TO_BACK_MOTOR_CHANNEL = (REAL_BOT ? 6 : 10);
 	public static final int INTAKE_FRONT_TO_BACK_MOTOR_POWER_CHANNEL = 6;
-	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = 7;
+	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_CHANNEL = (REAL_BOT ? 7 : 11);
 	public static final int INTAKE_SIDE_TO_SIDE_MOTOR_POWER_CHANNEL = 5;
 	public static final int INTAKE_ENCODER_CHANNEL = 2;
 	public static final double INTAKE_ENCODER_SCALE = 360;
 	public static final double INTAKE_ENCODER_OFFSET = -157;
-	public static final double INTAKE_ACTUATION_K_P = .02;// practice .005;
+	public static final double INTAKE_ACTUATION_K_P = (REAL_BOT ? .02 : .005);
 	public static final double INTAKE_ACTUATION_K_I = 0;
 	public static final double INTAKE_ACTUATION_K_D = .001;
 
 	// Shooter Constants
-	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = 10;
+	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = (REAL_BOT ? 10 : 6);
 	public static final int SHOOTER_LEFT_MOTOR_POWER_CHANNEL = 4;
-	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = 11;
+	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = (REAL_BOT ? 11 : 7);
 	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 11;
 	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 8;
 	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 8;
@@ -93,9 +92,9 @@ public class Constants
 	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
-	public static final double SHOOTER_ENCODER_OFFSET = -121;
+	public static final double SHOOTER_ENCODER_OFFSET = (REAL_BOT ? -121 : -203);
 	public static final double SHOOTER_ACTUATION_MAX_SPEED = .5;
-	public static final double SHOOTER_ACTUATION_K_P = .005;
+	public static final double SHOOTER_ACTUATION_K_P = (REAL_BOT ? .01 : .005);
 	public static final double SHOOTER_ACTUATION_K_I = 0;
 	public static final double SHOOTER_ACTUATION_K_D = .005;
 	public static final int SHOOTER_FLIPPER_OPEN_CYLINDER_CHANNEL = 5;

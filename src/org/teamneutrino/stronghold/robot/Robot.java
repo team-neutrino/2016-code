@@ -271,7 +271,7 @@ public class Robot extends SampleRobot
 				double leftSpeed = -joyLeft.getY();
 				double rightSpeed = -joyRight.getY();
 
-				if (joyLeftMan.getButtonChanged(2) || joyRightMan.getButtonChanged(2))
+				if (joyLeftMan.getButtonState(2) || joyRightMan.getButtonState(2))
 				{
 					leftSpeed = leftSpeed * .5;
 					rightSpeed = rightSpeed * .5;
