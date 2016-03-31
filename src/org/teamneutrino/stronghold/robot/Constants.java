@@ -38,7 +38,6 @@ public class Constants
 	public static final double MIN_PARTICLE_SIZE = 10;
 	public static final double CAMERA_DISTANCE_BASE = 1.17875473; //DISTANCE IN FEET AT WICH THE GOAL HEIGHT IS EQUAL TO THE IMAGE HEIGHT WHEN VIEWED AT 0 DEGREES
 	public static final double CAMERA_FOV_MULTIPLIER = 106d/144d;
-	public static final double DISTANCE_TO_SHOOTER_ANGLE_RATIO = 1; //TODO Get this ratio
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;

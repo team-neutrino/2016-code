@@ -56,11 +56,10 @@ public class AutoDriver
 	private static final int SHOOTER_AIMING_THREAD_REFRESH_RATE = 5;
 
 	private static final double AIM_DRIVE_SPEED = .1;
-	private static final double AIM_SHOOTER_ACTUATION_SPEED = .15;
 
 	private static final double AIM_ON_TARGET_THRESHOLD = 2;
 
-	private static final double AIM_PROPORTIONAL_OFFSET_THRESHOLD = 20;
+	private static final double AIM_ERROR_PER_SPEED = 20;
 
 	public AutoDriver(Drive drive, Shooter shooter, Camera cam)
 	{
@@ -141,7 +140,8 @@ public class AutoDriver
 				{
 					leftEncoderUnpluggedTime = System.currentTimeMillis();
 				}
-			} else
+			}
+			else
 			{
 				leftEncoderUnpluggedTime = 0;
 			}
@@ -152,7 +152,8 @@ public class AutoDriver
 				{
 					rightEncoderUnpluggedTime = System.currentTimeMillis();
 				}
-			} else
+			}
+			else
 			{
 				rightEncoderUnpluggedTime = 0;
 			}
@@ -187,7 +188,8 @@ public class AutoDriver
 				rightCorrection = 0;
 				terminate = true;
 				msg = "done";
-			} else if (leftEncoderUnplugged && rightEncoderUnplugged)
+			}
+			else if (leftEncoderUnplugged && rightEncoderUnplugged)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
@@ -195,7 +197,8 @@ public class AutoDriver
 
 				DriverStation.reportError("both encoders unplugged", false);
 				throw new EncoderUnpluggedException("both encoders unplugged");
-			} else if (!(leftEncoderUnplugged || rightEncoderUnplugged))
+			}
+			else if (!(leftEncoderUnplugged || rightEncoderUnplugged))
 			{
 				if (diff > 0)
 				{
@@ -203,20 +206,23 @@ public class AutoDriver
 					// veer right
 					leftCorrection = 1;
 					rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-				} else if (diff < 0)
+				}
+				else if (diff < 0)
 				{
 					msg = "veer left";
 					// veer right
 					leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 					rightCorrection = 1;
-				} else
+				}
+				else
 				{
 					msg = "going straight";
 					// go straight
 					leftCorrection = 1;
 					rightCorrection = 1;
 				}
-			} else
+			}
+			else
 			{
 				msg = "going straight (encoder unplugged)";
 				leftCorrection = 1;
@@ -227,16 +233,18 @@ public class AutoDriver
 
 			double ramp = 1;
 
-//			if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance < RAMP_DOWN_DISTANCE))
-//			{
-//				// both ramp up and ramp down are in effect, pick the min
-//				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
-//			} else if (minDistance < RAMP_UP_DISTANCE)
-//			{
-//				// ramp up
-//				ramp = (minDistance / RAMP_UP_DISTANCE);
-//			} else 
-				if (remainDistance < RAMP_DOWN_DISTANCE)
+			// if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance <
+			// RAMP_DOWN_DISTANCE))
+			// {
+			// // both ramp up and ramp down are in effect, pick the min
+			// ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance /
+			// RAMP_DOWN_DISTANCE);
+			// } else if (minDistance < RAMP_UP_DISTANCE)
+			// {
+			// // ramp up
+			// ramp = (minDistance / RAMP_UP_DISTANCE);
+			// } else
+			if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
@@ -305,7 +313,8 @@ public class AutoDriver
 			try
 			{
 				Thread.sleep(TIMEOUT_REFRESH_RATE);
-			} catch (InterruptedException e)
+			}
+			catch (InterruptedException e)
 			{
 			}
 
@@ -379,7 +388,8 @@ public class AutoDriver
 				{
 					leftEncoderUnpluggedTime = System.currentTimeMillis();
 				}
-			} else
+			}
+			else
 			{
 				leftEncoderUnpluggedTime = 0;
 			}
@@ -390,7 +400,8 @@ public class AutoDriver
 				{
 					rightEncoderUnpluggedTime = System.currentTimeMillis();
 				}
-			} else
+			}
+			else
 			{
 				rightEncoderUnpluggedTime = 0;
 			}
@@ -425,7 +436,8 @@ public class AutoDriver
 				rightCorrection = 0;
 				terminate = true;
 				// msg = "done";
-			} else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
+			}
+			else if ((currTime - startTime) > GYRO_UNPLUGGED_TIMEOUT && degreesTraveled < GYRO_UNPLUGGED_THRESHOLD)
 			{
 				// gyro unplugged
 				drive.setLeft(0);
@@ -433,7 +445,8 @@ public class AutoDriver
 
 				DriverStation.reportError("Gyro is unplugged", false);
 				throw new GyroUnpluggedException("Gyro is unplgged");
-			} else if (leftEncoderUnplugged && rightEncoderUnplugged)
+			}
+			else if (leftEncoderUnplugged && rightEncoderUnplugged)
 			{
 				// encoder unplugged
 				drive.setLeft(0);
@@ -441,7 +454,8 @@ public class AutoDriver
 
 				DriverStation.reportError("both encoders unplugged", false);
 				throw new EncoderUnpluggedException("both encoders unplugged");
-			} else if (!(leftEncoderUnplugged || rightEncoderUnplugged))
+			}
+			else if (!(leftEncoderUnplugged || rightEncoderUnplugged))
 			{
 				if (diff > 0)
 				{
@@ -449,20 +463,23 @@ public class AutoDriver
 					// veer right
 					leftCorrection = 1;
 					rightCorrection = Math.max(1 - (diff / CORRECTION_DISTANCE), 0);
-				} else if (diff < 0)
+				}
+				else if (diff < 0)
 				{
 					// msg = "veer left";
 					// veer right
 					leftCorrection = Math.max(1 - (-diff / CORRECTION_DISTANCE), 0);
 					rightCorrection = 1;
-				} else
+				}
+				else
 				{
 					// msg = "going straight";
 					// go straight
 					leftCorrection = 1;
 					rightCorrection = 1;
 				}
-			} else
+			}
+			else
 			{
 				leftCorrection = 1;
 				rightCorrection = 1;
@@ -573,7 +590,8 @@ public class AutoDriver
 				try
 				{
 					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 				}
 
@@ -602,7 +620,8 @@ public class AutoDriver
 				try
 				{
 					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				} catch (InterruptedException e)
+				}
+				catch (InterruptedException e)
 				{
 				}
 
@@ -623,7 +642,7 @@ public class AutoDriver
 	{
 		double targetX = cam.getTargetX();
 		double error = targetX - (Constants.CAMERA_TARGET_X + Constants.CAMERA_TARGET_X_OFFSET);
-		double speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
+		double speed = error / AIM_ERROR_PER_SPEED;
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
 		// bound speed between -1 and 1
@@ -638,7 +657,8 @@ public class AutoDriver
 			if (error > 10)
 			{
 				time = (int) ((error - 10) * 2 + 100);
-			} else
+			}
+			else
 			{
 				time = 100;
 			}
@@ -646,7 +666,8 @@ public class AutoDriver
 			try
 			{
 				Thread.sleep(time);
-			} catch (InterruptedException e)
+			}
+			catch (InterruptedException e)
 			{
 			}
 		}
@@ -659,61 +680,16 @@ public class AutoDriver
 
 	private boolean aimShooter()
 	{
-		double targetY;
-		double error;
-		double speed;
-		double distToShootRatio = Constants.DISTANCE_TO_SHOOTER_ANGLE_RATIO;
-		
-		if (!Constants.USE_TIME_FOR_SHOOTER_AIMING)
+		double targetY = cam.getTargetY();
+		double error = targetY - (Constants.CAMERA_TARGET_Y + Constants.CAMERA_TARGET_Y_OFFSET);
+		boolean onTarget = (Math.abs(error) < AIM_ON_TARGET_THRESHOLD)
+				|| cam.getOffsetDegrees() == shooter.getSetpoint();
+
+		if (!onTarget)
 		{
-			targetY = cam.getTargetY();
-			System.out.println(targetY);
-			error = targetY - (Constants.CAMERA_TARGET_Y + Constants.CAMERA_TARGET_Y_OFFSET);
-			speed = error / AIM_PROPORTIONAL_OFFSET_THRESHOLD;
-			boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;;
-
-			if (!onTarget)
-			{
-				// bound speed between -1 and 1
-				speed = AIM_SHOOTER_ACTUATION_SPEED * Math.max(-1, Math.min(1, speed));
-				
-				shooter.setActuatorOverride(speed);
-
-				int time;
-				if (error > 10)
-				{
-					time = (int) ((error - 10) * 2 + 100);
-				} else
-				{
-					time = 100;
-				}
-
-				try
-				{
-					Thread.sleep(time);
-				} catch (InterruptedException e)
-				{
-
-				}
-			}
-
-			shooter.setActuatorOverride(0);
-			return onTarget;
-		} else
-		{
-			
-			double targetYPos = cam.getTargetY();
-			targetY = Constants.CAMERA_TARGET_Y * distToShootRatio;
-			double pixelsOff = targetYPos - targetY;
-			boolean onTarget = (Math.abs(pixelsOff)< AIM_PROPORTIONAL_OFFSET_THRESHOLD) || cam.getOffsetDegrees() == shooter.getSetpoint();
-			
-			if (!onTarget)
-			{
-				shooter.setSetpoint(shooter.getPosition() + cam.getOffsetDegrees());
-			}
-			
-			return onTarget;
+			shooter.setSetpoint(shooter.getPosition() + cam.getOffsetDegrees());
 		}
 
+		return onTarget;
 	}
 }
