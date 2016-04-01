@@ -54,7 +54,7 @@ public class Shooter implements Runnable
 	private double rightRPM;
 
 	private static final int MILLISECONDS_PER_MINUTE = 60000;
-	private static final int CORRECTION_RPM = 2000;
+	private static final int CORRECTION_RPM = 3000;
 
 	private static final int NO_SIGNAL_DETECTION_COUNT = 5;
 
@@ -273,8 +273,11 @@ public class Shooter implements Runnable
 	@Override
 	public void run()
 	{
-		String printout = "currTime, timeInterval, countLeft, countRight, RPMiliTarget, RPMilliLeft, RPMilliRight, "
-				+ "RPMilliMin, integral, error, targetPower, leftCorrection, rightCorrection\n";
+		String printout = "currTime, timeInterval, countLeft, countRight, RPMTarget, RPMLeft, RPMRight, "
+				+ "RPMilliMin, integral, error, targetPower, leftCorrection, rightCorrection, leftUnplugged, rightUnplugged\n";
+
+		leftBeamBreakNoSignal = false;
+		rightBeamBreakNoSignal = false;
 
 		long lastResetTime = System.currentTimeMillis();
 
@@ -358,8 +361,8 @@ public class Shooter implements Runnable
 				RPMilliMin = Math.min(RPMilliLeft, RPMilliRight);
 			}
 
-			integral = integral + RPMilliMin * timeInterval;
 			double error = RPMilliTarget - RPMilliMin;
+			integral = integral + error * ((double) timeInterval / timeInterval);
 
 			if (Math.abs(error) <= RPMilliTolerence)
 			{
@@ -384,12 +387,12 @@ public class Shooter implements Runnable
 			{
 				// right is too fast
 				leftCorrection = 1;
-				rightCorrection = Math.max(1 - (diff / CORRECTION_RPM), 0);
+				rightCorrection = Math.max(1 - (diff / ((double) CORRECTION_RPM / MILLISECONDS_PER_MINUTE)), 0);
 			}
 			else if (diff < 0 && !rightBeamBreakNoSignal)
 			{
 				// left is too fast
-				leftCorrection = Math.max(1 - (-diff / CORRECTION_RPM), 0);
+				leftCorrection = Math.max(1 - (-diff / ((double) CORRECTION_RPM / MILLISECONDS_PER_MINUTE)), 0);
 				rightCorrection = 1;
 			}
 			else
@@ -406,13 +409,15 @@ public class Shooter implements Runnable
 			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
 			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
 
-			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliTarget
-					+ " ," + RPMilliLeft + " ," + RPMilliRight + " ," + RPMilliMin + " ," + integral + " ," + error
-					+ " ," + targetPower + " ," + leftCorrection + " ," + rightCorrection + "\n";
+			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ,"
+					+ RPMilliTarget * MILLISECONDS_PER_MINUTE + " ," + RPMilliLeft * MILLISECONDS_PER_MINUTE + " ,"
+					+ RPMilliRight * MILLISECONDS_PER_MINUTE + " ," + RPMilliMin + " ," + integral + " ," + error + " ,"
+					+ targetPower + " ," + leftCorrection + " ," + rightCorrection + " ," + leftBeamBreakNoSignal + " ,"
+					+ rightBeamBreakNoSignal + "\n";
 		}
 
-		// leftMotor.set(0);
-		// rightMotor.set(0);
+		leftMotor.set(0);
+		rightMotor.set(0);
 
 		running = false;
 
