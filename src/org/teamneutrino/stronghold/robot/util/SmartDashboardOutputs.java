@@ -40,9 +40,6 @@ public class SmartDashboardOutputs implements Runnable
 			{
 			}
 			
-			SmartDashboard.putNumber("Shooter Left RPM", shooter.getLeftRPM());
-			SmartDashboard.putNumber("Shooter Right RPM", shooter.getRightRPM());
-			
 			SmartDashboard.putNumber("Shooter Position", shooter.getPosition());
 			SmartDashboard.putNumber("Intake Position", intake.getPosition());
 			SmartDashboard.putNumber("Shooter Offset", shooter.getOffset());

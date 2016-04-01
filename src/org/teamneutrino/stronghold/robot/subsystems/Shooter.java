@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter implements Runnable
 {
@@ -401,6 +402,9 @@ public class Shooter implements Runnable
 			// TODO add
 //			leftMotor.set(targetPower * leftCorrection);
 //			rightMotor.set(targetPower * rightCorrection);
+			
+			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
+			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
 
 			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliTarget
 					+ " ," + RPMilliLeft + " ," + RPMilliRight + " ," + RPMilliMin + " ," + integral + " ," + error
