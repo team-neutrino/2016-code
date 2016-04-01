@@ -223,7 +223,6 @@ public class Camera implements Runnable
 				if (outMode == OutputMode.THRESHOLD_IMAGE)
 				{
 					CameraServer.getInstance().setImage(image);
-					System.out.println("Threashold Image");
 				}
 
 				if (outMode == OutputMode.RECTANGLE_OVERLAY)
