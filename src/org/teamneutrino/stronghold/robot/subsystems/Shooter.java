@@ -289,8 +289,8 @@ public class Shooter implements Runnable
 		beambreakLeft.reset();
 		beambreakRight.reset();
 
-		// leftMotor.set(RPMiliToPower(RPMilliTarget));
-		// rightMotor.set(RPMiliToPower(RPMilliTarget));
+		leftMotor.set(RPMiliToPower(RPMilliTarget));
+		rightMotor.set(RPMiliToPower(RPMilliTarget));
 
 		while (running && DriverStation.getInstance().isEnabled())
 		{
@@ -400,8 +400,8 @@ public class Shooter implements Runnable
 			}
 
 			// TODO add
-			// leftMotor.set(targetPower * leftCorrection);
-			// rightMotor.set(targetPower * rightCorrection);
+			leftMotor.set(targetPower * leftCorrection);
+			rightMotor.set(targetPower * rightCorrection);
 
 			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
 			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
@@ -421,20 +421,21 @@ public class Shooter implements Runnable
 
 	private double RPMiliToPower(double RPMili)
 	{
-		double a = -.1256;
-		double b = .3362;
-		double c = -.05309;
+		double a = 11.21;
+		double b = 3.158;
+		double c = 0.15;
 
 		if (RPMili < 0.01)
 		{
 			return 0;
 		}
-		else if (RPMili > 0.1718)
-		{
-			return 1;
-		}
 
-		return (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * (c - RPMili))) / 2 * a;
+		double power = a * Math.pow(RPMili, 2) + b * RPMili + c;
+
+		// limit speed to below 1
+		power = Math.min(power, 1);
+
+		return power;
 	}
 
 	// TODO Remove
