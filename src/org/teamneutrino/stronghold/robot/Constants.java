@@ -24,20 +24,20 @@ public class Constants
 
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam0";
-	public static final int CAMERA_DEFAULT_HUE_LOW = 100;
+	public static final int CAMERA_DEFAULT_HUE_LOW = 60;
 	public static final int CAMERA_DEFAULT_HUE_HIGH = 150;
 	public static final int CAMERA_DEFAULT_SATURATION_LOW = 84;
 	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
 	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 34;
 	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 255;
 	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
-	public static final double CAMERA_TARGET_X = 240;
-	public static final double CAMERA_TARGET_X_OFFSET = -10;
-	public static final double CAMERA_TARGET_Y = 320;
-	public static final double CAMERA_TARGET_Y_OFFSET = -200;
+	public static final double CAMERA_IMAGE_WIDTH = 480;
+	public static final double CAMERA_IMAGE_CENTER_X = CAMERA_IMAGE_WIDTH / 2;
+	public static final double CAMERA_TARGET_X_OFFSET = 0;
+	public static final double CAMERA_IMAGE_HIEGHT = 640;
+	public static final double CAMERA_IMAGE_CENTER_Y = CAMERA_IMAGE_HIEGHT / 2;
+	public static final double CAMERA_TARGET_Y_OFFSET = 0;
 	public static final double MIN_PARTICLE_SIZE = 10;
-	public static final double CAMERA_DISTANCE_BASE = 1.17875473; //DISTANCE IN FEET AT WICH THE GOAL HEIGHT IS EQUAL TO THE IMAGE HEIGHT WHEN VIEWED AT 0 DEGREES
-	public static final double CAMERA_FOV_MULTIPLIER = 106d/144d;
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
@@ -86,13 +86,12 @@ public class Constants
 	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = 9;
 	public static final int SHOOTER_BEAMBREAK_1_POWER_CHANNEL = 6;
 	public static final int SHOOTER_BEAMBREAK_2_POWER_CHANNEL = 7;
-	public static final double SHOOTER_PERCENT_POWER_PER_RPMILLI = 1/1500;
 	public static final double SHOOTER_K_P = .1; // TODO
 	public static final double SHOOTER_K_I = 0; // TODO
 	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
-	public static final double SHOOTER_ENCODER_OFFSET = (REAL_BOT ? -121 : -203);
+	public static final double SHOOTER_ENCODER_OFFSET = (REAL_BOT ? -121 : -31);
 	public static final double SHOOTER_ACTUATION_MAX_SPEED = .5;
 	public static final double SHOOTER_ACTUATION_K_P = (REAL_BOT ? .01 : .005);
 	public static final double SHOOTER_ACTUATION_K_I = 0;

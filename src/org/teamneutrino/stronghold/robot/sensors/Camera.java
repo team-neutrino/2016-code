@@ -141,30 +141,6 @@ public class Camera implements Runnable
 		}
 		return target.width;
 	}
-
-	/**
-	 * @return Distance in Inches
-	 */
-	public double getDistance()
-	{
-		double goalHeightPixels = getTargetHeight();
-		double distanceInches = ((12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25))));
-		double scaledDistance = distanceInches * (109d / 144d);
-		return scaledDistance;
-	}
-
-	public double getPixelsPerDegree()
-	{
-		double pixelsPerDegree = (-8.46883d / 12d) * (getDistance() - 124d) - 36.009d;
-		return pixelsPerDegree;
-	}
-
-	public double getOffsetDegrees()
-	{
-		double currOffsetPixels = getTargetY() - Constants.CAMERA_TARGET_Y;
-		double currOffsetDegrees = currOffsetPixels / getPixelsPerDegree();
-		return currOffsetDegrees;
-	}
 	
 	public void setNewFrameListener(NewFrameListener newFrameListener)
 	{
@@ -216,10 +192,6 @@ public class Camera implements Runnable
 						Particle par = new Particle();
 						par.area = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_CONVEX_HULL_AREA);
-						par.x = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
-								NIVision.MeasurementType.MT_CENTER_OF_MASS_X);
-						par.y = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
-								NIVision.MeasurementType.MT_CENTER_OF_MASS_Y);
 						par.top = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
 						par.left = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
@@ -228,6 +200,8 @@ public class Camera implements Runnable
 								NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
 						par.width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
+						par.x = - ((int) Constants.CAMERA_IMAGE_CENTER_X - (par.top + (par.height / 2)));
+						par.y = (int) Constants.CAMERA_IMAGE_CENTER_Y - (par.left + (par.width / 2));
 						particles.add(par);
 					}
 					currentFrame++;
@@ -275,7 +249,11 @@ public class Camera implements Runnable
 			}
 			
 			frameCount++;
-			newFrameListener.newFrame();
+			
+			if (newFrameListener != null)
+			{
+				newFrameListener.newFrame();
+			}
 
 			try
 			{
@@ -331,9 +309,6 @@ public class Camera implements Runnable
 				SmartDashboard.putNumber("Saturation High", saturationHigh);
 				SmartDashboard.putNumber("Luminence Low", luminenceLow);
 				SmartDashboard.putNumber("Luminence High", luminenceHigh);
-				SmartDashboard.putNumber("Distance From Goal", getDistance());
-				SmartDashboard.putNumber("Pixels Per Degree", getPixelsPerDegree());
-				SmartDashboard.putNumber("Offset Degrees", getOffsetDegrees());
 				SmartDashboard.putNumber("Target X", (target == null ? 0 : target.x));
 				SmartDashboard.putNumber("Target Y", (target == null ? 0 : target.y));
 

@@ -65,6 +65,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		this.drive = drive;
 		this.shooter = shooter;
 		this.cam = cam;
+		cam.setNewFrameListener(this);
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		gyro = new AnalogGyro(Constants.GYRO_CHANNEL);
@@ -549,7 +550,6 @@ public class AutoDriver implements Camera.NewFrameListener
 	 */
 	public void aim()
 	{
-		System.out.println("Starting aim");
 		shooterAimed = false;
 		driveAimed = false;
 
@@ -595,11 +595,11 @@ public class AutoDriver implements Camera.NewFrameListener
 			while (shooterAimingThreadRunning)
 			{
 				// stop thread until new frame
-				synchronized (this)
+				synchronized (AutoDriver.this)
 				{
 					try
 					{
-						wait();
+						AutoDriver.this.wait();
 					}
 					catch (InterruptedException e)
 					{
@@ -628,16 +628,17 @@ public class AutoDriver implements Camera.NewFrameListener
 			while (shooterAimingThreadRunning)
 			{
 				// stop thread until new frame
-				synchronized (this)
+				synchronized (AutoDriver.this)
 				{
 					try
 					{
-						wait();
+						AutoDriver.this.wait();
 					}
 					catch (InterruptedException e)
 					{
 					}
 				}
+				System.out.println("aiming shooter");
 
 				// check for new frame
 				currFrameNum = cam.getFrameNum();
@@ -655,7 +656,7 @@ public class AutoDriver implements Camera.NewFrameListener
 	private boolean aimDrive()
 	{
 		double targetX = cam.getTargetX();
-		double error = targetX - (Constants.CAMERA_TARGET_X + Constants.CAMERA_TARGET_X_OFFSET);
+		double error = targetX - (Constants.CAMERA_TARGET_X_OFFSET);
 		double speed = error / AIM_ERROR_PER_SPEED;
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
@@ -695,13 +696,14 @@ public class AutoDriver implements Camera.NewFrameListener
 	private boolean aimShooter()
 	{
 		double targetY = cam.getTargetY();
-		double error = targetY - (Constants.CAMERA_TARGET_Y + Constants.CAMERA_TARGET_Y_OFFSET);
-		boolean onTarget = (Math.abs(error) < AIM_ON_TARGET_THRESHOLD)
-				|| cam.getOffsetDegrees() == shooter.getSetpoint();
+		double error = targetY - (Constants.CAMERA_TARGET_Y_OFFSET);
+		boolean onTarget = (Math.abs(error) < AIM_ON_TARGET_THRESHOLD);
 
 		if (!onTarget)
 		{
-			shooter.setSetpoint(shooter.getPosition() + cam.getOffsetDegrees());
+			double positionError = error / 30;
+			System.out.println(positionError);
+			shooter.setSetpoint(shooter.getPosition() - positionError);
 		}
 
 		return onTarget;

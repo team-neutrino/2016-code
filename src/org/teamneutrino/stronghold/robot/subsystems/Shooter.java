@@ -415,48 +415,21 @@ public class Shooter implements Runnable
 		writeFile("/home/lvuser/shooterRun.csv", printout);
 	}
 
-	// TODO Remove
-	public void writeShooterCurves()
-	{
-		String printout = "currTime, timeInterval, countLeft, countRight, RPMilliLeft, RPMilliRight, " + "\n";
-
-		beambreakLeft.reset();
-		beambreakRight.reset();
-
-		long lastResetTime = System.currentTimeMillis();
-
-		for (double i = 0; i <= 1; i += .005)
-		{
-			try
-			{
-				Thread.sleep(1000);
-			}
-			catch (InterruptedException e)
-			{
-			}
-			long currTime = System.currentTimeMillis();
-			int timeInterval = (int) (lastResetTime - currTime);
-			lastResetTime = currTime;
-			int countLeft = beambreakLeft.get();
-			int countRight = beambreakRight.get();
-			beambreakLeft.reset();
-			beambreakRight.reset();
-
-			double RPMilliLeft = (((double) countLeft) / timeInterval);
-			double RPMilliRight = (((double) countRight) / timeInterval);
-
-			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliLeft
-					+ " ," + RPMilliRight + "\n";
-		}
-		leftMotor.set(0);
-		rightMotor.set(0);
-
-		writeFile("/home/lvuser/shooterRun.csv", printout);
-	}
-
 	private double RPMiliToPower(double RPMili)
 	{
-		return RPMili * Constants.SHOOTER_PERCENT_POWER_PER_RPMILLI;
+		double a = -.1256;
+		double b = .3362;
+		double c = -.05309;
+		
+		if (RPMili < 0.01)
+		{
+			return 0;
+		} else if (RPMili > 0.1718)
+		{
+			return 1;
+		}
+		
+		return (-b + Math.sqrt(Math.pow(b, 2)- 4*a*(c-RPMili))) / 2*a;
 	}
 
 	// TODO Remove
