@@ -49,7 +49,7 @@ public class Shooter implements Runnable
 	private double setpoint;
 
 	private Thread flutterThread;
-	
+
 	private double leftRPM;
 	private double rightRPM;
 
@@ -144,7 +144,7 @@ public class Shooter implements Runnable
 	{
 		ejectThreadRunning = false;
 	}
-	
+
 	public void start()
 	{
 		leftMotor.set(1);
@@ -155,7 +155,7 @@ public class Shooter implements Runnable
 			running = true;
 			new Thread(this).start();
 		}
-		
+
 		shooterOutfeed = false;
 	}
 
@@ -230,17 +230,17 @@ public class Shooter implements Runnable
 	{
 		return encoder.get();
 	}
-	
+
 	public double getOffset()
 	{
 		return getSetpoint() - getPosition();
 	}
-	
+
 	public double getLeftRPM()
 	{
 		return leftRPM;
 	}
-	
+
 	public double getRightRPM()
 	{
 		return rightRPM;
@@ -289,8 +289,8 @@ public class Shooter implements Runnable
 		beambreakLeft.reset();
 		beambreakRight.reset();
 
-//		leftMotor.set(RPMiliToPower(RPMilliTarget));
-//		rightMotor.set(RPMiliToPower(RPMilliTarget));
+		// leftMotor.set(RPMiliToPower(RPMilliTarget));
+		// rightMotor.set(RPMiliToPower(RPMilliTarget));
 
 		while (running && DriverStation.getInstance().isEnabled())
 		{
@@ -340,7 +340,7 @@ public class Shooter implements Runnable
 
 			double RPMilliLeft = (((double) countLeft) / timeInterval);
 			double RPMilliRight = (((double) countRight) / timeInterval);
-			
+
 			leftRPM = RPMilliLeft * MILLISECONDS_PER_MINUTE;
 			rightRPM = RPMilliRight * MILLISECONDS_PER_MINUTE;
 
@@ -400,9 +400,9 @@ public class Shooter implements Runnable
 			}
 
 			// TODO add
-//			leftMotor.set(targetPower * leftCorrection);
-//			rightMotor.set(targetPower * rightCorrection);
-			
+			// leftMotor.set(targetPower * leftCorrection);
+			// rightMotor.set(targetPower * rightCorrection);
+
 			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
 			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
 
@@ -411,8 +411,8 @@ public class Shooter implements Runnable
 					+ " ," + targetPower + " ," + leftCorrection + " ," + rightCorrection + "\n";
 		}
 
-//		leftMotor.set(0);
-//		rightMotor.set(0);
+		// leftMotor.set(0);
+		// rightMotor.set(0);
 
 		running = false;
 
@@ -424,16 +424,17 @@ public class Shooter implements Runnable
 		double a = -.1256;
 		double b = .3362;
 		double c = -.05309;
-		
+
 		if (RPMili < 0.01)
 		{
 			return 0;
-		} else if (RPMili > 0.1718)
+		}
+		else if (RPMili > 0.1718)
 		{
 			return 1;
 		}
-		
-		return (-b + Math.sqrt(Math.pow(b, 2)- 4*a*(c-RPMili))) / 2*a;
+
+		return (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * (c - RPMili))) / 2 * a;
 	}
 
 	// TODO Remove
@@ -459,24 +460,28 @@ public class Shooter implements Runnable
 			waitForShooterOutfeed();
 			try
 			{
-				Thread.sleep(1500);
+				Thread.sleep(1000);
 			}
 			catch (InterruptedException e)
 			{
 			}
-			
+
 			while (ejectThreadRunning)
 			{
 				try
 				{
-					for (int i = 0; i < 3 && ejectThreadRunning; i++)
-					{
-						setFlippers(true);
-						Thread.sleep(100);
-						setFlippers(false);
-						Thread.sleep(100);
-					}
-					
+					// for (int i = 0; i < 3 && ejectThreadRunning; i++)
+					// {
+					// setFlippers(true);
+					// Thread.sleep(100);
+					// setFlippers(false);
+					// Thread.sleep(100);
+					// }
+
+					setFlippers(true);
+					Thread.sleep(100);
+					setFlippers(false);
+
 					Thread.sleep(750);
 				}
 				catch (InterruptedException e)
