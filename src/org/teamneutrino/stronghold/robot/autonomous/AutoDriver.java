@@ -54,11 +54,9 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private static final int TIMEOUT_REFRESH_RATE = 5;
 
-	private static final double AIM_DRIVE_SPEED = .1;
-
 	private static final double AIM_ON_TARGET_THRESHOLD = 2;
 
-	private static final double AIM_ERROR_PER_SPEED = 20;
+	private static final double AIM_ERROR_PER_SPEED = 250;
 
 	public AutoDriver(Drive drive, Shooter shooter, Camera cam)
 	{
@@ -638,7 +636,6 @@ public class AutoDriver implements Camera.NewFrameListener
 					{
 					}
 				}
-				System.out.println("aiming shooter");
 
 				// check for new frame
 				currFrameNum = cam.getFrameNum();
@@ -661,13 +658,13 @@ public class AutoDriver implements Camera.NewFrameListener
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
 		// bound speed between -1 and 1
-		speed = AIM_DRIVE_SPEED * Math.max(-1, Math.min(1, speed));
+		speed = Math.max(-1, Math.min(1, speed));
 
 		if (!onTarget)
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
-
+			System.out.println("aiming drive error: " + error + " speed: " + speed);
 			int time;
 			if (error > 10)
 			{
@@ -702,7 +699,6 @@ public class AutoDriver implements Camera.NewFrameListener
 		if (!onTarget)
 		{
 			double positionError = error / 30;
-			System.out.println(positionError);
 			shooter.setSetpoint(shooter.getPosition() - positionError);
 		}
 
