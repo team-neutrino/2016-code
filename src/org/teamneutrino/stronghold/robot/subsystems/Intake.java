@@ -16,16 +16,7 @@ public class Intake
 	private SpeedControllerPID actuatorMotor;
 	private AnalogPotentiometer encoder;
 
-	private boolean flutterEnabled;
-
-	private double setpoint;
-
 	private PIDController actuationPID;
-
-	private Thread flutterThread;
-
-	private static final int FLUTTER_PEROID = 500;
-	private static final int FLUTTER_AMPLITUDE = 2;
 
 	public enum Position
 	{
@@ -64,16 +55,11 @@ public class Intake
 		actuationPID = new PIDController(Constants.INTAKE_ACTUATION_K_P, Constants.INTAKE_ACTUATION_K_I,
 				Constants.SHOOTER_ACTUATION_K_D, encoder, actuatorMotor);
 		actuationPID.setContinuous(true);
-
-		flutterEnabled = false;
-
-		flutterThread = new Thread(new FlutterThread());
-		flutterThread.start();
 	}
 
 	public double getSetpoint()
 	{
-		return setpoint;
+		return actuationPID.getSetpoint();
 	}
 	
 	public double getPosition()
@@ -93,12 +79,6 @@ public class Intake
 
 	public void setSetpoint(double angle)
 	{
-		setpoint = angle;
-		
-		if (!flutterEnabled)
-		{
-			actuationPID.setSetpoint(angle);
-		}
 		actuatorMotor.enablePID();
 		actuationPID.enable();
 	}
@@ -114,55 +94,5 @@ public class Intake
 	{
 		intakeFrontToBackMotor.set(speed);
 		intakeSideToSideMotor.set(Math.abs(speed));
-	}
-
-	public void setFutter(boolean enabled)
-	{
-		if (enabled && !flutterEnabled)
-		{
-			flutterEnabled = true;
-			flutterThread.interrupt();
-		}
-		else
-		{
-			flutterEnabled = false;
-			actuationPID.setSetpoint(setpoint);
-		}
-	}
-
-	private class FlutterThread implements Runnable
-	{
-		@Override
-		public void run()
-		{
-			while (true)
-			{
-				try
-				{
-					Thread.sleep(FLUTTER_PEROID);
-				}
-				catch (InterruptedException e)
-				{
-				}
-
-				if (actuationPID.isEnabled() && flutterEnabled)
-				{
-					actuationPID.setSetpoint(setpoint + FLUTTER_AMPLITUDE);
-				}
-
-				try
-				{
-					Thread.sleep(FLUTTER_PEROID);
-				}
-				catch (InterruptedException e)
-				{
-				}
-
-				if (actuationPID.isEnabled() && flutterEnabled)
-				{
-					actuationPID.setSetpoint(setpoint);
-				}
-			}
-		}
 	}
 }
