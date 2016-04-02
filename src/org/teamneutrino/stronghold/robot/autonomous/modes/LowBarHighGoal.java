@@ -36,13 +36,7 @@ public class LowBarHighGoal implements AutoMode
 	{
 		shooter.setTargetPosition(Shooter.Position.INTAKE);
 		intake.setTargetPosition(Intake.Position.INTAKE);
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
+		driver.wait(500);
 		
 		try
 		{
@@ -55,24 +49,12 @@ public class LowBarHighGoal implements AutoMode
 		
 		shooter.setTargetPosition(Shooter.Position.FRONT);
 		
-		try
-		{
-			Thread.sleep(200);
-		}
-		catch (InterruptedException e)
-		{
-		}
+		driver.wait(200);
 		
 		drive.setLeft(.3);
 		drive.setRight(-.3);
 		
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
+		driver.wait(500);
 		
 		while (!camera.targetInFrame())
 		{
@@ -83,63 +65,20 @@ public class LowBarHighGoal implements AutoMode
 		drive.setLeft(0);
 		drive.setRight(0);
 		
-		driver.aim();
-		
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException e)
-		{
-		}
-		
-		while (!driver.isAimed())
-		{
-			try
-			{
-				Thread.sleep(5);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		
-		driver.stopAim();
-		
-		drive.setLeft(0);
-		drive.setRight(0);
+		driver.autonomousAim(3000);
 		
 		shooter.start();
 		
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
+		driver.wait(500);
 		
-		while (!shooter.isAtTargetSpeed())
+		while (!shooter.isAtTargetSpeed() && driver.isAutoEnabled())
 		{
-			try
-			{
-				Thread.sleep(5);
-			}
-			catch (InterruptedException e)
-			{
-			}
+			driver.wait(5);
 		}
 		
 		shooter.setFlippers(true);
 		
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
+		driver.wait(500);
 		
 		shooter.setFlippers(false);
 		shooter.stop();

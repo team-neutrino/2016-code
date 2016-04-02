@@ -3,7 +3,6 @@ package org.teamneutrino.stronghold.robot.autonomous.modes;
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.AutoMode;
 import org.teamneutrino.stronghold.robot.exceptions.EncoderUnpluggedException;
-import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
@@ -14,15 +13,13 @@ public class BDHighGoal implements AutoMode
 	private Shooter shooter;
 	private Intake intake;
 	private Drive drive;
-	private Camera camera;
 
-	public BDHighGoal(AutoDriver driver, Shooter shooter, Intake intake, Drive drive, Camera camera)
+	public BDHighGoal(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
 	{
 		this.driver = driver;
 		this.shooter = shooter;
 		this.intake = intake;
 		this.drive = drive;
-		this.camera = camera;
 	}
 
 	@Override
@@ -36,13 +33,7 @@ public class BDHighGoal implements AutoMode
 	{
 		shooter.setTargetPosition(Shooter.Position.INTAKE);
 		intake.setTargetPosition(Intake.Position.UP);
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
+		driver.wait(500);
 
 		try
 		{
@@ -51,111 +42,32 @@ public class BDHighGoal implements AutoMode
 		catch (EncoderUnpluggedException e)
 		{
 			driver.moveTime(4000, 1);
-		}
+			
+			intake.setTargetPosition(Intake.Position.INTAKE);
+			shooter.setTargetPosition(Shooter.Position.FRONT);
 
-		intake.setTargetPosition(Intake.Position.INTAKE);
-		shooter.setTargetPosition(Shooter.Position.FRONT);
+			driver.wait(1000);
 
-		try
-		{
-			Thread.sleep(1000);
-		}
-		catch (InterruptedException e)
-		{
-		}
+			drive.setLeft(0);
+			drive.setRight(0);
+			
+			driver.autonomousAim(4000);
 
-		while (!camera.targetInFrame())
-		{
-			drive.setLeft(.3);
-			drive.setRight(-.3);
-		}
+			shooter.start();
 
-		drive.setLeft(0);
-		drive.setRight(0);
+			driver.wait(500);
 
-		driver.aim();
-
-		long startTime = System.currentTimeMillis();
-		boolean aiming = true;
-		
-		while (System.currentTimeMillis() - startTime < 3000)
-		{
-			aiming = aim(aiming);
-		}
-
-		while (!driver.isAimed())
-		{
-			aiming = aim(aiming);
-		}
-
-		driver.stopAim();
-		
-		drive.setLeft(0);
-		drive.setRight(0);
-
-		shooter.start();
-
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
-
-		while (!shooter.isAtTargetSpeed())
-		{
-			try
+			while (!shooter.isAtTargetSpeed() && driver.isAutoEnabled())
 			{
-				Thread.sleep(5);
+				driver.wait(5);
 			}
-			catch (InterruptedException e)
-			{
-			}
-		}
 
-		shooter.setFlippers(true);
+			shooter.setFlippers(true);
 
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
+			driver.wait(500);
 
-		shooter.setFlippers(false);
-		shooter.stop();
-	}
-
-	private boolean aim(boolean aiming)
-	{
-		if (camera.targetInFrame())
-		{
-			if (!aiming)
-			{
-				drive.setLeft(0);
-				drive.setRight(0);
-			}
-			driver.aim();
-			aiming = true;
+			shooter.setFlippers(false);
+			shooter.stop();
 		}
-		else
-		{
-			driver.stopAim();
-			drive.setLeft(.3);
-			drive.setRight(-.3);
-			aiming = false;
-		}
-		
-		try
-		{
-			Thread.sleep(5);
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
-		return aiming;
 	}
 }

@@ -717,4 +717,71 @@ public class AutoDriver implements Camera.NewFrameListener
 
 		return onTarget;
 	}
+	
+	public boolean isAutoEnabled()
+	{
+		return DriverStation.getInstance().isAutonomous() && DriverStation.getInstance().isEnabled();
+	}
+	
+	public void wait(int millis)
+	{
+		long startTime = System.currentTimeMillis();
+		
+		while (System.currentTimeMillis() - startTime < millis && isAutoEnabled())
+		{
+			try
+			{
+				Thread.sleep(millis);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
+	}
+
+	public void autonomousAim(int millis)
+	{
+		long startTime = System.currentTimeMillis();
+		boolean aiming = true;
+		
+		while (System.currentTimeMillis() - startTime < millis && isAutoEnabled())
+		{
+			aiming = aim(aiming);
+			wait(5);
+		}
+
+		while (!isAimed() && isAutoEnabled())
+		{
+			aiming = aim(aiming);
+			wait(5);
+		}
+
+		stopAim();
+		
+		drive.setLeft(0);
+		drive.setRight(0);
+	}
+	
+	private boolean aim(boolean aiming)
+	{
+		if (cam.targetInFrame())
+		{
+			if (!aiming)
+			{
+				drive.setLeft(0);
+				drive.setRight(0);
+			}
+			aim();
+			aiming = true;
+		}
+		else
+		{
+			stopAim();
+			drive.setLeft(.3);
+			drive.setRight(-.3);
+			aiming = false;
+		}
+
+		return aiming;
+	}
 }
