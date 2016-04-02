@@ -8,15 +8,15 @@ import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
-public class LowBarHighGoal implements AutoMode
-{	
+public class BDHighGoal implements AutoMode
+{
 	private AutoDriver driver;
 	private Shooter shooter;
 	private Intake intake;
 	private Drive drive;
 	private Camera camera;
-	
-	public LowBarHighGoal(AutoDriver driver, Shooter shooter, Intake intake, Drive drive, Camera camera)
+
+	public BDHighGoal(AutoDriver driver, Shooter shooter, Intake intake, Drive drive, Camera camera)
 	{
 		this.driver = driver;
 		this.shooter = shooter;
@@ -28,14 +28,14 @@ public class LowBarHighGoal implements AutoMode
 	@Override
 	public String getName()
 	{
-		return "Low Bar High Goal";
+		return "B and D Defenses High Goal";
 	}
 
 	@Override
 	public void run()
 	{
 		shooter.setTargetPosition(Shooter.Position.INTAKE);
-		intake.setTargetPosition(Intake.Position.INTAKE);
+		intake.setTargetPosition(Intake.Position.UP);
 		try
 		{
 			Thread.sleep(500);
@@ -43,75 +43,58 @@ public class LowBarHighGoal implements AutoMode
 		catch (InterruptedException e)
 		{
 		}
-		
+
 		try
 		{
-			driver.moveDistance(18.5, .5);
+			driver.moveDistance(13, 1);
 		}
 		catch (EncoderUnpluggedException e)
 		{
-			driver.moveTime(3500, .5);
+			driver.moveTime(4000, 1);
 		}
-		
+
+		intake.setTargetPosition(Intake.Position.INTAKE);
 		shooter.setTargetPosition(Shooter.Position.FRONT);
-		
+
 		try
 		{
-			Thread.sleep(200);
+			Thread.sleep(1000);
 		}
 		catch (InterruptedException e)
 		{
 		}
-		
-		drive.setLeft(.3);
-		drive.setRight(-.3);
-		
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
-		
+
 		while (!camera.targetInFrame())
 		{
 			drive.setLeft(.3);
 			drive.setRight(-.3);
 		}
-		
+
 		drive.setLeft(0);
 		drive.setRight(0);
-		
+
 		driver.aim();
+
+		long startTime = System.currentTimeMillis();
+		boolean aiming = true;
 		
-		try
+		while (System.currentTimeMillis() - startTime < 3000)
 		{
-			Thread.sleep(3000);
+			aiming = aim(aiming);
 		}
-		catch (InterruptedException e)
-		{
-		}
-		
+
 		while (!driver.isAimed())
 		{
-			try
-			{
-				Thread.sleep(5);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
+			aiming = aim(aiming);
 		}
-		
+
 		driver.stopAim();
 		
 		drive.setLeft(0);
 		drive.setRight(0);
-		
+
 		shooter.start();
-		
+
 		try
 		{
 			Thread.sleep(500);
@@ -119,7 +102,7 @@ public class LowBarHighGoal implements AutoMode
 		catch (InterruptedException e)
 		{
 		}
-		
+
 		while (!shooter.isAtTargetSpeed())
 		{
 			try
@@ -130,9 +113,9 @@ public class LowBarHighGoal implements AutoMode
 			{
 			}
 		}
-		
+
 		shooter.setFlippers(true);
-		
+
 		try
 		{
 			Thread.sleep(500);
@@ -140,8 +123,39 @@ public class LowBarHighGoal implements AutoMode
 		catch (InterruptedException e)
 		{
 		}
-		
+
 		shooter.setFlippers(false);
 		shooter.stop();
+	}
+
+	private boolean aim(boolean aiming)
+	{
+		if (camera.targetInFrame())
+		{
+			if (!aiming)
+			{
+				drive.setLeft(0);
+				drive.setRight(0);
+			}
+			driver.aim();
+			aiming = true;
+		}
+		else
+		{
+			driver.stopAim();
+			drive.setLeft(.3);
+			drive.setRight(-.3);
+			aiming = false;
+		}
+		
+		try
+		{
+			Thread.sleep(5);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return aiming;
 	}
 }

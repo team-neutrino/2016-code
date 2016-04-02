@@ -6,13 +6,13 @@ import org.teamneutrino.stronghold.robot.exceptions.EncoderUnpluggedException;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
-public class DriveForwardUpPositionHigh implements AutoMode
+public class LowBar implements AutoMode
 {	
 	private AutoDriver driver;
 	private Shooter shooter;
 	private Intake intake;
 	
-	public DriveForwardUpPositionHigh(AutoDriver driver, Shooter shooter, Intake intake)
+	public LowBar(AutoDriver driver, Shooter shooter, Intake intake)
 	{
 		this.driver = driver;
 		this.shooter = shooter;
@@ -22,14 +22,14 @@ public class DriveForwardUpPositionHigh implements AutoMode
 	@Override
 	public String getName()
 	{
-		return "Drive Forward Up Position High";
+		return "Low Bar";
 	}
 
 	@Override
 	public void run()
 	{
 		shooter.setTargetPosition(Shooter.Position.INTAKE);
-		intake.setTargetPosition(Intake.Position.UP);
+		intake.setTargetPosition(Intake.Position.INTAKE);
 		try
 		{
 			Thread.sleep(500);
@@ -40,11 +40,11 @@ public class DriveForwardUpPositionHigh implements AutoMode
 		
 		try
 		{
-			driver.moveDistance(15, 1);
+			driver.moveDistance(15, .5);
 		}
 		catch (EncoderUnpluggedException e)
 		{
-			driver.moveTime(4000, 1);
+			driver.moveTime(3500, .5);
 		}
 	}
 
