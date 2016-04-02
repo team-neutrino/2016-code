@@ -466,7 +466,7 @@ public class Shooter implements Runnable
 			waitForShooterOutfeed();
 			try
 			{
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			}
 			catch (InterruptedException e)
 			{
@@ -488,7 +488,7 @@ public class Shooter implements Runnable
 					Thread.sleep(100);
 					setFlippers(false);
 
-					Thread.sleep(750);
+					Thread.sleep(500);
 				}
 				catch (InterruptedException e)
 				{
