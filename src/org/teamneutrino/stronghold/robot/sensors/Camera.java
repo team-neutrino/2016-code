@@ -310,6 +310,7 @@ public class Camera implements Runnable
 				SmartDashboard.putNumber("Luminence High", luminenceHigh);
 				SmartDashboard.putNumber("Target X", (target == null ? 0 : target.x));
 				SmartDashboard.putNumber("Target Y", (target == null ? 0 : target.y));
+				SmartDashboard.putNumber("Area", (target == null ? 0 : target.area));
 
 				outMode = (OutputMode) outModeChooser.getSelected();
 			}
