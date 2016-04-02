@@ -412,6 +412,10 @@ public class Shooter implements Runnable
 
 		leftMotor.set(0);
 		rightMotor.set(0);
+		
+		SmartDashboard.putNumber("Shooter Left RPM", 0);
+		SmartDashboard.putNumber("Shooter Right RPM", 0);
+		SmartDashboard.putBoolean("Shooter At Target", false);
 
 		running = false;
 
