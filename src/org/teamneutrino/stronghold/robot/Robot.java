@@ -5,6 +5,7 @@ import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DriveForwardIntakePosition;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DriveForwardUpPositionHigh;
+import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarHighGoal;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
@@ -57,6 +58,7 @@ public class Robot extends SampleRobot
 		autoController.assignMode(0, new DoNothing());
 		autoController.assignMode(1, new DriveForwardIntakePosition(driver, shooter, intake));
 		autoController.assignMode(2, new DriveForwardUpPositionHigh(driver, shooter, intake));
+		autoController.assignMode(3, new LowBarHighGoal(driver, shooter, intake, drive, camera));
 	}
 
 	@Override

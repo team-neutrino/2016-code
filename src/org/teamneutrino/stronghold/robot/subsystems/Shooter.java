@@ -348,6 +348,10 @@ public class Shooter implements Runnable
 			rightRPM = RPMilliRight * MILLISECONDS_PER_MINUTE;
 
 			double RPMilliMin;
+			if (leftBeamBreakNoSignal && rightBeamBreakNoSignal)
+			{
+				RPMilliMin = RPMilliTarget;
+			}
 			if (leftBeamBreakNoSignal)
 			{
 				RPMilliMin = RPMilliRight;

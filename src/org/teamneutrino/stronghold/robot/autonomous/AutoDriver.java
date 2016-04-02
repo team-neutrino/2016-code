@@ -42,7 +42,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private static final double MIN_RAMP = .25;
 
-	private static final double RAMP_UP_DISTANCE = 3;
+	private static final double RAMP_UP_DISTANCE = 1;
 	private static final double RAMP_DOWN_DISTANCE = 5;
 
 	private static final double RAMP_UP_DEGREES = 90;
@@ -91,10 +91,6 @@ public class AutoDriver implements Camera.NewFrameListener
 	 */
 	public void moveDistance(double distance, double speed) throws EncoderUnpluggedException
 	{
-		if (true)
-		{
-			throw new EncoderUnpluggedException("Purposely unpluged encoders");
-		}
 		encLeft.reset();
 		encRight.reset();
 
@@ -230,18 +226,17 @@ public class AutoDriver implements Camera.NewFrameListener
 
 			double ramp = 1;
 
-			// if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance <
-			// RAMP_DOWN_DISTANCE))
-			// {
-			// // both ramp up and ramp down are in effect, pick the min
-			// ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance /
-			// RAMP_DOWN_DISTANCE);
-			// } else if (minDistance < RAMP_UP_DISTANCE)
-			// {
-			// // ramp up
-			// ramp = (minDistance / RAMP_UP_DISTANCE);
-			// } else
-			if (remainDistance < RAMP_DOWN_DISTANCE)
+			if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance < RAMP_DOWN_DISTANCE))
+			{
+				// both ramp up and ramp down are in effect, pick the min
+				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
+			}
+			else if (minDistance < RAMP_UP_DISTANCE)
+			{
+				// ramp up
+				ramp = (minDistance / RAMP_UP_DISTANCE);
+			}
+			else if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
@@ -653,12 +648,12 @@ public class AutoDriver implements Camera.NewFrameListener
 	{
 		double currX = cam.getTargetX();
 		double targetArea = cam.getTargetAreaAverage();
-		
+
 		if (targetArea < 1)
 		{
 			return false;
 		}
-		
+
 		double targetX = Util.scale(targetArea, Constants.CAMERA_TARGET_AREA_OUTERWORKS,
 				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_X_OUTERWORKS,
 				Constants.CAMERA_TARGET_X_BATTER);
@@ -693,9 +688,9 @@ public class AutoDriver implements Camera.NewFrameListener
 	private boolean aimShooter()
 	{
 		double currY = cam.getTargetY();
-		
+
 		double targetArea = cam.getTargetAreaAverage();
-		
+
 		if (targetArea < 1)
 		{
 			if (shooter.getSetpoint() < 20)
@@ -704,7 +699,7 @@ public class AutoDriver implements Camera.NewFrameListener
 			}
 			return false;
 		}
-		
+
 		double targetY = Util.scale(targetArea, Constants.CAMERA_TARGET_AREA_OUTERWORKS,
 				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_Y_OUTERWORKS,
 				Constants.CAMERA_TARGET_Y_BATTER);
