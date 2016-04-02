@@ -33,10 +33,10 @@ public class Constants
 	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
 	public static final double CAMERA_IMAGE_WIDTH = 480;
 	public static final double CAMERA_IMAGE_CENTER_X = CAMERA_IMAGE_WIDTH / 2;
-	public static final double CAMERA_TARGET_X_OFFSET = 0;
+	public static final double CAMERA_TARGET_X_OFFSET = -90;
 	public static final double CAMERA_IMAGE_HIEGHT = 640;
 	public static final double CAMERA_IMAGE_CENTER_Y = CAMERA_IMAGE_HIEGHT / 2;
-	public static final double CAMERA_TARGET_Y_OFFSET = 0;
+	public static final double CAMERA_TARGET_Y_OFFSET = 250;
 	public static final double MIN_PARTICLE_SIZE = 10;
 
 	// Drive Constants

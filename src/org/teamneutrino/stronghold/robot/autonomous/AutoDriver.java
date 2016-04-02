@@ -688,9 +688,10 @@ public class AutoDriver implements Camera.NewFrameListener
 		if (!onTarget)
 		{
 			double positionError = error / 30;
-			double newSetpoint = shooter.getPosition() - positionError;
+			double newSetpoint = shooter.getPosition() - positionError + .3;
 			// bound between 20 and 90
 			newSetpoint = Math.min(Math.max(newSetpoint, 20), 90);
+			System.out.println("error: " + error + " possitionError: " + positionError + " newSetpoint: " + newSetpoint);
 			shooter.setSetpoint(newSetpoint);
 		}
 
