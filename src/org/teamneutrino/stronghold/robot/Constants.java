@@ -24,20 +24,28 @@ public class Constants
 
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam0";
-	public static final int CAMERA_DEFAULT_HUE_LOW = 50;
-	public static final int CAMERA_DEFAULT_HUE_HIGH = 150;
-	public static final int CAMERA_DEFAULT_SATURATION_LOW = 60;
+	public static final int CAMERA_DEFAULT_HUE_LOW = 100;
+	public static final int CAMERA_DEFAULT_HUE_HIGH = 140;
+	public static final int CAMERA_DEFAULT_SATURATION_LOW = 100;
 	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
-	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 0;
-	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 255;
+	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 20;
+	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 60;
 	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
 	public static final double CAMERA_IMAGE_WIDTH = 480;
 	public static final double CAMERA_IMAGE_CENTER_X = CAMERA_IMAGE_WIDTH / 2;
-	public static final double CAMERA_TARGET_X_OFFSET = -90;
 	public static final double CAMERA_IMAGE_HIEGHT = 640;
 	public static final double CAMERA_IMAGE_CENTER_Y = CAMERA_IMAGE_HIEGHT / 2;
-	public static final double CAMERA_TARGET_Y_OFFSET = 250;
 	public static final double MIN_PARTICLE_SIZE = 10;
+	
+	// Target Outerworks
+	public static final double CAMERA_TARGET_X_OUTERWORKS = -90;
+	public static final double CAMERA_TARGET_Y_OUTERWORKS = 250;
+	public static final double CAMERA_TARGET_AREA_OUTERWORKS = 5500;
+	public static final double CAMERA_TARGET_X_BATTER = -122;
+	public static final double CAMERA_TARGET_Y_BATTER = 160;
+	public static final double CAMERA_TARGET_AREA_BATTER = 11000;
+	
+	// Target Batter
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
@@ -82,7 +90,7 @@ public class Constants
 	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 8;
 	public static final int SHOOTER_REFRESH_RATE = 250;
 	public static final int SHOOTER_RPM = 7000;
-	public static final double SHOOTER_TARGET_SPEED_TOLERANCE_RPM = 200;
+	public static final double SHOOTER_RPM_TOLERANCE = 500;
 	public static final int SHOOTER_BEAMBREAK_RIGHT_CHANNEL = 8;
 	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = 9;
 	public static final int SHOOTER_BEAMBREAK_1_POWER_CHANNEL = 6;

@@ -282,7 +282,7 @@ public class Shooter implements Runnable
 		long lastResetTime = System.currentTimeMillis();
 
 		double RPMilliTarget = ((double) Constants.SHOOTER_RPM) / MILLISECONDS_PER_MINUTE;
-		double RPMilliTolerence = ((double) Constants.SHOOTER_TARGET_SPEED_TOLERANCE_RPM) / MILLISECONDS_PER_MINUTE;
+		double RPMilliTolerence = ((double) Constants.SHOOTER_RPM_TOLERANCE) / MILLISECONDS_PER_MINUTE;
 
 		double integral = 0;
 
@@ -364,14 +364,7 @@ public class Shooter implements Runnable
 			double error = RPMilliTarget - RPMilliMin;
 			integral = integral + error * ((double) timeInterval / timeInterval);
 
-			if (Math.abs(error) <= RPMilliTolerence)
-			{
-				atTargetSpeed = true;
-			}
-			else
-			{
-				atTargetSpeed = false;
-			}
+			atTargetSpeed = Math.abs(error) <= RPMilliTolerence;
 
 			double targetPower = RPMiliToPower(RPMilliTarget) + (leftBeamBreakNoSignal && rightBeamBreakNoSignal ? 0
 					: error * Constants.SHOOTER_K_P + integral * Constants.SHOOTER_K_I);
@@ -408,6 +401,7 @@ public class Shooter implements Runnable
 
 			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
 			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
+			SmartDashboard.putBoolean("Shooter At Target", atTargetSpeed);
 
 			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ,"
 					+ RPMilliTarget * MILLISECONDS_PER_MINUTE + " ," + RPMilliLeft * MILLISECONDS_PER_MINUTE + " ,"

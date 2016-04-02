@@ -36,8 +36,13 @@ public class Camera implements Runnable
 	private int currentFrame;
 
 	private int frameCount;
-	
+
+	private ArrayList<Integer> areaValues;
+
 	private NewFrameListener newFrameListener;
+
+	private int AREA_AVRAGE_MAX_SAMPLES = 5;
+	private int AREA_CUTOFF_EDGE = 2000;
 
 	enum OutputMode
 	{
@@ -77,6 +82,8 @@ public class Camera implements Runnable
 
 			lightPower = new Solenoid(Constants.CAMERA_LIGHT_POWER_CHANNEL);
 			lightPower.set(true);
+			
+			areaValues = new ArrayList<Integer>();
 
 			new Thread(this).start();
 			new Thread(new SmartDashboardThread()).start();
@@ -124,6 +131,24 @@ public class Camera implements Runnable
 		return target.area;
 	}
 
+	public double getTargetAreaAverage()
+	{
+		if (areaValues.size() == 0)
+		{
+			return 0;
+		}
+
+		int numSamples = Math.min(areaValues.size(), AREA_AVRAGE_MAX_SAMPLES);
+
+		int sum = 0;
+		for (int i = areaValues.size() - numSamples; i < areaValues.size(); i++)
+		{
+			sum += areaValues.get(i);
+		}
+
+		return sum / numSamples;
+	}
+
 	public double getTargetHeight()
 	{
 		if (target == null)
@@ -141,7 +166,7 @@ public class Camera implements Runnable
 		}
 		return target.width;
 	}
-	
+
 	public void setNewFrameListener(NewFrameListener newFrameListener)
 	{
 		this.newFrameListener = newFrameListener;
@@ -200,7 +225,7 @@ public class Camera implements Runnable
 								NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
 						par.width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
-						par.x = - ((int) Constants.CAMERA_IMAGE_CENTER_X - (par.top + (par.height / 2)));
+						par.x = -((int) Constants.CAMERA_IMAGE_CENTER_X - (par.top + (par.height / 2)));
 						par.y = (int) Constants.CAMERA_IMAGE_CENTER_Y - (par.left + (par.width / 2));
 						particles.add(par);
 					}
@@ -208,7 +233,7 @@ public class Camera implements Runnable
 				}
 
 				Particle largestParticle = null;
-				
+
 				for (Particle particle : particles)
 				{
 					if (particle.area >= Constants.MIN_PARTICLE_SIZE
@@ -217,13 +242,23 @@ public class Camera implements Runnable
 						largestParticle = particle;
 					}
 				}
-				
+
 				target = largestParticle;
 
-				if (outMode == OutputMode.THRESHOLD_IMAGE)
+				if (target != null && target.area > Constants.CAMERA_TARGET_AREA_OUTERWORKS - AREA_CUTOFF_EDGE
+						&& target.area < Constants.CAMERA_TARGET_AREA_BATTER + AREA_CUTOFF_EDGE)
 				{
-					CameraServer.getInstance().setImage(image);
+					areaValues.add(target.area);
 				}
+				else
+				{
+					areaValues.clear();
+				}
+
+					if (outMode == OutputMode.THRESHOLD_IMAGE)
+					{
+						CameraServer.getInstance().setImage(image);
+					}
 
 				if (outMode == OutputMode.RECTANGLE_OVERLAY)
 				{
@@ -246,13 +281,15 @@ public class Camera implements Runnable
 				DriverStation.reportError("Error getting image: " + e.getMessage(), false);
 				e.printStackTrace();
 			}
-			
+
 			frameCount++;
-			
+
 			if (newFrameListener != null)
 			{
 				newFrameListener.newFrame();
 			}
+
+			System.gc();
 
 			try
 			{
@@ -263,7 +300,7 @@ public class Camera implements Runnable
 			}
 		}
 	}
-	
+
 	public interface NewFrameListener
 	{
 		public void newFrame();

@@ -6,6 +6,7 @@ import org.teamneutrino.stronghold.robot.exceptions.GyroUnpluggedException;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
+import org.teamneutrino.stronghold.robot.util.Util;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -52,7 +53,7 @@ public class AutoDriver implements Camera.NewFrameListener
 	private static final double GYRO_UNPLUGGED_TIMEOUT = 1000;
 	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
 
-	private static final int TIMEOUT_REFRESH_RATE = 5;
+	private static final int TIMEOUT_REFRESH_RATE = 7;
 
 	private static final double AIM_ON_TARGET_THRESHOLD = 7;
 
@@ -650,8 +651,18 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private boolean aimDrive()
 	{
-		double targetX = cam.getTargetX();
-		double error = targetX - (Constants.CAMERA_TARGET_X_OFFSET);
+		double currX = cam.getTargetX();
+		double targetArea = cam.getTargetAreaAverage();
+		
+		if (targetArea < 1)
+		{
+			return false;
+		}
+		
+		double targetX = Util.scale(targetArea, Constants.CAMERA_TARGET_AREA_OUTERWORKS,
+				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_X_OUTERWORKS,
+				Constants.CAMERA_TARGET_X_BATTER);
+		double error = currX - targetX;
 		double speed = (error < 0 ? -1 : 1);
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
@@ -681,8 +692,23 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private boolean aimShooter()
 	{
-		double targetY = cam.getTargetY();
-		double error = targetY - (Constants.CAMERA_TARGET_Y_OFFSET);
+		double currY = cam.getTargetY();
+		
+		double targetArea = cam.getTargetAreaAverage();
+		
+		if (targetArea < 1)
+		{
+			if (shooter.getSetpoint() < 20)
+			{
+				shooter.setSetpoint(20);
+			}
+			return false;
+		}
+		
+		double targetY = Util.scale(targetArea, Constants.CAMERA_TARGET_AREA_OUTERWORKS,
+				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_Y_OUTERWORKS,
+				Constants.CAMERA_TARGET_Y_BATTER);
+		double error = currY - targetY;
 		boolean onTarget = (Math.abs(error) < AIM_ON_TARGET_THRESHOLD);
 
 		if (!onTarget)
