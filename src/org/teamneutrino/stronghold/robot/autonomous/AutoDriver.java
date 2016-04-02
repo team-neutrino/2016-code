@@ -54,7 +54,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private static final int TIMEOUT_REFRESH_RATE = 5;
 
-	private static final double AIM_ON_TARGET_THRESHOLD = 2;
+	private static final double AIM_ON_TARGET_THRESHOLD = 7;
 
 	public AutoDriver(Drive drive, Shooter shooter, Camera cam)
 	{
@@ -652,7 +652,7 @@ public class AutoDriver implements Camera.NewFrameListener
 	{
 		double targetX = cam.getTargetX();
 		double error = targetX - (Constants.CAMERA_TARGET_X_OFFSET);
-		double speed = (error < 0 ? -0.5 : 0.5);
+		double speed = (error < 0 ? -1 : 1);
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
 		// bound speed between -1 and 1
@@ -662,11 +662,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
-			int time;
-
-			time = Math.min(500, Math.abs((int) ((error) * 2 + 50)));
-
-			System.out.println("aiming drive error: " + error + " speed: " + speed + " pause: " + error);
+			int time = Math.abs((int) (error)) / 3 + 15;
 
 			try
 			{
@@ -692,7 +688,10 @@ public class AutoDriver implements Camera.NewFrameListener
 		if (!onTarget)
 		{
 			double positionError = error / 30;
-			shooter.setSetpoint(shooter.getPosition() - positionError);
+			double newSetpoint = shooter.getPosition() - positionError;
+			// bound between 20 and 90
+			newSetpoint = Math.min(Math.max(newSetpoint, 20), 90);
+			shooter.setSetpoint(newSetpoint);
 		}
 
 		return onTarget;
