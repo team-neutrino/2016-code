@@ -24,18 +24,17 @@ public class Constants
 
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam0";
-	public static final int CAMERA_DEFAULT_HUE_LOW = 50;
+	public static final int CAMERA_DEFAULT_HUE_LOW = 40;
 	public static final int CAMERA_DEFAULT_HUE_HIGH = 140;
 	public static final int CAMERA_DEFAULT_SATURATION_LOW = 100;
 	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
-	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 20;
-	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 60;
+	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 30;
+	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 255;
 	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
 	public static final double CAMERA_IMAGE_WIDTH = 480;
 	public static final double CAMERA_IMAGE_CENTER_X = CAMERA_IMAGE_WIDTH / 2;
 	public static final double CAMERA_IMAGE_HIEGHT = 640;
 	public static final double CAMERA_IMAGE_CENTER_Y = CAMERA_IMAGE_HIEGHT / 2;
-	public static final double MIN_PARTICLE_SIZE = 10;
 	
 	// Target Outerworks
 	public static final double CAMERA_TARGET_X_OUTERWORKS = -90;

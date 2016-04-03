@@ -51,7 +51,7 @@ public class BDHighGoal implements AutoMode
 			drive.setLeft(0);
 			drive.setRight(0);
 			
-			driver.autonomousAim(4000);
+			driver.autonomousAim(4000, 0);
 
 			shooter.start();
 

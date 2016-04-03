@@ -41,8 +41,8 @@ public class Camera implements Runnable
 
 	private NewFrameListener newFrameListener;
 
-	private int AREA_AVRAGE_MAX_SAMPLES = 5;
-	private int AREA_CUTOFF_EDGE = 2000;
+	private int AREA_AVRAGE_MAX_SAMPLES = 10;
+	private int AREA_CUTOFF_EDGE = 4000;
 
 	enum OutputMode
 	{
@@ -236,7 +236,8 @@ public class Camera implements Runnable
 
 				for (Particle particle : particles)
 				{
-					if (particle.area >= Constants.MIN_PARTICLE_SIZE
+					if (particle.area > Constants.CAMERA_TARGET_AREA_OUTERWORKS - AREA_CUTOFF_EDGE
+							&& particle.area < Constants.CAMERA_TARGET_AREA_BATTER + AREA_CUTOFF_EDGE
 							&& (largestParticle == null || particle.area > largestParticle.area))
 					{
 						largestParticle = particle;
@@ -245,8 +246,7 @@ public class Camera implements Runnable
 
 				target = largestParticle;
 
-				if (target != null && target.area > Constants.CAMERA_TARGET_AREA_OUTERWORKS - AREA_CUTOFF_EDGE
-						&& target.area < Constants.CAMERA_TARGET_AREA_BATTER + AREA_CUTOFF_EDGE)
+				if (target != null)
 				{
 					areaValues.add(target.area);
 				}

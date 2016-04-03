@@ -55,7 +55,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private static final int TIMEOUT_REFRESH_RATE = 7;
 
-	private static final double AIM_ON_TARGET_THRESHOLD = 7;
+	private static final double AIM_ON_TARGET_THRESHOLD = 10;
 
 	public AutoDriver(Drive drive, Shooter shooter, Camera cam)
 	{
@@ -311,8 +311,7 @@ public class AutoDriver implements Camera.NewFrameListener
 			}
 
 			// timeout
-			if ((currTime - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-					|| DriverStation.getInstance().isDisabled())
+			if ((currTime - startTime) > TIMEOUT || !isAutoEnabled())
 			{
 				timeout = true;
 				System.out.println("drive timeout");
@@ -739,20 +738,20 @@ public class AutoDriver implements Camera.NewFrameListener
 		}
 	}
 
-	public void autonomousAim(int millis)
+	public void autonomousAim(int millis, double turn)
 	{
 		long startTime = System.currentTimeMillis();
 		boolean aiming = true;
 		
 		while (System.currentTimeMillis() - startTime < millis && isAutoEnabled())
 		{
-			aiming = aim(aiming);
+			aiming = aim(aiming, turn);
 			wait(5);
 		}
 
 		while (!isAimed() && isAutoEnabled())
 		{
-			aiming = aim(aiming);
+			aiming = aim(aiming, turn);
 			wait(5);
 		}
 
@@ -762,7 +761,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		drive.setRight(0);
 	}
 	
-	private boolean aim(boolean aiming)
+	private boolean aim(boolean aiming, double turn)
 	{
 		if (cam.targetInFrame())
 		{
@@ -777,8 +776,8 @@ public class AutoDriver implements Camera.NewFrameListener
 		else
 		{
 			stopAim();
-			drive.setLeft(.3);
-			drive.setRight(-.3);
+			drive.setLeft(turn);
+			drive.setRight(-turn);
 			aiming = false;
 		}
 
