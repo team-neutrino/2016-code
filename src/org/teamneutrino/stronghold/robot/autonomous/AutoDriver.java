@@ -57,14 +57,14 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private static final double AIM_ON_TARGET_THRESHOLD = 10;
 
-	public AutoDriver(Drive drive, Shooter shooter, Camera cam)
+	public AutoDriver(Drive drive, Shooter shooter, Camera cam, Encoder encLeft, Encoder encRight)
 	{
 		this.drive = drive;
 		this.shooter = shooter;
 		this.cam = cam;
 		cam.setNewFrameListener(this);
-		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
-		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
+		this.encLeft = encLeft;
+		this.encRight = encRight;
 		gyro = new AnalogGyro(Constants.GYRO_CHANNEL);
 
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);

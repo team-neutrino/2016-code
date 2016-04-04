@@ -2,22 +2,23 @@ package org.teamneutrino.stronghold.robot;
 
 import org.teamneutrino.stronghold.robot.autonomous.AutoController;
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
-import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
-import org.teamneutrino.stronghold.robot.autonomous.modes.LowBar;
 import org.teamneutrino.stronghold.robot.autonomous.modes.BD;
 import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalLeft;
 import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalRight;
+import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
+import org.teamneutrino.stronghold.robot.autonomous.modes.LowBar;
 import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarHighGoal;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
+import org.teamneutrino.stronghold.robot.subsystems.DriveEncoders;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
-import org.teamneutrino.stronghold.robot.subsystems.Stinger;
 import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 import org.teamneutrino.stronghold.robot.util.JoystickButtonManager;
 import org.teamneutrino.stronghold.robot.util.SmartDashboardOutputs;
 import org.teamneutrino.stronghold.robot.util.Util;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.RumbleType;
 import edu.wpi.first.wpilibj.SampleRobot;
@@ -27,12 +28,14 @@ public class Robot extends SampleRobot
 	private Joystick joyLeft;
 	private Joystick joyRight;
 	private Joystick gamepad;
+	private Encoder encoderLeft;
+	private Encoder encoderRight;
 	private Drive drive;
+	private DriveEncoders encDrive;
 	private AutoController autoController;
 	private AutoDriver driver;
 	private Intake intake;
 	private Shooter shooter;
-	private Stinger stinger;
 	private Camera camera;
 	private CurrentMonitor currMon;
 
@@ -45,12 +48,14 @@ public class Robot extends SampleRobot
 		joyLeft = new Joystick(Constants.JOY_LEFT);
 		joyRight = new Joystick(Constants.JOY_RIGHT);
 		gamepad = new Joystick(Constants.GAMEPAD);
+		encoderLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
+		encoderRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		drive = new Drive();
+		encDrive = new DriveEncoders(drive, encoderLeft, encoderRight);
 		intake = new Intake();
 		shooter = new Shooter();
-		stinger = new Stinger();
 		camera = new Camera();
-		driver = new AutoDriver(drive, shooter, camera);
+		driver = new AutoDriver(drive, shooter, camera, encoderLeft, encoderRight);
 		currMon = new CurrentMonitor();
 
 		new SmartDashboardOutputs(currMon, shooter, intake, driver);
@@ -112,6 +117,8 @@ public class Robot extends SampleRobot
 
 		driver.stopAim();
 
+		encDrive.useEncoders(true);
+
 		while (isOperatorControl() && isEnabled())
 		{
 			joyLeftMan.updateButtons();
@@ -129,6 +136,15 @@ public class Robot extends SampleRobot
 			if (joyRightMan.getButtonState(8))
 			{
 				autoAimShoot();
+			}
+
+			if (joyLeftMan.getButtonState(9))
+			{
+				encDrive.useEncoders(false);
+			}
+			else if (joyLeftMan.getButtonState(8))
+			{
+				encDrive.useEncoders(true);
 			}
 
 			// overrides
@@ -330,8 +346,7 @@ public class Robot extends SampleRobot
 				leftSpeed = leftSpeed * Math.abs(leftSpeed);
 				rightSpeed = rightSpeed * Math.abs(rightSpeed);
 
-				drive.setLeft(leftSpeed);
-				drive.setRight(rightSpeed);
+				encDrive.setTargetSpeed(leftSpeed, rightSpeed);
 			}
 
 			long currTime = System.currentTimeMillis();
