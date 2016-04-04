@@ -32,7 +32,6 @@ public class Robot extends SampleRobot
 	private AutoDriver driver;
 	private Intake intake;
 	private Shooter shooter;
-	private Stinger stinger;
 	private Camera camera;
 	private CurrentMonitor currMon;
 
@@ -48,7 +47,6 @@ public class Robot extends SampleRobot
 		drive = new Drive();
 		intake = new Intake();
 		shooter = new Shooter();
-		stinger = new Stinger();
 		camera = new Camera();
 		driver = new AutoDriver(drive, shooter, camera);
 		currMon = new CurrentMonitor();
