@@ -34,7 +34,7 @@ public class LowBarHighGoal implements AutoMode
 	{
 		shooter.setTargetPosition(Shooter.Position.INTAKE);
 		intake.setTargetPosition(Intake.Position.INTAKE);
-		driver.wait(500);
+		driver.sleep(500);
 
 		try
 		{
@@ -47,12 +47,12 @@ public class LowBarHighGoal implements AutoMode
 
 		shooter.setTargetPosition(Shooter.Position.FRONT);
 
-		driver.wait(200);
+		driver.sleep(200);
 
 		drive.setLeft(.3);
 		drive.setRight(-.3);
 
-		driver.wait(300);
+		driver.sleep(300);
 
 		drive.setLeft(0);
 		drive.setRight(0);
@@ -61,16 +61,16 @@ public class LowBarHighGoal implements AutoMode
 
 		shooter.start();
 
-		driver.wait(500);
+		driver.sleep(1000);
 
 		while (!shooter.isAtTargetSpeed() && driver.isAutoEnabled())
 		{
-			driver.wait(5);
+			driver.sleep(5);
 		}
 
 		shooter.setFlippers(true);
 
-		driver.wait(500);
+		driver.sleep(500);
 
 		shooter.setFlippers(false);
 		shooter.stop();

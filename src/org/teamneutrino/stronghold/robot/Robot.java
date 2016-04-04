@@ -126,6 +126,11 @@ public class Robot extends SampleRobot
 			double shooterPosition = shooter.getPosition();
 			double intakePosition = intake.getPosition();
 
+			if (joyRightMan.getButtonState(8))
+			{
+				autoAimShoot();
+			}
+
 			// overrides
 			if (joyRightMan.getButtonState(6))
 			{
@@ -340,13 +345,7 @@ public class Robot extends SampleRobot
 			gamepad.setRumble(RumbleType.kLeftRumble, (overCurrent ? 1f : 0f));
 			gamepad.setRumble(RumbleType.kRightRumble, (overCurrent ? 1f : 0f));
 
-			try
-			{
-				Thread.sleep(5);
-			}
-			catch (InterruptedException e)
-			{
-			}
+			Util.sleep(5);
 		}
 	}
 
@@ -354,5 +353,46 @@ public class Robot extends SampleRobot
 	public void test()
 	{
 		System.out.println("--- TEST ---");
+	}
+
+	private void autoAimShoot()
+	{
+		// aim
+		driver.aim();
+
+		while (camera.targetInFrame() && !driver.isAimed())
+		{
+			Util.sleep(5);
+
+			if (!camera.targetInFrame() || joyRight.getRawButton(9))
+			{
+				driver.stopAim();
+				return;
+			}
+		}
+
+		driver.stopAim();
+
+		// shoot
+		shooter.start();
+
+		Util.sleep(1000);
+
+		while (!shooter.isAtTargetSpeed())
+		{
+			Util.sleep(5);
+			if (joyRight.getRawButton(9))
+			{
+				shooter.stop();
+				return;
+			}
+		}
+
+		shooter.setFlippers(true);
+
+		Util.sleep(500);
+
+		shooter.setFlippers(false);
+		shooter.stop();
 	}
 }
