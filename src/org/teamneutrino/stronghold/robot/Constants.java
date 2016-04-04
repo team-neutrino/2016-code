@@ -24,20 +24,27 @@ public class Constants
 
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam0";
-	public static final int CAMERA_DEFAULT_HUE_LOW = 100;
-	public static final int CAMERA_DEFAULT_HUE_HIGH = 150;
-	public static final int CAMERA_DEFAULT_SATURATION_LOW = 84;
+	public static final int CAMERA_DEFAULT_HUE_LOW = 40;
+	public static final int CAMERA_DEFAULT_HUE_HIGH = 140;
+	public static final int CAMERA_DEFAULT_SATURATION_LOW = 100;
 	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
-	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 34;
+	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 30;
 	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 255;
 	public static final int CAMERA_LIGHT_POWER_CHANNEL = 1;
-	public static final double CAMERA_TARGET_X = 240;
-	public static final double CAMERA_TARGET_X_OFFSET = -10;
-	public static final double CAMERA_TARGET_Y = 320;
-	public static final double CAMERA_TARGET_Y_OFFSET = -200;
-	public static final double MIN_PARTICLE_SIZE = 10;
-	public static final double CAMERA_DISTANCE_BASE = 1.17875473; //DISTANCE IN FEET AT WICH THE GOAL HEIGHT IS EQUAL TO THE IMAGE HEIGHT WHEN VIEWED AT 0 DEGREES
-	public static final double CAMERA_FOV_MULTIPLIER = 106d/144d;
+	public static final double CAMERA_IMAGE_WIDTH = 480;
+	public static final double CAMERA_IMAGE_CENTER_X = CAMERA_IMAGE_WIDTH / 2;
+	public static final double CAMERA_IMAGE_HIEGHT = 640;
+	public static final double CAMERA_IMAGE_CENTER_Y = CAMERA_IMAGE_HIEGHT / 2;
+	
+	// Target Outerworks
+	public static final double CAMERA_TARGET_X_OUTERWORKS = -90;
+	public static final double CAMERA_TARGET_Y_OUTERWORKS = 250;
+	public static final double CAMERA_TARGET_AREA_OUTERWORKS = 5500;
+	public static final double CAMERA_TARGET_X_BATTER = -122;
+	public static final double CAMERA_TARGET_Y_BATTER = 160;
+	public static final double CAMERA_TARGET_AREA_BATTER = 11000;
+	
+	// Target Batter
 
 	// Drive Constants
 	public static final int ENCODER_LEFT_A_CHANNEL = 0;
@@ -57,6 +64,7 @@ public class Constants
 	public static final int DRIVE_RIGHT_2_POWER_CHANNEL = 1;
 	public static final int DRIVE_RIGHT_3_CHANNEL = 5;
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 2;
+	public static final double DRIVE_DEADBAND = (REAL_BOT ? .1 : 0.18); // TODO
 
 	// Intake Constants
 	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;
@@ -79,20 +87,19 @@ public class Constants
 	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 11;
 	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 8;
 	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 8;
-	public static final int SHOOTER_REFRESH_RATE = 50;
-	public static final int SHOOTER_RPM = 1500;
-	public static final double SHOOTER_TARGET_SPEED_TOLERANCE_RPM = 200;
+	public static final int SHOOTER_REFRESH_RATE = 250;
+	public static final int SHOOTER_RPM = 7000;
+	public static final double SHOOTER_RPM_TOLERANCE = 500;
 	public static final int SHOOTER_BEAMBREAK_RIGHT_CHANNEL = 8;
 	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = 9;
 	public static final int SHOOTER_BEAMBREAK_1_POWER_CHANNEL = 6;
 	public static final int SHOOTER_BEAMBREAK_2_POWER_CHANNEL = 7;
-	public static final double SHOOTER_PERCENT_POWER_PER_RPMILLI = 1/1500;
-	public static final double SHOOTER_K_P = .1; // TODO
-	public static final double SHOOTER_K_I = 0; // TODO
+	public static final double SHOOTER_K_P = 20;
+	public static final double SHOOTER_K_I = 1; // TODO
 	public static final int SHOOTER_ENCODER_CHANNEL = 1;
 	public static final double SHOOTER_ENCODER_SCALE = 360;
 	public static final double SHOOTER_ENCODER_MAX = 150;
-	public static final double SHOOTER_ENCODER_OFFSET = (REAL_BOT ? -121 : -203);
+	public static final double SHOOTER_ENCODER_OFFSET = (REAL_BOT ? -121 : -31);
 	public static final double SHOOTER_ACTUATION_MAX_SPEED = .5;
 	public static final double SHOOTER_ACTUATION_K_P = (REAL_BOT ? .01 : .005);
 	public static final double SHOOTER_ACTUATION_K_I = 0;

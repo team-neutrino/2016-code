@@ -7,4 +7,20 @@ public class Util
 	{
 		return ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
 	}
+	
+	public static void sleep(int millis)
+	{
+		long startTime = System.currentTimeMillis();
+		
+		while (System.currentTimeMillis() - startTime < millis)
+		{
+			try
+			{
+				Thread.sleep(millis);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
+	}
 }

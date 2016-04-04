@@ -37,6 +37,13 @@ public class Camera implements Runnable
 
 	private int frameCount;
 
+	private ArrayList<Integer> areaValues;
+
+	private NewFrameListener newFrameListener;
+
+	private int AREA_AVRAGE_MAX_SAMPLES = 10;
+	private int AREA_CUTOFF_EDGE = 4000;
+
 	enum OutputMode
 	{
 		RAW_IMAGE, THRESHOLD_IMAGE, RECTANGLE_OVERLAY
@@ -75,6 +82,8 @@ public class Camera implements Runnable
 
 			lightPower = new Solenoid(Constants.CAMERA_LIGHT_POWER_CHANNEL);
 			lightPower.set(true);
+			
+			areaValues = new ArrayList<Integer>();
 
 			new Thread(this).start();
 			new Thread(new SmartDashboardThread()).start();
@@ -85,7 +94,7 @@ public class Camera implements Runnable
 		}
 	}
 
-	public int getCurrentFrame()
+	public int getFrameNum()
 	{
 		return currentFrame;
 	}
@@ -122,6 +131,24 @@ public class Camera implements Runnable
 		return target.area;
 	}
 
+	public double getTargetAreaAverage()
+	{
+		if (areaValues.size() == 0)
+		{
+			return 0;
+		}
+
+		int numSamples = Math.min(areaValues.size(), AREA_AVRAGE_MAX_SAMPLES);
+
+		int sum = 0;
+		for (int i = areaValues.size() - numSamples; i < areaValues.size(); i++)
+		{
+			sum += areaValues.get(i);
+		}
+
+		return sum / numSamples;
+	}
+
 	public double getTargetHeight()
 	{
 		if (target == null)
@@ -140,28 +167,9 @@ public class Camera implements Runnable
 		return target.width;
 	}
 
-	/**
-	 * @return Distance in Inches
-	 */
-	public double getDistance()
+	public void setNewFrameListener(NewFrameListener newFrameListener)
 	{
-		double goalHeightPixels = getTargetHeight();
-		double distanceInches = ((12 * 1280) / (2 * goalHeightPixels * Math.tan(Math.toRadians(32.25))));
-		double scaledDistance = distanceInches * (109d / 144d);
-		return scaledDistance;
-	}
-
-	public double getPixelsPerDegree()
-	{
-		double pixelsPerDegree = (-8.46883d / 12d) * (getDistance() - 124d) - 36.009d;
-		return pixelsPerDegree;
-	}
-
-	public double getOffsetDegrees()
-	{
-		double currOffsetPixels = getTargetY() - Constants.CAMERA_TARGET_Y;
-		double currOffsetDegrees = currOffsetPixels / getPixelsPerDegree();
-		return currOffsetDegrees;
+		this.newFrameListener = newFrameListener;
 	}
 
 	@Override
@@ -185,7 +193,6 @@ public class Camera implements Runnable
 		{
 			try
 			{
-				frameCount++;
 				Image image = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 				Image raw = NIVision.imaqCreateImage(NIVision.ImageType.IMAGE_RGB, 0);
 
@@ -210,10 +217,6 @@ public class Camera implements Runnable
 						Particle par = new Particle();
 						par.area = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_CONVEX_HULL_AREA);
-						par.x = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
-								NIVision.MeasurementType.MT_CENTER_OF_MASS_X);
-						par.y = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
-								NIVision.MeasurementType.MT_CENTER_OF_MASS_Y);
 						par.top = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_TOP);
 						par.left = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
@@ -222,29 +225,40 @@ public class Camera implements Runnable
 								NIVision.MeasurementType.MT_BOUNDING_RECT_HEIGHT);
 						par.width = (int) NIVision.imaqMeasureParticle(image, particleIndex, 0,
 								NIVision.MeasurementType.MT_BOUNDING_RECT_WIDTH);
+						par.x = -((int) Constants.CAMERA_IMAGE_CENTER_X - (par.top + (par.height / 2)));
+						par.y = (int) Constants.CAMERA_IMAGE_CENTER_Y - (par.left + (par.width / 2));
 						particles.add(par);
 					}
 					currentFrame++;
 				}
 
 				Particle largestParticle = null;
-				
+
 				for (Particle particle : particles)
 				{
-					if (particle.area >= Constants.MIN_PARTICLE_SIZE
+					if (particle.area > Constants.CAMERA_TARGET_AREA_OUTERWORKS - AREA_CUTOFF_EDGE
+							&& particle.area < Constants.CAMERA_TARGET_AREA_BATTER + AREA_CUTOFF_EDGE
 							&& (largestParticle == null || particle.area > largestParticle.area))
 					{
 						largestParticle = particle;
 					}
 				}
-				
+
 				target = largestParticle;
 
-				if (outMode == OutputMode.THRESHOLD_IMAGE)
+				if (target != null)
 				{
-					CameraServer.getInstance().setImage(image);
-					System.out.println("Threashold Image");
+					areaValues.add(target.area);
 				}
+				else
+				{
+					areaValues.clear();
+				}
+
+					if (outMode == OutputMode.THRESHOLD_IMAGE)
+					{
+						CameraServer.getInstance().setImage(image);
+					}
 
 				if (outMode == OutputMode.RECTANGLE_OVERLAY)
 				{
@@ -268,6 +282,15 @@ public class Camera implements Runnable
 				e.printStackTrace();
 			}
 
+			frameCount++;
+
+			if (newFrameListener != null)
+			{
+				newFrameListener.newFrame();
+			}
+
+			System.gc();
+
 			try
 			{
 				Thread.sleep(5);
@@ -276,6 +299,11 @@ public class Camera implements Runnable
 			{
 			}
 		}
+	}
+
+	public interface NewFrameListener
+	{
+		public void newFrame();
 	}
 
 	private class SmartDashboardThread implements Runnable
@@ -317,11 +345,9 @@ public class Camera implements Runnable
 				SmartDashboard.putNumber("Saturation High", saturationHigh);
 				SmartDashboard.putNumber("Luminence Low", luminenceLow);
 				SmartDashboard.putNumber("Luminence High", luminenceHigh);
-				SmartDashboard.putNumber("Distance From Goal", getDistance());
-				SmartDashboard.putNumber("Pixels Per Degree", getPixelsPerDegree());
-				SmartDashboard.putNumber("Offset Degrees", getOffsetDegrees());
 				SmartDashboard.putNumber("Target X", (target == null ? 0 : target.x));
 				SmartDashboard.putNumber("Target Y", (target == null ? 0 : target.y));
+				SmartDashboard.putNumber("Area", (target == null ? 0 : target.area));
 
 				outMode = (OutputMode) outModeChooser.getSelected();
 			}

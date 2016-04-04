@@ -1,6 +1,7 @@
 package org.teamneutrino.stronghold.robot.util;
 
 import org.teamneutrino.stronghold.robot.Constants;
+import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.sensors.PressureSensor;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
@@ -12,13 +13,15 @@ public class SmartDashboardOutputs implements Runnable
 	CurrentMonitor currMon;
 	Shooter shooter;
 	Intake intake;
+	AutoDriver driver;
 	PressureSensor pressure;
 	
-	public SmartDashboardOutputs(CurrentMonitor currMon, Shooter shooter, Intake intake)
+	public SmartDashboardOutputs(CurrentMonitor currMon, Shooter shooter, Intake intake, AutoDriver driver)
 	{
 		this.currMon = currMon;
 		this.shooter = shooter;
 		this.intake = intake;
+		this.driver = driver;
 		this.pressure = new PressureSensor();
 		
 		new Thread(this).start();
@@ -37,14 +40,13 @@ public class SmartDashboardOutputs implements Runnable
 			{
 			}
 			
-			SmartDashboard.putNumber("Shooter Left RPM", shooter.getLeftRPM());
-			SmartDashboard.putNumber("Shooter Right RPM", shooter.getRightRPM());
-			
 			SmartDashboard.putNumber("Shooter Position", shooter.getPosition());
 			SmartDashboard.putNumber("Intake Position", intake.getPosition());
 			SmartDashboard.putNumber("Shooter Offset", shooter.getOffset());
 			SmartDashboard.putNumber("Intake Offset", intake.getOffset());
 			SmartDashboard.putNumber("Pnumatic Pressure", pressure.getPressure());
+			
+			SmartDashboard.putBoolean("Shooter Aimed", driver.isAimed());
 			
 			currMon.send();
 		}

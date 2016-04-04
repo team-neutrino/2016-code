@@ -1,6 +1,7 @@
 package org.teamneutrino.stronghold.robot.subsystems;
 
 import org.teamneutrino.stronghold.robot.Constants;
+import org.teamneutrino.stronghold.robot.util.SpeedControllerDeadbandRemoved;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -46,6 +47,13 @@ public class Drive
 			right3 = new Victor(Constants.DRIVE_RIGHT_3_CHANNEL);
 			left3 = new Victor(Constants.DRIVE_LEFT_3_CHANNEL);
 		}
+		
+		right1 = new SpeedControllerDeadbandRemoved(right1, -Constants.DRIVE_DEADBAND, Constants.DRIVE_DEADBAND, -0.01, 0.01);
+		left1 = new SpeedControllerDeadbandRemoved(left1, -Constants.DRIVE_DEADBAND, Constants.DRIVE_DEADBAND, -0.01, 0.01);
+		right2 = new SpeedControllerDeadbandRemoved(right2, -Constants.DRIVE_DEADBAND, Constants.DRIVE_DEADBAND, -0.01, 0.01);
+		left2 = new SpeedControllerDeadbandRemoved(left2, -Constants.DRIVE_DEADBAND, Constants.DRIVE_DEADBAND, -0.01, 0.01);
+		right3 = new SpeedControllerDeadbandRemoved(right3, -Constants.DRIVE_DEADBAND, Constants.DRIVE_DEADBAND, -0.01, 0.01);
+		left3 = new SpeedControllerDeadbandRemoved(left3, -Constants.DRIVE_DEADBAND, Constants.DRIVE_DEADBAND, -0.01, 0.01);
 		
 		fastMode = false;
 		

@@ -3,8 +3,11 @@ package org.teamneutrino.stronghold.robot;
 import org.teamneutrino.stronghold.robot.autonomous.AutoController;
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
-import org.teamneutrino.stronghold.robot.autonomous.modes.DriveForwardIntakePosition;
-import org.teamneutrino.stronghold.robot.autonomous.modes.DriveForwardUpPositionHigh;
+import org.teamneutrino.stronghold.robot.autonomous.modes.LowBar;
+import org.teamneutrino.stronghold.robot.autonomous.modes.BD;
+import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalLeft;
+import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalRight;
+import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarHighGoal;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
@@ -50,13 +53,16 @@ public class Robot extends SampleRobot
 		driver = new AutoDriver(drive, shooter, camera);
 		currMon = new CurrentMonitor();
 
-		new SmartDashboardOutputs(currMon, shooter, intake);
+		new SmartDashboardOutputs(currMon, shooter, intake, driver);
 
 		// set up auto modes
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());
-		autoController.assignMode(1, new DriveForwardIntakePosition(driver, shooter, intake));
-		autoController.assignMode(2, new DriveForwardUpPositionHigh(driver, shooter, intake));
+		autoController.assignMode(1, new LowBar(driver, shooter, intake));
+		autoController.assignMode(2, new BD(driver, shooter, intake));
+		autoController.assignMode(3, new LowBarHighGoal(driver, shooter, intake, drive, camera));
+		autoController.assignMode(4, new BDHighGoalRight(driver, shooter, intake, drive));
+		autoController.assignMode(5, new BDHighGoalLeft(driver, shooter, intake, drive));
 	}
 
 	@Override
@@ -99,9 +105,9 @@ public class Robot extends SampleRobot
 
 		boolean outtakingPrev = false;
 		boolean outtaking = false;
-		
+
 		boolean overCurrent = false;
-		
+
 		long lastCurrentUpdateTime = 0;
 
 		driver.stopAim();
@@ -120,12 +126,18 @@ public class Robot extends SampleRobot
 			double shooterPosition = shooter.getPosition();
 			double intakePosition = intake.getPosition();
 
+			if (joyRightMan.getButtonState(8))
+			{
+				autoAimShoot();
+			}
+
 			// overrides
 			if (joyRightMan.getButtonState(6))
 			{
 				// enable intake override
 				intakeOverrideEnabled = true;
-			} else if (joyRightMan.getButtonState(7))
+			}
+			else if (joyRightMan.getButtonState(7))
 			{
 				// disable intake override
 				intakeOverrideEnabled = false;
@@ -134,7 +146,8 @@ public class Robot extends SampleRobot
 			{
 				// enable shooter override
 				shooterOverrideEnabled = true;
-			} else if (joyRightMan.getButtonState(10))
+			}
+			else if (joyRightMan.getButtonState(10))
 			{
 				// disable shooter override
 				shooterOverrideEnabled = false;
@@ -142,13 +155,15 @@ public class Robot extends SampleRobot
 
 			// auto aiming
 			boolean isAiming = driver.isAiming();
-			boolean aimingTriggered = (joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3)) && camera.targetInFrame();
-			
+			boolean aimingTriggered = (joyLeftMan.getButtonState(3) || joyRightMan.getButtonState(3))
+					&& camera.targetInFrame();
+
 			if (aimingTriggered && !isAiming)
 			{
 				driver.aim();
 				isAiming = true;
-			} else if (!aimingTriggered && isAiming)
+			}
+			else if (!aimingTriggered && isAiming)
 			{
 				driver.stopAim();
 				isAiming = false;
@@ -163,7 +178,8 @@ public class Robot extends SampleRobot
 				if (shooterSpinCurr)
 				{
 					shooter.start();
-				} else
+				}
+				else
 				{
 					shooter.stop();
 				}
@@ -182,7 +198,8 @@ public class Robot extends SampleRobot
 				{
 					intake.set(1);
 				}
-			} else if (!shooting && gamepad.getRawAxis(2) > .6)
+			}
+			else if (!shooting && gamepad.getRawAxis(2) > .6)
 			{
 				// outtake
 				outtaking = true;
@@ -193,7 +210,8 @@ public class Robot extends SampleRobot
 				{
 					shooter.setOverrideSpeed(1);
 				}
-			} else
+			}
+			else
 			{
 				// no intake
 				if (!shooting)
@@ -206,47 +224,72 @@ public class Robot extends SampleRobot
 				shooter.setFutter(false);
 			}
 
+			double intakeAxis = gamepad.getRawAxis(1);
+
 			// intake position
 			if (intakeOverrideEnabled)
 			{
 				// override mode
-				intake.setActuatorOverride(-.6 * gamepad.getRawAxis(1));
-			} else
+				if (Math.abs(intakeAxis) > .1)
+				{
+					intake.setActuatorOverride(-.6 * intakeAxis);
+				}
+				else
+				{
+					intake.setActuatorOverride(0);
+				}
+			}
+			else
 			{
-				double joyPosition = -gamepad.getRawAxis(1);
+				double joyPosition = -intakeAxis;
 
 				if (Math.abs(joyPosition) < 0.2)
 				{
 					intake.setTargetPosition(Intake.Position.INTAKE);
-				} else if (joyPosition >= 0.2)
+				}
+				else if (joyPosition >= 0.2)
 				{
 					intake.setSetpoint(Util.scale(joyPosition, 0.2, 1, Intake.Position.INTAKE.location,
 							Intake.Position.UP.location));
-				} else
+				}
+				else
 				{
 					intake.setSetpoint(Util.scale(joyPosition, -0.2, -1, Intake.Position.INTAKE.location,
 							Intake.Position.DOWN.location));
 				}
 			}
 
+			double shooterOverrideAxis = gamepad.getRawAxis(5);
+
 			// shooter position
 			if (isAiming)
 			{
 				// don't move shooter position when aiming
 			}
-			if (shooterOverrideEnabled)
+			else if (shooterOverrideEnabled)
 			{
-				shooter.setActuatorOverride(-gamepad.getRawAxis(5));
-			} else if (intaking || outtaking || gamepadMan.getButtonState(4))
+				if (Math.abs(shooterOverrideAxis) > .1)
+				{
+					shooter.setActuatorOverride(-shooterOverrideAxis);
+				}
+				else
+				{
+					shooter.setActuatorOverride(0);
+				}
+			}
+			else if (intaking || outtaking || gamepadMan.getButtonState(4))
 			{
 				shooter.setTargetPosition(Shooter.Position.INTAKE);
-			} else if (gamepadMan.getButtonState(2))
+			}
+			else if (gamepadMan.getButtonState(2))
 			{
 				shooter.setTargetPosition(Shooter.Position.SHOOT);
-			} else if (gamepadMan.getButtonState(3))
+			}
+			else if (gamepadMan.getButtonState(3))
 			{
 				shooter.setTargetPosition(Shooter.Position.FRONT);
-			} else if (gamepadMan.getButtonState(1))
+			}
+			else if (gamepadMan.getButtonState(1))
 			{
 				shooter.setTargetPosition(Shooter.Position.BACK);
 			}
@@ -257,7 +300,8 @@ public class Robot extends SampleRobot
 				{
 					shooter.startEjectThread();
 				}
-			} else
+			}
+			else
 			{
 				shooter.stopEjectThread();
 				shooter.setFlippers(
@@ -275,7 +319,8 @@ public class Robot extends SampleRobot
 				{
 					leftSpeed = leftSpeed * .5;
 					rightSpeed = rightSpeed * .5;
-//					stinger.setStinger(joyLeftMan.getButtonState(2) || joyRightMan.getButtonState(2));
+					// stinger.setStinger(joyLeftMan.getButtonState(2) ||
+					// joyRightMan.getButtonState(2));
 				}
 
 				// fast mode
@@ -288,25 +333,19 @@ public class Robot extends SampleRobot
 				drive.setLeft(leftSpeed);
 				drive.setRight(rightSpeed);
 			}
-			
+
 			long currTime = System.currentTimeMillis();
-			
+
 			if (currTime - lastCurrentUpdateTime > 50)
 			{
 				overCurrent = currMon.getCurrentOver120();
 				lastCurrentUpdateTime = currTime;
 			}
-			
+
 			gamepad.setRumble(RumbleType.kLeftRumble, (overCurrent ? 1f : 0f));
 			gamepad.setRumble(RumbleType.kRightRumble, (overCurrent ? 1f : 0f));
 
-			try
-			{
-				Thread.sleep(5);
-			}
-			catch (InterruptedException e)
-			{
-			}
+			Util.sleep(5);
 		}
 	}
 
@@ -314,5 +353,46 @@ public class Robot extends SampleRobot
 	public void test()
 	{
 		System.out.println("--- TEST ---");
+	}
+
+	private void autoAimShoot()
+	{
+		// aim
+		driver.aim();
+
+		while (camera.targetInFrame() && !driver.isAimed())
+		{
+			Util.sleep(5);
+
+			if (!camera.targetInFrame() || joyRight.getRawButton(9))
+			{
+				driver.stopAim();
+				return;
+			}
+		}
+
+		driver.stopAim();
+
+		// shoot
+		shooter.start();
+
+		Util.sleep(1000);
+
+		while (!shooter.isAtTargetSpeed())
+		{
+			Util.sleep(5);
+			if (joyRight.getRawButton(9))
+			{
+				shooter.stop();
+				return;
+			}
+		}
+
+		shooter.setFlippers(true);
+
+		Util.sleep(500);
+
+		shooter.setFlippers(false);
+		shooter.stop();
 	}
 }

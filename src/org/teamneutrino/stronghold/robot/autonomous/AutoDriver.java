@@ -6,6 +6,7 @@ import org.teamneutrino.stronghold.robot.exceptions.GyroUnpluggedException;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
+import org.teamneutrino.stronghold.robot.util.Util;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -15,7 +16,7 @@ import edu.wpi.first.wpilibj.Encoder;
  * This class autonomously drives and operates the robot using feed back from
  * sensors.
  */
-public class AutoDriver
+public class AutoDriver implements Camera.NewFrameListener
 {
 	private Encoder encLeft;
 	private Encoder encRight;
@@ -25,7 +26,7 @@ public class AutoDriver
 	private Shooter shooter;
 	private Camera cam;
 
-	private boolean shooterAimingThreadRunning;
+	private boolean aiming;
 	private boolean driveAimed;
 	private boolean shooterAimed;
 
@@ -41,7 +42,7 @@ public class AutoDriver
 
 	private static final double MIN_RAMP = .25;
 
-	private static final double RAMP_UP_DISTANCE = 3;
+	private static final double RAMP_UP_DISTANCE = 1;
 	private static final double RAMP_DOWN_DISTANCE = 5;
 
 	private static final double RAMP_UP_DEGREES = 90;
@@ -52,20 +53,16 @@ public class AutoDriver
 	private static final double GYRO_UNPLUGGED_TIMEOUT = 1000;
 	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
 
-	private static final int TIMEOUT_REFRESH_RATE = 5;
-	private static final int SHOOTER_AIMING_THREAD_REFRESH_RATE = 5;
+	private static final int TIMEOUT_REFRESH_RATE = 7;
 
-	private static final double AIM_DRIVE_SPEED = .1;
-
-	private static final double AIM_ON_TARGET_THRESHOLD = 2;
-
-	private static final double AIM_ERROR_PER_SPEED = 20;
+	private static final double AIM_ON_TARGET_THRESHOLD = 10;
 
 	public AutoDriver(Drive drive, Shooter shooter, Camera cam)
 	{
 		this.drive = drive;
 		this.shooter = shooter;
 		this.cam = cam;
+		cam.setNewFrameListener(this);
 		encLeft = new Encoder(Constants.ENCODER_LEFT_A_CHANNEL, Constants.ENCODER_LEFT_B_CHANNEL);
 		encRight = new Encoder(Constants.ENCODER_RIGHT_A_CHANNEL, Constants.ENCODER_RIGHT_B_CHANNEL);
 		gyro = new AnalogGyro(Constants.GYRO_CHANNEL);
@@ -73,9 +70,12 @@ public class AutoDriver
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 
-		shooterAimingThreadRunning = false;
+		aiming = false;
 		driveAimed = false;
 		shooterAimed = false;
+		
+		new Thread(new ShooterAimingThread()).start();
+		new Thread(new DriveAimingThread()).start();
 	}
 
 	/**
@@ -94,10 +94,6 @@ public class AutoDriver
 	 */
 	public void moveDistance(double distance, double speed) throws EncoderUnpluggedException
 	{
-		if (true)
-		{
-			throw new EncoderUnpluggedException("Purposely unpluged encoders");
-		}
 		encLeft.reset();
 		encRight.reset();
 
@@ -233,18 +229,17 @@ public class AutoDriver
 
 			double ramp = 1;
 
-			// if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance <
-			// RAMP_DOWN_DISTANCE))
-			// {
-			// // both ramp up and ramp down are in effect, pick the min
-			// ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance /
-			// RAMP_DOWN_DISTANCE);
-			// } else if (minDistance < RAMP_UP_DISTANCE)
-			// {
-			// // ramp up
-			// ramp = (minDistance / RAMP_UP_DISTANCE);
-			// } else
-			if (remainDistance < RAMP_DOWN_DISTANCE)
+			if ((minDistance < RAMP_UP_DISTANCE) && (remainDistance < RAMP_DOWN_DISTANCE))
+			{
+				// both ramp up and ramp down are in effect, pick the min
+				ramp = Math.min(minDistance / RAMP_UP_DISTANCE, remainDistance / RAMP_DOWN_DISTANCE);
+			}
+			else if (minDistance < RAMP_UP_DISTANCE)
+			{
+				// ramp up
+				ramp = (minDistance / RAMP_UP_DISTANCE);
+			}
+			else if (remainDistance < RAMP_DOWN_DISTANCE)
 			{
 				// ramp down
 				ramp = (remainDistance / RAMP_DOWN_DISTANCE);
@@ -319,8 +314,7 @@ public class AutoDriver
 			}
 
 			// timeout
-			if ((currTime - startTime) > TIMEOUT || !DriverStation.getInstance().isAutonomous()
-					|| DriverStation.getInstance().isDisabled())
+			if ((currTime - startTime) > TIMEOUT || !isAutoEnabled())
 			{
 				timeout = true;
 				System.out.println("drive timeout");
@@ -550,26 +544,17 @@ public class AutoDriver
 	 */
 	public void aim()
 	{
-		System.out.println("Starting aim");
-		shooterAimed = false;
-		driveAimed = false;
-
-		if (!shooterAimingThreadRunning)
-		{
-			shooterAimingThreadRunning = true;
-			new Thread(new ShooterAimingThread()).start();
-			new Thread(new DriveAimingThread()).start();
-		}
+		aiming = true;
 	}
 
 	public void stopAim()
 	{
-		shooterAimingThreadRunning = false;
+		aiming = false;
 	}
 
 	public boolean isAiming()
 	{
-		return shooterAimingThreadRunning;
+		return aiming;
 	}
 
 	public boolean isAimed()
@@ -577,91 +562,103 @@ public class AutoDriver
 		return isAiming() && shooterAimed && driveAimed;
 	}
 
-	// TODO tell the shooter to go to a specific position instead of using time
+	@Override
+	public void newFrame()
+	{
+		synchronized (this)
+		{
+			notifyAll();
+		}
+	}
+
 	private class ShooterAimingThread implements Runnable
 	{
 		@Override
 		public void run()
 		{
-			int prevFrame = 0;
-			int currFrame = 0;
-			while (shooterAimingThreadRunning)
+			int prevFrameNum = 0;
+			int currFrameNum = 0;
+			while (true)
 			{
-				try
+				// stop thread until new frame
+				synchronized (AutoDriver.this)
 				{
-					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				}
-				catch (InterruptedException e)
-				{
+					try
+					{
+						AutoDriver.this.wait();
+					}
+					catch (InterruptedException e)
+					{
+					}
 				}
 
 				// check for new frame
-				currFrame = cam.getCurrentFrame();
-				if (currFrame != prevFrame && cam.targetInFrame())
+				currFrameNum = cam.getFrameNum();
+				if (currFrameNum != prevFrameNum && cam.targetInFrame())
 				{
 					shooterAimed = aimShooter();
 				}
 			}
-
-			shooterAimingThreadRunning = false;
 		}
 	}
 
-	// TODO use gyro
 	private class DriveAimingThread implements Runnable
 	{
 		@Override
 		public void run()
 		{
-			int prevFrame = 0;
-			int currFrame = 0;
-			while (shooterAimingThreadRunning)
+			int prevFrameNum = 0;
+			int currFrameNum = 0;
+			while (true)
 			{
-				try
+				// stop thread until new frame
+				synchronized (AutoDriver.this)
 				{
-					Thread.sleep(SHOOTER_AIMING_THREAD_REFRESH_RATE);
-				}
-				catch (InterruptedException e)
-				{
+					try
+					{
+						AutoDriver.this.wait();
+					}
+					catch (InterruptedException e)
+					{
+					}
 				}
 
 				// check for new frame
-				currFrame = cam.getCurrentFrame();
-				if (currFrame != prevFrame && cam.targetInFrame())
+				currFrameNum = cam.getFrameNum();
+				if (currFrameNum != prevFrameNum && cam.targetInFrame())
 				{
-					prevFrame = currFrame;
+					prevFrameNum = currFrameNum;
 					driveAimed = aimDrive();
 				}
 			}
-
-			shooterAimingThreadRunning = false;
 		}
 	}
 
 	private boolean aimDrive()
 	{
-		double targetX = cam.getTargetX();
-		double error = targetX - (Constants.CAMERA_TARGET_X + Constants.CAMERA_TARGET_X_OFFSET);
-		double speed = error / AIM_ERROR_PER_SPEED;
+		double currX = cam.getTargetX();
+		double targetArea = cam.getTargetAreaAverage();
+
+		if (targetArea < 1)
+		{
+			return false;
+		}
+
+		double targetX = Util.scale(targetArea, Constants.CAMERA_TARGET_AREA_OUTERWORKS,
+				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_X_OUTERWORKS,
+				Constants.CAMERA_TARGET_X_BATTER);
+		double error = currX - targetX;
+		double speed = (error < 0 ? -1 : 1);
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
 		// bound speed between -1 and 1
-		speed = AIM_DRIVE_SPEED * Math.max(-1, Math.min(1, speed));
+		speed = Math.max(-1, Math.min(1, speed));
 
-		if (!onTarget)
+		if (!onTarget && aiming)
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
-
-			int time;
-			if (error > 10)
-			{
-				time = (int) ((error - 10) * 2 + 100);
-			}
-			else
-			{
-				time = 100;
-			}
+			int time = Math.abs((int) (error)) / 3 + 15;
 
 			try
 			{
@@ -672,24 +669,115 @@ public class AutoDriver
 			}
 		}
 
-		drive.setLeft(0);
-		drive.setRight(0);
+		if (aiming)
+		{
+			drive.setLeft(0);
+			drive.setRight(0);
+		}
 
 		return onTarget;
 	}
 
 	private boolean aimShooter()
 	{
-		double targetY = cam.getTargetY();
-		double error = targetY - (Constants.CAMERA_TARGET_Y + Constants.CAMERA_TARGET_Y_OFFSET);
-		boolean onTarget = (Math.abs(error) < AIM_ON_TARGET_THRESHOLD)
-				|| cam.getOffsetDegrees() == shooter.getSetpoint();
+		double currY = cam.getTargetY();
 
-		if (!onTarget)
+		double targetArea = cam.getTargetAreaAverage();
+
+		if (targetArea < 1)
 		{
-			shooter.setSetpoint(shooter.getPosition() + cam.getOffsetDegrees());
+			if (shooter.getSetpoint() < 20 && aiming)
+			{
+				shooter.setSetpoint(20);
+			}
+			return false;
+		}
+
+		double targetY = Util.scale(targetArea, Constants.CAMERA_TARGET_AREA_OUTERWORKS,
+				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_Y_OUTERWORKS,
+				Constants.CAMERA_TARGET_Y_BATTER);
+		double error = currY - targetY;
+		boolean onTarget = (Math.abs(error) < AIM_ON_TARGET_THRESHOLD);
+
+		if (!onTarget && aiming)
+		{
+			double positionError = error / 30;
+			double newSetpoint = shooter.getPosition() - positionError + .3;
+			// bound between 20 and 90
+			newSetpoint = Math.min(Math.max(newSetpoint, 20), 90);
+			shooter.setSetpoint(newSetpoint);
 		}
 
 		return onTarget;
+	}
+	
+	public boolean isAutoEnabled()
+	{
+		return DriverStation.getInstance().isAutonomous() && DriverStation.getInstance().isEnabled();
+	}
+	
+	public void sleep(int millis)
+	{
+		long startTime = System.currentTimeMillis();
+		
+		while (System.currentTimeMillis() - startTime < millis && isAutoEnabled())
+		{
+			try
+			{
+				Thread.sleep(millis);
+			}
+			catch (InterruptedException e)
+			{
+			}
+		}
+	}
+
+	public void autonomousAim(int millis, double turn)
+	{
+		long startTime = System.currentTimeMillis();
+		boolean aiming = true;
+		
+		while (System.currentTimeMillis() - startTime < millis && isAutoEnabled())
+		{
+			aiming = aim(aiming, turn);
+			sleep(5);
+		}
+
+		while (!isAimed() && isAutoEnabled())
+		{
+			aiming = aim(aiming, turn);
+			sleep(5);
+		}
+
+		stopAim();
+		
+		drive.setLeft(0);
+		drive.setRight(0);
+	}
+	
+	private boolean aim(boolean aiming, double turn)
+	{
+		if (cam.targetInFrame())
+		{
+			if (!aiming)
+			{
+				drive.setLeft(-turn);
+				drive.setRight(turn);
+				sleep(100);
+				drive.setLeft(0);
+				drive.setRight(0);
+			}
+			aim();
+			aiming = true;
+		}
+		else
+		{
+			stopAim();
+			drive.setLeft(turn);
+			drive.setRight(-turn);
+			aiming = false;
+		}
+
+		return aiming;
 	}
 }

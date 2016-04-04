@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import org.teamneutrino.stronghold.robot.Constants;
-import org.teamneutrino.stronghold.robot.util.SpeedControllerPID;
+import org.teamneutrino.stronghold.robot.util.SpeedControllerDeadbandRemoved;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
@@ -15,12 +15,13 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter implements Runnable
 {
 	private SpeedController leftMotor;
 	private SpeedController rightMotor;
-	private SpeedControllerPID actuatorMotor;
+	private SpeedControllerDeadbandRemoved actuatorMotor;
 
 	private Counter beambreakLeft;
 	private Counter beambreakRight;
@@ -48,12 +49,12 @@ public class Shooter implements Runnable
 	private double setpoint;
 
 	private Thread flutterThread;
-	
+
 	private double leftRPM;
 	private double rightRPM;
 
 	private static final int MILLISECONDS_PER_MINUTE = 60000;
-	private static final int CORRECTION_RPM = 2000;
+	private static final int CORRECTION_RPM = 3000;
 
 	private static final int NO_SIGNAL_DETECTION_COUNT = 5;
 
@@ -82,7 +83,7 @@ public class Shooter implements Runnable
 			// TODO find deadband
 			double talonMinDeadband = -.041;
 			double talonMaxDeadband = .041;
-			actuatorMotor = new SpeedControllerPID(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
+			actuatorMotor = new SpeedControllerDeadbandRemoved(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
 					talonMinDeadband - motorDeadband, talonMaxDeadband + motorDeadband, -0.005, 0.005);
 		}
 		else
@@ -91,7 +92,7 @@ public class Shooter implements Runnable
 			rightMotor = new Victor(Constants.SHOOTER_RIGHT_MOTOR_CHANNEL);
 			double victorMinDeadband = -.028;
 			double victorMaxDeadband = .045;
-			actuatorMotor = new SpeedControllerPID(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
+			actuatorMotor = new SpeedControllerDeadbandRemoved(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
 					victorMinDeadband - motorDeadband, victorMaxDeadband + motorDeadband, -0.005, 0.005);
 		}
 		rightMotor.setInverted(true);
@@ -143,7 +144,7 @@ public class Shooter implements Runnable
 	{
 		ejectThreadRunning = false;
 	}
-	
+
 	public void start()
 	{
 		leftMotor.set(1);
@@ -154,7 +155,7 @@ public class Shooter implements Runnable
 			running = true;
 			new Thread(this).start();
 		}
-		
+
 		shooterOutfeed = false;
 	}
 
@@ -229,17 +230,17 @@ public class Shooter implements Runnable
 	{
 		return encoder.get();
 	}
-	
+
 	public double getOffset()
 	{
 		return getSetpoint() - getPosition();
 	}
-	
+
 	public double getLeftRPM()
 	{
 		return leftRPM;
 	}
-	
+
 	public double getRightRPM()
 	{
 		return rightRPM;
@@ -272,13 +273,16 @@ public class Shooter implements Runnable
 	@Override
 	public void run()
 	{
-		String printout = "currTime, timeInterval, countLeft, countRight, RPMiliTarget, RPMilliLeft, RPMilliRight, "
-				+ "RPMilliMin, integral, error, targetPower, leftCorrection, rightCorrection\n";
+		String printout = "currTime, timeInterval, countLeft, countRight, RPMTarget, RPMLeft, RPMRight, "
+				+ "RPMilliMin, integral, error, targetPower, leftCorrection, rightCorrection, leftUnplugged, rightUnplugged\n";
+
+		leftBeamBreakNoSignal = false;
+		rightBeamBreakNoSignal = false;
 
 		long lastResetTime = System.currentTimeMillis();
 
 		double RPMilliTarget = ((double) Constants.SHOOTER_RPM) / MILLISECONDS_PER_MINUTE;
-		double RPMilliTolerence = ((double) Constants.SHOOTER_TARGET_SPEED_TOLERANCE_RPM) / MILLISECONDS_PER_MINUTE;
+		double RPMilliTolerence = ((double) Constants.SHOOTER_RPM_TOLERANCE) / MILLISECONDS_PER_MINUTE;
 
 		double integral = 0;
 
@@ -288,8 +292,8 @@ public class Shooter implements Runnable
 		beambreakLeft.reset();
 		beambreakRight.reset();
 
-//		leftMotor.set(RPMiliToPower(RPMilliTarget));
-//		rightMotor.set(RPMiliToPower(RPMilliTarget));
+		leftMotor.set(RPMiliToPower(RPMilliTarget));
+		rightMotor.set(RPMiliToPower(RPMilliTarget));
 
 		while (running && DriverStation.getInstance().isEnabled())
 		{
@@ -339,11 +343,15 @@ public class Shooter implements Runnable
 
 			double RPMilliLeft = (((double) countLeft) / timeInterval);
 			double RPMilliRight = (((double) countRight) / timeInterval);
-			
+
 			leftRPM = RPMilliLeft * MILLISECONDS_PER_MINUTE;
 			rightRPM = RPMilliRight * MILLISECONDS_PER_MINUTE;
 
 			double RPMilliMin;
+			if (leftBeamBreakNoSignal && rightBeamBreakNoSignal)
+			{
+				RPMilliMin = RPMilliTarget;
+			}
 			if (leftBeamBreakNoSignal)
 			{
 				RPMilliMin = RPMilliRight;
@@ -357,17 +365,10 @@ public class Shooter implements Runnable
 				RPMilliMin = Math.min(RPMilliLeft, RPMilliRight);
 			}
 
-			integral = integral + RPMilliMin * timeInterval;
 			double error = RPMilliTarget - RPMilliMin;
+			integral = integral + error * ((double) timeInterval / timeInterval);
 
-			if (Math.abs(error) <= RPMilliTolerence)
-			{
-				atTargetSpeed = true;
-			}
-			else
-			{
-				atTargetSpeed = false;
-			}
+			atTargetSpeed = Math.abs(error) <= RPMilliTolerence;
 
 			double targetPower = RPMiliToPower(RPMilliTarget) + (leftBeamBreakNoSignal && rightBeamBreakNoSignal ? 0
 					: error * Constants.SHOOTER_K_P + integral * Constants.SHOOTER_K_I);
@@ -383,12 +384,12 @@ public class Shooter implements Runnable
 			{
 				// right is too fast
 				leftCorrection = 1;
-				rightCorrection = Math.max(1 - (diff / CORRECTION_RPM), 0);
+				rightCorrection = Math.max(1 - (diff / ((double) CORRECTION_RPM / MILLISECONDS_PER_MINUTE)), 0);
 			}
 			else if (diff < 0 && !rightBeamBreakNoSignal)
 			{
 				// left is too fast
-				leftCorrection = Math.max(1 - (-diff / CORRECTION_RPM), 0);
+				leftCorrection = Math.max(1 - (-diff / ((double) CORRECTION_RPM / MILLISECONDS_PER_MINUTE)), 0);
 				rightCorrection = 1;
 			}
 			else
@@ -399,64 +400,49 @@ public class Shooter implements Runnable
 			}
 
 			// TODO add
-//			leftMotor.set(targetPower * leftCorrection);
-//			rightMotor.set(targetPower * rightCorrection);
+			leftMotor.set(targetPower * leftCorrection);
+			rightMotor.set(targetPower * rightCorrection);
 
-			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliTarget
-					+ " ," + RPMilliLeft + " ," + RPMilliRight + " ," + RPMilliMin + " ," + integral + " ," + error
-					+ " ," + targetPower + " ," + leftCorrection + " ," + rightCorrection + "\n";
+			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
+			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
+			SmartDashboard.putBoolean("Shooter At Target", atTargetSpeed);
+
+			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ,"
+					+ RPMilliTarget * MILLISECONDS_PER_MINUTE + " ," + RPMilliLeft * MILLISECONDS_PER_MINUTE + " ,"
+					+ RPMilliRight * MILLISECONDS_PER_MINUTE + " ," + RPMilliMin + " ," + integral + " ," + error + " ,"
+					+ targetPower + " ," + leftCorrection + " ," + rightCorrection + " ," + leftBeamBreakNoSignal + " ,"
+					+ rightBeamBreakNoSignal + "\n";
 		}
 
-//		leftMotor.set(0);
-//		rightMotor.set(0);
+		leftMotor.set(0);
+		rightMotor.set(0);
+		
+		SmartDashboard.putNumber("Shooter Left RPM", 0);
+		SmartDashboard.putNumber("Shooter Right RPM", 0);
+		SmartDashboard.putBoolean("Shooter At Target", false);
 
 		running = false;
 
 		writeFile("/home/lvuser/shooterRun.csv", printout);
 	}
 
-	// TODO Remove
-	public void writeShooterCurves()
-	{
-		String printout = "currTime, timeInterval, countLeft, countRight, RPMilliLeft, RPMilliRight, " + "\n";
-
-		beambreakLeft.reset();
-		beambreakRight.reset();
-
-		long lastResetTime = System.currentTimeMillis();
-
-		for (double i = 0; i <= 1; i += .005)
-		{
-			try
-			{
-				Thread.sleep(1000);
-			}
-			catch (InterruptedException e)
-			{
-			}
-			long currTime = System.currentTimeMillis();
-			int timeInterval = (int) (lastResetTime - currTime);
-			lastResetTime = currTime;
-			int countLeft = beambreakLeft.get();
-			int countRight = beambreakRight.get();
-			beambreakLeft.reset();
-			beambreakRight.reset();
-
-			double RPMilliLeft = (((double) countLeft) / timeInterval);
-			double RPMilliRight = (((double) countRight) / timeInterval);
-
-			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ," + RPMilliLeft
-					+ " ," + RPMilliRight + "\n";
-		}
-		leftMotor.set(0);
-		rightMotor.set(0);
-
-		writeFile("/home/lvuser/shooterRun.csv", printout);
-	}
-
 	private double RPMiliToPower(double RPMili)
 	{
-		return RPMili * Constants.SHOOTER_PERCENT_POWER_PER_RPMILLI;
+		double a = 11.21;
+		double b = 3.158;
+		double c = 0.15;
+
+		if (RPMili < 0.01)
+		{
+			return 0;
+		}
+
+		double power = a * Math.pow(RPMili, 2) + b * RPMili + c;
+
+		// limit speed to below 1
+		power = Math.min(power, 1);
+
+		return power;
 	}
 
 	// TODO Remove
@@ -482,25 +468,29 @@ public class Shooter implements Runnable
 			waitForShooterOutfeed();
 			try
 			{
-				Thread.sleep(1500);
+				Thread.sleep(500);
 			}
 			catch (InterruptedException e)
 			{
 			}
-			
+
 			while (ejectThreadRunning)
 			{
 				try
 				{
-					for (int i = 0; i < 3 && ejectThreadRunning; i++)
-					{
-						setFlippers(true);
-						Thread.sleep(100);
-						setFlippers(false);
-						Thread.sleep(100);
-					}
-					
-					Thread.sleep(750);
+					// for (int i = 0; i < 3 && ejectThreadRunning; i++)
+					// {
+					// setFlippers(true);
+					// Thread.sleep(100);
+					// setFlippers(false);
+					// Thread.sleep(100);
+					// }
+
+					setFlippers(true);
+					Thread.sleep(100);
+					setFlippers(false);
+
+					Thread.sleep(500);
 				}
 				catch (InterruptedException e)
 				{
