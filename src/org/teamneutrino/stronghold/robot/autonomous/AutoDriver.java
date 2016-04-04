@@ -26,7 +26,7 @@ public class AutoDriver implements Camera.NewFrameListener
 	private Shooter shooter;
 	private Camera cam;
 
-	private boolean shooterAimingThreadRunning;
+	private boolean aiming;
 	private boolean driveAimed;
 	private boolean shooterAimed;
 
@@ -70,9 +70,12 @@ public class AutoDriver implements Camera.NewFrameListener
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 
-		shooterAimingThreadRunning = false;
+		aiming = false;
 		driveAimed = false;
 		shooterAimed = false;
+		
+		new Thread(new ShooterAimingThread()).start();
+		new Thread(new DriveAimingThread()).start();
 	}
 
 	/**
@@ -544,22 +547,20 @@ public class AutoDriver implements Camera.NewFrameListener
 		shooterAimed = false;
 		driveAimed = false;
 
-		if (!shooterAimingThreadRunning)
+		if (!aiming)
 		{
-			shooterAimingThreadRunning = true;
-			new Thread(new ShooterAimingThread()).start();
-			new Thread(new DriveAimingThread()).start();
+			aiming = true;
 		}
 	}
 
 	public void stopAim()
 	{
-		shooterAimingThreadRunning = false;
+		aiming = false;
 	}
 
 	public boolean isAiming()
 	{
-		return shooterAimingThreadRunning;
+		return aiming;
 	}
 
 	public boolean isAimed()
@@ -583,7 +584,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		{
 			int prevFrameNum = 0;
 			int currFrameNum = 0;
-			while (shooterAimingThreadRunning)
+			while (true)
 			{
 				// stop thread until new frame
 				synchronized (AutoDriver.this)
@@ -604,8 +605,6 @@ public class AutoDriver implements Camera.NewFrameListener
 					shooterAimed = aimShooter();
 				}
 			}
-
-			shooterAimingThreadRunning = false;
 		}
 	}
 
@@ -616,7 +615,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		{
 			int prevFrameNum = 0;
 			int currFrameNum = 0;
-			while (shooterAimingThreadRunning)
+			while (true)
 			{
 				// stop thread until new frame
 				synchronized (AutoDriver.this)
@@ -638,8 +637,6 @@ public class AutoDriver implements Camera.NewFrameListener
 					driveAimed = aimDrive();
 				}
 			}
-
-			shooterAimingThreadRunning = false;
 		}
 	}
 
@@ -663,7 +660,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		// bound speed between -1 and 1
 		speed = Math.max(-1, Math.min(1, speed));
 
-		if (!onTarget)
+		if (!onTarget && aiming)
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
@@ -678,8 +675,11 @@ public class AutoDriver implements Camera.NewFrameListener
 			}
 		}
 
-		drive.setLeft(0);
-		drive.setRight(0);
+		if (aiming)
+		{
+			drive.setLeft(0);
+			drive.setRight(0);
+		}
 
 		return onTarget;
 	}
@@ -692,7 +692,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 		if (targetArea < 1)
 		{
-			if (shooter.getSetpoint() < 20)
+			if (shooter.getSetpoint() < 20 && aiming)
 			{
 				shooter.setSetpoint(20);
 			}
@@ -705,7 +705,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		double error = currY - targetY;
 		boolean onTarget = (Math.abs(error) < AIM_ON_TARGET_THRESHOLD);
 
-		if (!onTarget)
+		if (!onTarget && aiming)
 		{
 			double positionError = error / 30;
 			double newSetpoint = shooter.getPosition() - positionError + .3;
