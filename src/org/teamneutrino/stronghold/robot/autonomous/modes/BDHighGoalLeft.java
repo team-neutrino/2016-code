@@ -7,14 +7,14 @@ import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
-public class BDHighGoal implements AutoMode
+public class BDHighGoalLeft implements AutoMode
 {
 	private AutoDriver driver;
 	private Shooter shooter;
 	private Intake intake;
 	private Drive drive;
 
-	public BDHighGoal(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
+	public BDHighGoalLeft(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
 	{
 		this.driver = driver;
 		this.shooter = shooter;
@@ -25,7 +25,7 @@ public class BDHighGoal implements AutoMode
 	@Override
 	public String getName()
 	{
-		return "B and D Defenses High Goal";
+		return "B and D Defenses High Goal Rotate Left";
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class BDHighGoal implements AutoMode
 		catch (EncoderUnpluggedException e)
 		{
 			driver.moveTime(4000, 1);
-			
+
 			intake.setTargetPosition(Intake.Position.INTAKE);
 			shooter.setTargetPosition(Shooter.Position.FRONT);
 
@@ -50,8 +50,8 @@ public class BDHighGoal implements AutoMode
 
 			drive.setLeft(0);
 			drive.setRight(0);
-			
-			driver.autonomousAim(4000, 0);
+
+			driver.autonomousAim(4000, -.2);
 
 			shooter.start();
 

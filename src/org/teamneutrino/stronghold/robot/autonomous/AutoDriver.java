@@ -767,6 +767,9 @@ public class AutoDriver implements Camera.NewFrameListener
 		{
 			if (!aiming)
 			{
+				drive.setLeft(-turn);
+				drive.setRight(turn);
+				wait(100);
 				drive.setLeft(0);
 				drive.setRight(0);
 			}
