@@ -559,7 +559,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	public boolean isAimed()
 	{
-		return isAiming() && shooterAimed && driveAimed;
+		return shooterAimed && driveAimed;
 	}
 
 	@Override
