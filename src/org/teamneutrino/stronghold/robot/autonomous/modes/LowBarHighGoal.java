@@ -61,7 +61,7 @@ public class LowBarHighGoal implements AutoMode
 
 		shooter.start();
 
-		driver.sleep(1000);
+		driver.sleep(1500);
 
 		while (!shooter.isAtTargetSpeed() && driver.isAutoEnabled())
 		{

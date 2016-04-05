@@ -375,7 +375,7 @@ public class Robot extends SampleRobot
 		// aim
 		driver.aim();
 
-		while (camera.targetInFrame() && !driver.isAimed())
+		while (!driver.isAimed())
 		{
 			Util.sleep(5);
 
@@ -387,11 +387,14 @@ public class Robot extends SampleRobot
 		}
 
 		driver.stopAim();
+		
+		drive.setLeft(0);
+		drive.setRight(0);
 
 		// shoot
 		shooter.start();
 
-		Util.sleep(1000);
+		Util.sleep(1500);
 
 		while (!shooter.isAtTargetSpeed())
 		{

@@ -26,7 +26,7 @@ public class Constants
 	public static final String CAMERA_NAME = "cam0";
 	public static final int CAMERA_DEFAULT_HUE_LOW = 40;
 	public static final int CAMERA_DEFAULT_HUE_HIGH = 140;
-	public static final int CAMERA_DEFAULT_SATURATION_LOW = 100;
+	public static final int CAMERA_DEFAULT_SATURATION_LOW = 50;
 	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
 	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 30;
 	public static final int CAMERA_DEFAULT_LUMINENCE_HIGH = 255;
@@ -41,7 +41,7 @@ public class Constants
 	public static final double CAMERA_TARGET_Y_OUTERWORKS = 250;
 	public static final double CAMERA_TARGET_AREA_OUTERWORKS = 5500;
 	public static final double CAMERA_TARGET_X_BATTER = -122;
-	public static final double CAMERA_TARGET_Y_BATTER = 160;
+	public static final double CAMERA_TARGET_Y_BATTER = 140;
 	public static final double CAMERA_TARGET_AREA_BATTER = 11000;
 	
 	// Target Batter
