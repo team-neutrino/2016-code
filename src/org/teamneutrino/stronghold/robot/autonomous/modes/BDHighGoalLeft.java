@@ -38,10 +38,6 @@ public class BDHighGoalLeft implements AutoMode
 		try
 		{
 			driver.moveDistance(13, 1);
-		}
-		catch (EncoderUnpluggedException e)
-		{
-			driver.moveTime(4000, 1);
 
 			intake.setTargetPosition(Intake.Position.INTAKE);
 			shooter.setTargetPosition(Shooter.Position.FRONT);
@@ -55,7 +51,7 @@ public class BDHighGoalLeft implements AutoMode
 
 			shooter.start();
 
-			driver.sleep(1000);
+			driver.sleep(1500);
 
 			while (!shooter.isAtTargetSpeed() && driver.isAutoEnabled())
 			{
@@ -68,6 +64,10 @@ public class BDHighGoalLeft implements AutoMode
 
 			shooter.setFlippers(false);
 			shooter.stop();
+		}
+		catch (EncoderUnpluggedException e)
+		{
+			driver.moveTime(4000, 1);
 		}
 	}
 }

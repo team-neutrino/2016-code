@@ -11,6 +11,7 @@ import org.teamneutrino.stronghold.robot.util.Util;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class autonomously drives and operates the robot using feed back from
@@ -55,7 +56,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private static final int TIMEOUT_REFRESH_RATE = 7;
 
-	private static final double AIM_ON_TARGET_THRESHOLD = 10;
+	private static final double AIM_ON_TARGET_THRESHOLD = 5;
 
 	public AutoDriver(Drive drive, Shooter shooter, Camera cam)
 	{
@@ -74,8 +75,8 @@ public class AutoDriver implements Camera.NewFrameListener
 		driveAimed = false;
 		shooterAimed = false;
 		
-		new Thread(new ShooterAimingThread()).start();
-		new Thread(new DriveAimingThread()).start();
+//		new Thread(new ShooterAimingThread()).start();
+//		new Thread(new DriveAimingThread()).start();
 	}
 
 	/**
@@ -565,73 +566,10 @@ public class AutoDriver implements Camera.NewFrameListener
 	@Override
 	public void newFrame()
 	{
-		synchronized (this)
-		{
-			notifyAll();
-		}
-	}
+		shooterAimed = aimShooter();
+		driveAimed = aimDrive();
 
-	private class ShooterAimingThread implements Runnable
-	{
-		@Override
-		public void run()
-		{
-			int prevFrameNum = 0;
-			int currFrameNum = 0;
-			while (true)
-			{
-				// stop thread until new frame
-				synchronized (AutoDriver.this)
-				{
-					try
-					{
-						AutoDriver.this.wait();
-					}
-					catch (InterruptedException e)
-					{
-					}
-				}
-
-				// check for new frame
-				currFrameNum = cam.getFrameNum();
-				if (currFrameNum != prevFrameNum && cam.targetInFrame())
-				{
-					shooterAimed = aimShooter();
-				}
-			}
-		}
-	}
-
-	private class DriveAimingThread implements Runnable
-	{
-		@Override
-		public void run()
-		{
-			int prevFrameNum = 0;
-			int currFrameNum = 0;
-			while (true)
-			{
-				// stop thread until new frame
-				synchronized (AutoDriver.this)
-				{
-					try
-					{
-						AutoDriver.this.wait();
-					}
-					catch (InterruptedException e)
-					{
-					}
-				}
-
-				// check for new frame
-				currFrameNum = cam.getFrameNum();
-				if (currFrameNum != prevFrameNum && cam.targetInFrame())
-				{
-					prevFrameNum = currFrameNum;
-					driveAimed = aimDrive();
-				}
-			}
-		}
+		SmartDashboard.putBoolean("Shooter Aimed", shooterAimed && driveAimed);
 	}
 
 	private boolean aimDrive()
@@ -648,17 +586,14 @@ public class AutoDriver implements Camera.NewFrameListener
 				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_X_OUTERWORKS,
 				Constants.CAMERA_TARGET_X_BATTER);
 		double error = currX - targetX;
-		double speed = (error < 0 ? -1 : 1);
+		double speed = (error < 0 ? -1 : 1) * 1;
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
-
-		// bound speed between -1 and 1
-		speed = Math.max(-1, Math.min(1, speed));
 
 		if (!onTarget && aiming)
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
-			int time = Math.abs((int) (error)) / 3 + 15;
+			int time = Math.abs((int) (error)) / 3 + 30;
 
 			try
 			{

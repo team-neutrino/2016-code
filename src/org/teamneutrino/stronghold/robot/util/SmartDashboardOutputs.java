@@ -46,8 +46,6 @@ public class SmartDashboardOutputs implements Runnable
 			SmartDashboard.putNumber("Intake Offset", intake.getOffset());
 			SmartDashboard.putNumber("Pnumatic Pressure", pressure.getPressure());
 			
-			SmartDashboard.putBoolean("Shooter Aimed", driver.isAimed());
-			
 			currMon.send();
 		}
 	}
