@@ -29,7 +29,7 @@ public class DriveEncoders
 
 	public void setTargetSpeed(double leftSpeed, double rightSpeed)
 	{
-		if (useEncoders && Math.abs(leftSpeed) > .1 && Math.abs(rightSpeed) > .1)
+		if (useEncoders)
 		{
 			long currTime = System.currentTimeMillis();
 
@@ -48,13 +48,13 @@ public class DriveEncoders
 			if (error >= 0)
 			{
 				drive.setLeft(leftSpeed);
-				drive.setRight((rightSpeed >= 0 ? 1 : -1)
-						* (Math.abs(rightSpeed) - errorIntegrated * Constants.DRIVE_ENCODER_P));
+				drive.setRight((rightSpeed >= 0 ? 1 : -1) * (Math.abs(rightSpeed) - error * Constants.DRIVE_ENCODER_P
+						- errorIntegrated * Constants.DRIVE_ENCODER_I));
 			}
 			else
 			{
-				drive.setLeft((leftSpeed >= 0 ? 1 : -1)
-						* (Math.abs(leftSpeed) + errorIntegrated * Constants.DRIVE_ENCODER_P));
+				drive.setLeft((leftSpeed >= 0 ? 1 : -1) * (Math.abs(leftSpeed) + error * Constants.DRIVE_ENCODER_P
+						+ errorIntegrated * Constants.DRIVE_ENCODER_I));
 				drive.setRight(rightSpeed);
 			}
 		}

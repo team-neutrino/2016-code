@@ -65,7 +65,8 @@ public class Constants
 	public static final int DRIVE_RIGHT_3_CHANNEL = 5;
 	public static final int DRIVE_RIGHT_3_POWER_CHANNEL = 2;
 	public static final double DRIVE_DEADBAND = (REAL_BOT ? .1 : 0.18); // TODO
-	public static final double DRIVE_ENCODER_P = .1;
+	public static final double DRIVE_ENCODER_P = .5;
+	public static final double DRIVE_ENCODER_I = 0;
 
 	// Intake Constants
 	public static final int INTAKE_ACUATOR_MOTOR_CHANNEL = 9;

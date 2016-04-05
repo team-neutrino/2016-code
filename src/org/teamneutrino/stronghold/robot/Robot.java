@@ -117,7 +117,7 @@ public class Robot extends SampleRobot
 
 		driver.stopAim();
 
-		encDrive.useEncoders(true);
+		encDrive.useEncoders(false);
 
 		while (isOperatorControl() && isEnabled())
 		{
