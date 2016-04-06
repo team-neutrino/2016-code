@@ -11,6 +11,7 @@ import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
 import org.teamneutrino.stronghold.robot.autonomous.modes.LowBar;
 import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarHighGoal;
 import org.teamneutrino.stronghold.robot.autonomous.modes.PorticullisHighGoalLeft;
+import org.teamneutrino.stronghold.robot.autonomous.modes.PorticullisHighGoalRight;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.DriveEncoders;
