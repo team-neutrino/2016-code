@@ -16,7 +16,7 @@ public class ChevalHighGoalRight implements AutoMode
 	private Intake intake;
 	private Drive drive;
 	
-	public ChevalHighGoalLeft(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
+	public ChevalHighGoalRight(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
 	{
 		this.driver = driver;
 		this.shooter = shooter;
@@ -40,6 +40,8 @@ public class ChevalHighGoalRight implements AutoMode
 			intake.setTargetPosition(Intake.Position.DOWN);
 			driver.moveDistance(6, 1);
 			shooter.setTargetPosition(Shooter.Position.FRONT);
+			drive.setLeft(0);
+			drive.setRight(0);
 			driver.autonomousAim(4000, .2);
 
 			shooter.start();

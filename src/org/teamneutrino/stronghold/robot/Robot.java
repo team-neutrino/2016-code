@@ -5,9 +5,12 @@ import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.modes.BD;
 import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalLeft;
 import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalRight;
+import org.teamneutrino.stronghold.robot.autonomous.modes.ChevalHighGoalLeft;
+import org.teamneutrino.stronghold.robot.autonomous.modes.ChevalHighGoalRight;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
 import org.teamneutrino.stronghold.robot.autonomous.modes.LowBar;
 import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarHighGoal;
+import org.teamneutrino.stronghold.robot.autonomous.modes.PorticullisHighGoalLeft;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.DriveEncoders;
@@ -68,6 +71,11 @@ public class Robot extends SampleRobot
 		autoController.assignMode(3, new LowBarHighGoal(driver, shooter, intake, drive, camera));
 		autoController.assignMode(4, new BDHighGoalRight(driver, shooter, intake, drive));
 		autoController.assignMode(5, new BDHighGoalLeft(driver, shooter, intake, drive));
+		autoController.assignMode(6, new ChevalHighGoalRight(driver, shooter, intake, drive));
+		autoController.assignMode(7, new ChevalHighGoalLeft(driver, shooter, intake, drive));
+		autoController.assignMode(8, new PorticullisHighGoalRight(driver, shooter, intake, drive));
+		autoController.assignMode(9, new PorticullisHighGoalLeft(driver, shooter, intake, drive));
+		
 	}
 
 	@Override
