@@ -35,7 +35,8 @@ public class ChevalHighGoalRight implements AutoMode
 	{
 		try
 		{
-			driver.moveDistance(7, 1);
+			intake.setTargetPosition(Intake.Position.UP);
+			driver.moveDistance(7, .75);
 			intake.setTargetPosition(Intake.Position.DOWN);
 			driver.moveDistance(6, 1);
 			shooter.setTargetPosition(Shooter.Position.FRONT);
