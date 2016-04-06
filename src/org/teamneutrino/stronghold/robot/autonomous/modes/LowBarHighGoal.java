@@ -3,7 +3,6 @@ package org.teamneutrino.stronghold.robot.autonomous.modes;
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.AutoMode;
 import org.teamneutrino.stronghold.robot.exceptions.EncoderUnpluggedException;
-import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
@@ -15,7 +14,7 @@ public class LowBarHighGoal implements AutoMode
 	private Intake intake;
 	private Drive drive;
 
-	public LowBarHighGoal(AutoDriver driver, Shooter shooter, Intake intake, Drive drive, Camera camera)
+	public LowBarHighGoal(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
 	{
 		this.driver = driver;
 		this.shooter = shooter;

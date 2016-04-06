@@ -69,7 +69,7 @@ public class Robot extends SampleRobot
 		autoController.assignMode(0, new DoNothing());
 		autoController.assignMode(1, new LowBar(driver, shooter, intake));
 		autoController.assignMode(2, new BD(driver, shooter, intake));
-		autoController.assignMode(3, new LowBarHighGoal(driver, shooter, intake, drive, camera));
+		autoController.assignMode(3, new LowBarHighGoal(driver, shooter, intake, drive));
 		autoController.assignMode(4, new BDHighGoalRight(driver, shooter, intake, drive));
 		autoController.assignMode(5, new BDHighGoalLeft(driver, shooter, intake, drive));
 		autoController.assignMode(6, new ChevalHighGoalRight(driver, shooter, intake, drive));
