@@ -403,11 +403,11 @@ public class Shooter implements Runnable
 			}
 
 			// TODO add
-			leftMotor.set(-targetPower * leftCorrection);
-			rightMotor.set(-targetPower * rightCorrection);
+			// leftMotor.set(-targetPower * leftCorrection);
+			// rightMotor.set(-targetPower * rightCorrection);
 			
-//			leftMotor.set(1);
-//			rightMotor.set(1);
+			leftMotor.set(1);
+			rightMotor.set(1);
 
 			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
 			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
