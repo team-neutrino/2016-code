@@ -85,6 +85,8 @@ public class Shooter implements Runnable
 			double talonMaxDeadband = .041;
 			actuatorMotor = new SpeedControllerDeadbandRemoved(new Talon(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
 					talonMinDeadband - motorDeadband, talonMaxDeadband + motorDeadband, -0.005, 0.005);
+			leftMotor.setInverted(true);
+			rightMotor.setInverted(false);
 		}
 		else
 		{
@@ -94,8 +96,9 @@ public class Shooter implements Runnable
 			double victorMaxDeadband = .045;
 			actuatorMotor = new SpeedControllerDeadbandRemoved(new Victor(Constants.SHOOTER_ACTUATOR_MOTOR_CHANNEL),
 					victorMinDeadband - motorDeadband, victorMaxDeadband + motorDeadband, -0.005, 0.005);
+			leftMotor.setInverted(false);
+			rightMotor.setInverted(true);
 		}
-		rightMotor.setInverted(true);
 
 		flippersOpenCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_OPEN_CYLINDER_CHANNEL);
 		flippersCloseCylinder = new Solenoid(Constants.SHOOTER_FLIPPER_CLOSE_CYLINDER_CHANNEL);
@@ -400,8 +403,11 @@ public class Shooter implements Runnable
 			}
 
 			// TODO add
-			leftMotor.set(targetPower * leftCorrection);
-			rightMotor.set(targetPower * rightCorrection);
+			leftMotor.set(-targetPower * leftCorrection);
+			rightMotor.set(-targetPower * rightCorrection);
+			
+			leftMotor.set(1);
+			rightMotor.set(1);
 
 			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
 			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
@@ -416,7 +422,7 @@ public class Shooter implements Runnable
 
 		leftMotor.set(0);
 		rightMotor.set(0);
-		
+
 		SmartDashboard.putNumber("Shooter Left RPM", 0);
 		SmartDashboard.putNumber("Shooter Right RPM", 0);
 		SmartDashboard.putBoolean("Shooter At Target", false);

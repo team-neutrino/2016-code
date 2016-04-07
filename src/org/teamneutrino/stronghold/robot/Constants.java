@@ -83,17 +83,17 @@ public class Constants
 	public static final double INTAKE_ACTUATION_K_D = .001;
 
 	// Shooter Constants
-	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = (REAL_BOT ? 10 : 6);
-	public static final int SHOOTER_LEFT_MOTOR_POWER_CHANNEL = 4;
-	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = (REAL_BOT ? 11 : 7);
-	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 11;
+	public static final int SHOOTER_LEFT_MOTOR_CHANNEL = (REAL_BOT ? 11 : 6);
+	public static final int SHOOTER_LEFT_MOTOR_POWER_CHANNEL = 11;
+	public static final int SHOOTER_RIGHT_MOTOR_CHANNEL = (REAL_BOT ? 10 : 7);
+	public static final int SHOOTER_RIGHT_MOTOR_POWER_CHANNEL = 4;
 	public static final int SHOOTER_ACTUATOR_MOTOR_CHANNEL = 8;
 	public static final int SHOOTER_ACTUATOR_MOTOR_POWER_CHANNEL = 8;
 	public static final int SHOOTER_REFRESH_RATE = 250;
-	public static final int SHOOTER_RPM = 7000;
+	public static final int SHOOTER_RPM = 8000;
 	public static final double SHOOTER_RPM_TOLERANCE = 500;
-	public static final int SHOOTER_BEAMBREAK_RIGHT_CHANNEL = 8;
-	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = 9;
+	public static final int SHOOTER_BEAMBREAK_RIGHT_CHANNEL = (REAL_BOT ? 18 : 8);
+	public static final int SHOOTER_BEAMBREAK_LEFT_CHANNEL = (REAL_BOT ? 19 : 9);
 	public static final int SHOOTER_BEAMBREAK_1_POWER_CHANNEL = 6;
 	public static final int SHOOTER_BEAMBREAK_2_POWER_CHANNEL = 7;
 	public static final double SHOOTER_K_P = 20;
