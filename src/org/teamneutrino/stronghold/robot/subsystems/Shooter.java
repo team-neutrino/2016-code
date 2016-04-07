@@ -371,7 +371,8 @@ public class Shooter implements Runnable
 			double error = RPMilliTarget - RPMilliMin;
 			integral = integral + error * ((double) timeInterval / timeInterval);
 
-			atTargetSpeed = Math.abs(error) <= RPMilliTolerence;
+			// atTargetSpeed = Math.abs(error) <= RPMilliTolerence;
+			atTargetSpeed = RPMilliMin > 9000 / MILLISECONDS_PER_MINUTE;
 
 			double targetPower = RPMiliToPower(RPMilliTarget) + (leftBeamBreakNoSignal && rightBeamBreakNoSignal ? 0
 					: error * Constants.SHOOTER_K_P + integral * Constants.SHOOTER_K_I);

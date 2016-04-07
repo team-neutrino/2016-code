@@ -37,12 +37,12 @@ public class Constants
 	public static final double CAMERA_IMAGE_CENTER_Y = CAMERA_IMAGE_HIEGHT / 2;
 	
 	// Target Outerworks
-	public static final double CAMERA_TARGET_X_OUTERWORKS = -90;
-	public static final double CAMERA_TARGET_Y_OUTERWORKS = 250;
-	public static final double CAMERA_TARGET_AREA_OUTERWORKS = 5500;
-	public static final double CAMERA_TARGET_X_BATTER = -122;
-	public static final double CAMERA_TARGET_Y_BATTER = 140;
-	public static final double CAMERA_TARGET_AREA_BATTER = 11000;
+	public static final double CAMERA_TARGET_X_OUTERWORKS = -44;
+	public static final double CAMERA_TARGET_Y_OUTERWORKS = 210;
+	public static final double CAMERA_TARGET_AREA_OUTERWORKS = 4500;
+	public static final double CAMERA_TARGET_X_BATTER = -76;
+	public static final double CAMERA_TARGET_Y_BATTER = 95;
+	public static final double CAMERA_TARGET_AREA_BATTER = 9000;
 	
 	// Target Batter
 

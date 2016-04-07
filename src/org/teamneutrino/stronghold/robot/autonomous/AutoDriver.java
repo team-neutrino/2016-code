@@ -129,6 +129,8 @@ public class AutoDriver implements Camera.NewFrameListener
 
 			double rightCorrection;
 			double leftCorrection;
+			
+			System.out.println("right distance " + rightDistance + " left distance " + leftDistance);
 
 			// unplugged detection
 			if (Math.abs(leftDistancePrev - leftDistance) < .001)
@@ -586,14 +588,14 @@ public class AutoDriver implements Camera.NewFrameListener
 				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_X_OUTERWORKS,
 				Constants.CAMERA_TARGET_X_BATTER);
 		double error = currX - targetX;
-		double speed = (error < 0 ? -1 : 1) * 1;
+		double speed = (error < 0 ? -1 : 1) * .5;
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
 		if (!onTarget && aiming)
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
-			int time = Math.abs((int) (error)) / 3 + 30;
+			int time = Math.abs((int) (error)) / 3 + 15;
 
 			try
 			{
