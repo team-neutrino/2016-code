@@ -79,6 +79,7 @@ public class Intake
 
 	public void setSetpoint(double angle)
 	{
+		actuationPID.setSetpoint(angle);
 		actuatorMotor.enablePID();
 		actuationPID.enable();
 	}
