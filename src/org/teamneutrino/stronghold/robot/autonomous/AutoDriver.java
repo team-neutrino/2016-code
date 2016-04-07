@@ -74,9 +74,9 @@ public class AutoDriver implements Camera.NewFrameListener
 		aiming = false;
 		driveAimed = false;
 		shooterAimed = false;
-		
-//		new Thread(new ShooterAimingThread()).start();
-//		new Thread(new DriveAimingThread()).start();
+
+		// new Thread(new ShooterAimingThread()).start();
+		// new Thread(new DriveAimingThread()).start();
 	}
 
 	/**
@@ -129,8 +129,6 @@ public class AutoDriver implements Camera.NewFrameListener
 
 			double rightCorrection;
 			double leftCorrection;
-			
-			System.out.println("right distance " + rightDistance + " left distance " + leftDistance);
 
 			// unplugged detection
 			if (Math.abs(leftDistancePrev - leftDistance) < .001)
@@ -647,16 +645,16 @@ public class AutoDriver implements Camera.NewFrameListener
 
 		return onTarget;
 	}
-	
+
 	public boolean isAutoEnabled()
 	{
 		return DriverStation.getInstance().isAutonomous() && DriverStation.getInstance().isEnabled();
 	}
-	
+
 	public void sleep(int millis)
 	{
 		long startTime = System.currentTimeMillis();
-		
+
 		while (System.currentTimeMillis() - startTime < millis && isAutoEnabled())
 		{
 			try
@@ -673,7 +671,7 @@ public class AutoDriver implements Camera.NewFrameListener
 	{
 		long startTime = System.currentTimeMillis();
 		boolean aiming = true;
-		
+
 		while (System.currentTimeMillis() - startTime < millis && isAutoEnabled())
 		{
 			aiming = aim(aiming, turn);
@@ -687,11 +685,11 @@ public class AutoDriver implements Camera.NewFrameListener
 		}
 
 		stopAim();
-		
+
 		drive.setLeft(0);
 		drive.setRight(0);
 	}
-	
+
 	private boolean aim(boolean aiming, double turn)
 	{
 		if (cam.targetInFrame())
@@ -716,5 +714,31 @@ public class AutoDriver implements Camera.NewFrameListener
 		}
 
 		return aiming;
+	}
+
+	public void autoShooter()
+	{
+		shooter.start();
+
+		sleep(1500);
+
+		while (!shooter.isAtTargetSpeed() && isAutoEnabled())
+		{
+			sleep(5);
+		}
+
+		shooter.setFlippers(true);
+		sleep(250);
+		shooter.setFlippers(false);
+		sleep(250);
+		shooter.setFlippers(true);
+		sleep(250);
+		shooter.setFlippers(false);
+		sleep(250);
+		shooter.setFlippers(true);
+		sleep(250);
+		shooter.setFlippers(false);
+
+		shooter.stop();
 	}
 }

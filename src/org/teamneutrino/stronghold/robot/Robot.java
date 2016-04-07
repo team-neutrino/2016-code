@@ -9,7 +9,7 @@ import org.teamneutrino.stronghold.robot.autonomous.modes.ChevalHighGoalLeft;
 import org.teamneutrino.stronghold.robot.autonomous.modes.ChevalHighGoalRight;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
 import org.teamneutrino.stronghold.robot.autonomous.modes.LowBar;
-import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarHighGoal;
+import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarHighGoalTime;
 import org.teamneutrino.stronghold.robot.autonomous.modes.PorticullisHighGoalLeft;
 import org.teamneutrino.stronghold.robot.autonomous.modes.PorticullisHighGoalRight;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
@@ -69,7 +69,7 @@ public class Robot extends SampleRobot
 		autoController.assignMode(0, new DoNothing());
 		autoController.assignMode(1, new LowBar(driver, shooter, intake));
 		autoController.assignMode(2, new BD(driver, shooter, intake));
-		autoController.assignMode(3, new LowBarHighGoal(driver, shooter, intake, drive));
+		autoController.assignMode(3, new LowBarHighGoalTime(driver, shooter, intake, drive));
 		autoController.assignMode(4, new BDHighGoalRight(driver, shooter, intake, drive));
 		autoController.assignMode(5, new BDHighGoalLeft(driver, shooter, intake, drive));
 		autoController.assignMode(6, new ChevalHighGoalRight(driver, shooter, intake, drive));
@@ -416,10 +416,17 @@ public class Robot extends SampleRobot
 		}
 
 		shooter.setFlippers(true);
-
-		Util.sleep(500);
-
+		Util.sleep(250);
 		shooter.setFlippers(false);
+		Util.sleep(250);
+		shooter.setFlippers(true);
+		Util.sleep(250);
+		shooter.setFlippers(false);
+		Util.sleep(250);
+		shooter.setFlippers(true);
+		Util.sleep(250);
+		shooter.setFlippers(false);
+
 		shooter.stop();
 	}
 }
