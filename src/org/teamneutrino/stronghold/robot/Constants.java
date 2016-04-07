@@ -24,7 +24,7 @@ public class Constants
 
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam0";
-	public static final int CAMERA_DEFAULT_HUE_LOW = 40;
+	public static final int CAMERA_DEFAULT_HUE_LOW = 110;
 	public static final int CAMERA_DEFAULT_HUE_HIGH = 140;
 	public static final int CAMERA_DEFAULT_SATURATION_LOW = 50;
 	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
