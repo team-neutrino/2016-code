@@ -34,7 +34,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private boolean leftEncoderUnplugged;
 	private boolean rightEncoderUnplugged;
-	
+
 	private LEDManager ledMan;
 
 	private static final int TIMEOUT = 100000;
@@ -63,6 +63,8 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	public AutoDriver(Drive drive, Shooter shooter, Camera cam, Encoder encLeft, Encoder encRight, LEDManager ledMan)
 	{
+		this.ledMan = ledMan;
+
 		this.drive = drive;
 		this.shooter = shooter;
 		this.cam = cam;
@@ -77,8 +79,6 @@ public class AutoDriver implements Camera.NewFrameListener
 		aiming = false;
 		driveAimed = false;
 		shooterAimed = false;
-		
-		this.ledMan = ledMan;
 
 		// new Thread(new ShooterAimingThread()).start();
 		// new Thread(new DriveAimingThread()).start();
