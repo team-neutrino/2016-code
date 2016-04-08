@@ -15,6 +15,7 @@ import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.DriveEncoders;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
+import org.teamneutrino.stronghold.robot.subsystems.LEDManager;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 import org.teamneutrino.stronghold.robot.util.CurrentMonitor;
 import org.teamneutrino.stronghold.robot.util.JoystickButtonManager;
@@ -41,6 +42,7 @@ public class Robot extends SampleRobot
 	private Shooter shooter;
 	private Camera camera;
 	private CurrentMonitor currMon;
+	private LEDManager ledManger;
 
 	private JoystickButtonManager joyLeftMan;
 	private JoystickButtonManager joyRightMan;
@@ -48,6 +50,7 @@ public class Robot extends SampleRobot
 
 	public Robot()
 	{
+		ledManger = new LEDManager();
 		joyLeft = new Joystick(Constants.JOY_LEFT);
 		joyRight = new Joystick(Constants.JOY_RIGHT);
 		gamepad = new Joystick(Constants.GAMEPAD);
@@ -56,9 +59,9 @@ public class Robot extends SampleRobot
 		drive = new Drive();
 		encDrive = new DriveEncoders(drive, encoderLeft, encoderRight);
 		intake = new Intake();
-		shooter = new Shooter();
+		shooter = new Shooter(ledManger);
 		camera = new Camera();
-		driver = new AutoDriver(drive, shooter, camera, encoderLeft, encoderRight);
+		driver = new AutoDriver(drive, shooter, camera, encoderLeft, encoderRight, ledManger);
 		currMon = new CurrentMonitor();
 
 		new SmartDashboardOutputs(currMon, shooter, intake, driver);
@@ -86,19 +89,24 @@ public class Robot extends SampleRobot
 	public void disabled()
 	{
 		System.out.println("--- DISABLED ---");
+		ledManger.setDisabled(true);
 	}
 
 	@Override
 	public void autonomous()
 	{
 		System.out.println("--- AUTO ---");
+		ledManger.setAutoMode(true);
+		ledManger.setDisabled(false);
 		autoController.run();
+		ledManger.setAutoMode(false);
 	}
 
 	@Override
 	public void operatorControl()
 	{
 		System.out.println("--- TELEOP ---");
+		ledManger.setDisabled(false);
 		joyLeftMan = new JoystickButtonManager(joyLeft);
 		joyLeftMan.updateButtons();
 		joyRightMan = new JoystickButtonManager(joyRight);
@@ -363,6 +371,8 @@ public class Robot extends SampleRobot
 				lastCurrentUpdateTime = currTime;
 			}
 
+			ledManger.setOverCurrent(overCurrent);
+
 			gamepad.setRumble(RumbleType.kLeftRumble, (overCurrent ? 1f : 0f));
 			gamepad.setRumble(RumbleType.kRightRumble, (overCurrent ? 1f : 0f));
 
@@ -393,7 +403,7 @@ public class Robot extends SampleRobot
 		}
 
 		driver.stopAim();
-		
+
 		drive.setLeft(0);
 		drive.setRight(0);
 

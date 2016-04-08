@@ -5,6 +5,7 @@ import org.teamneutrino.stronghold.robot.exceptions.EncoderUnpluggedException;
 import org.teamneutrino.stronghold.robot.exceptions.GyroUnpluggedException;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
+import org.teamneutrino.stronghold.robot.subsystems.LEDManager;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 import org.teamneutrino.stronghold.robot.util.Util;
 
@@ -33,6 +34,8 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private boolean leftEncoderUnplugged;
 	private boolean rightEncoderUnplugged;
+	
+	private LEDManager ledMan;
 
 	private static final int TIMEOUT = 100000;
 
@@ -58,7 +61,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private static final double AIM_ON_TARGET_THRESHOLD = 5;
 
-	public AutoDriver(Drive drive, Shooter shooter, Camera cam, Encoder encLeft, Encoder encRight)
+	public AutoDriver(Drive drive, Shooter shooter, Camera cam, Encoder encLeft, Encoder encRight, LEDManager ledMan)
 	{
 		this.drive = drive;
 		this.shooter = shooter;
@@ -74,6 +77,8 @@ public class AutoDriver implements Camera.NewFrameListener
 		aiming = false;
 		driveAimed = false;
 		shooterAimed = false;
+		
+		this.ledMan = ledMan;
 
 		// new Thread(new ShooterAimingThread()).start();
 		// new Thread(new DriveAimingThread()).start();
@@ -570,6 +575,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		driveAimed = aimDrive();
 
 		SmartDashboard.putBoolean("Shooter Aimed", shooterAimed && driveAimed);
+		ledMan.setShooterSpunUp(shooterAimed && driveAimed);
 	}
 
 	private boolean aimDrive()

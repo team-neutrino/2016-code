@@ -52,6 +52,8 @@ public class Shooter implements Runnable
 
 	private double leftRPM;
 	private double rightRPM;
+	
+	private LEDManager ledMan;
 
 	private static final int MILLISECONDS_PER_MINUTE = 60000;
 	private static final int CORRECTION_RPM = 3000;
@@ -73,7 +75,7 @@ public class Shooter implements Runnable
 		}
 	}
 
-	public Shooter()
+	public Shooter(LEDManager ledMan)
 	{
 		double motorDeadband = .1;
 		if (Constants.REAL_BOT)
@@ -132,6 +134,8 @@ public class Shooter implements Runnable
 
 		flutterThread = new Thread(new FlutterThread());
 		flutterThread.start();
+		
+		this.ledMan = ledMan;
 	}
 
 	public void startEjectThread()
@@ -413,6 +417,7 @@ public class Shooter implements Runnable
 			SmartDashboard.putNumber("Shooter Left RPM", leftRPM);
 			SmartDashboard.putNumber("Shooter Right RPM", rightRPM);
 			SmartDashboard.putBoolean("Shooter At Target", atTargetSpeed);
+			ledMan.setShooterSpunUp(atTargetSpeed);
 
 			printout += currTime + " ," + timeInterval + " ," + countLeft + " ," + countRight + " ,"
 					+ RPMilliTarget * MILLISECONDS_PER_MINUTE + " ," + RPMilliLeft * MILLISECONDS_PER_MINUTE + " ,"
