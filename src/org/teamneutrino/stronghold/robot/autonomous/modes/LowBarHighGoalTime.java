@@ -43,7 +43,7 @@ public class LowBarHighGoalTime implements AutoMode
 		drive.setLeft(.3);
 		drive.setRight(-.3);
 
-		driver.sleep(300);
+		driver.sleep(500);
 
 		drive.setLeft(0);
 		drive.setRight(0);
