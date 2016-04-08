@@ -21,7 +21,7 @@ public class LowBarTime implements AutoMode
 	@Override
 	public String getName()
 	{
-		return "Low Bar High Goal (time)";
+		return "Low Bar (time)";
 	}
 
 	@Override

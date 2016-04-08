@@ -726,25 +726,29 @@ public class AutoDriver implements Camera.NewFrameListener
 	{
 		shooter.start();
 
-		sleep(1500);
+		sleep(2000);
 
+		waitForShooter();
+
+		while (isAutoEnabled())
+		{
+			shooter.setFlippers(true);
+			sleep(500);
+			shooter.setFlippers(false);
+			sleep(500);
+			waitForShooter();
+		}
+		
+		shooter.setFlippers(false);
+
+		shooter.stop();
+	}
+	
+	private void waitForShooter()
+	{
 		while (!shooter.isAtTargetSpeed() && isAutoEnabled())
 		{
 			sleep(5);
 		}
-
-		shooter.setFlippers(true);
-		sleep(250);
-		shooter.setFlippers(false);
-		sleep(250);
-		shooter.setFlippers(true);
-		sleep(250);
-		shooter.setFlippers(false);
-		sleep(250);
-		shooter.setFlippers(true);
-		sleep(250);
-		shooter.setFlippers(false);
-
-		shooter.stop();
 	}
 }
