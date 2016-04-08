@@ -36,7 +36,7 @@ public class LowBarHighGoalTime implements AutoMode
 
 		driver.moveTime(3200, .5);
 
-		shooter.setTargetPosition(Shooter.Position.FRONT);
+		shooter.setTargetPosition(Shooter.Position.SHOOT);
 
 		driver.sleep(200);
 

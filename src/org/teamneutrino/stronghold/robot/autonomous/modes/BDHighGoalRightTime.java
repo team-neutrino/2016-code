@@ -35,7 +35,7 @@ public class BDHighGoalRightTime implements AutoMode
 		driver.moveTime(1500, 1);
 
 		intake.setTargetPosition(Intake.Position.INTAKE);
-		shooter.setTargetPosition(Shooter.Position.FRONT);
+		shooter.setTargetPosition(Shooter.Position.SHOOT);
 
 		driver.sleep(1000);
 
