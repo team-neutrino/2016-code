@@ -2,17 +2,16 @@ package org.teamneutrino.stronghold.robot.autonomous.modes;
 
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.AutoMode;
-import org.teamneutrino.stronghold.robot.exceptions.EncoderUnpluggedException;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
-public class BD implements AutoMode
-{	
+public class PortcullisHighGoalLeftTime implements AutoMode
+{
 	private AutoDriver driver;
 	private Shooter shooter;
 	private Intake intake;
-	
-	public BD(AutoDriver driver, Shooter shooter, Intake intake)
+
+	public PortcullisHighGoalLeftTime(AutoDriver driver, Shooter shooter, Intake intake)
 	{
 		this.driver = driver;
 		this.shooter = shooter;
@@ -22,30 +21,25 @@ public class BD implements AutoMode
 	@Override
 	public String getName()
 	{
-		return "B and D Defenses";
+		return "Portcullis High Goal Rotate Left (time)";
 	}
 
 	@Override
 	public void run()
 	{
 		shooter.setTargetPosition(Shooter.Position.INTAKE);
-		intake.setTargetPosition(Intake.Position.UP);
-		try
-		{
-			Thread.sleep(500);
-		}
-		catch (InterruptedException e)
-		{
-		}
-		
-		try
-		{
-			driver.moveDistance(15, 1);
-		}
-		catch (EncoderUnpluggedException e)
-		{
-			driver.moveTime(4000, 1);
-		}
-	}
+		intake.setTargetPosition(Intake.Position.DOWN);
+		driver.sleep(500);
 
+		driver.moveTime(1500, 1);
+
+		intake.setTargetPosition(Intake.Position.INTAKE);
+		shooter.setTargetPosition(Shooter.Position.FRONT);
+
+		driver.sleep(1000);
+
+		driver.autonomousAim(4000, -.2);
+
+		driver.autoShooter();
+	}
 }

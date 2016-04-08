@@ -1,4 +1,5 @@
-package org.teamneutrino.stronghold.robot.autonomous.modes;
+package org.teamneutrino.stronghold.robot.autonomous.modes.old;
+
 
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.AutoMode;
@@ -7,14 +8,15 @@ import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
-public class BDHighGoalRight implements AutoMode
-{
+public class PorticullisHighGoalLeft implements AutoMode
+
+{	
 	private AutoDriver driver;
 	private Shooter shooter;
 	private Intake intake;
 	private Drive drive;
-
-	public BDHighGoalRight(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
+	
+	public PorticullisHighGoalLeft(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
 	{
 		this.driver = driver;
 		this.shooter = shooter;
@@ -25,29 +27,22 @@ public class BDHighGoalRight implements AutoMode
 	@Override
 	public String getName()
 	{
-		return "B and D Defenses High Goal Rotate Right";
+		return "Porticullis with High Goal Rotate Left";
 	}
 
 	@Override
 	public void run()
 	{
-		shooter.setTargetPosition(Shooter.Position.INTAKE);
-		intake.setTargetPosition(Intake.Position.UP);
-		driver.sleep(500);
-
 		try
 		{
-			driver.moveDistance(13, 1);
-
-			intake.setTargetPosition(Intake.Position.INTAKE);
+			intake.setTargetPosition(Intake.Position.DOWN);
+			driver.moveDistance(7, .75);
+			intake.setTargetPosition(Intake.Position.UP);
+			driver.moveDistance(6, 1);
 			shooter.setTargetPosition(Shooter.Position.FRONT);
-
-			driver.sleep(1000);
-
 			drive.setLeft(0);
 			drive.setRight(0);
-
-			driver.autonomousAim(4000, .2);
+			driver.autonomousAim(4000, -.2);
 
 			shooter.start();
 
@@ -65,9 +60,13 @@ public class BDHighGoalRight implements AutoMode
 			shooter.setFlippers(false);
 			shooter.stop();
 		}
-		catch (EncoderUnpluggedException e)
+		catch (EncoderUnpluggedException e1)
 		{
-			driver.moveTime(4000, 1);
+			drive.setLeft(0);
+			drive.setRight(0);
 		}
+		
 	}
+
 }
+

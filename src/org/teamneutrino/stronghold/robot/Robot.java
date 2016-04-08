@@ -2,16 +2,15 @@ package org.teamneutrino.stronghold.robot;
 
 import org.teamneutrino.stronghold.robot.autonomous.AutoController;
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
-import org.teamneutrino.stronghold.robot.autonomous.modes.BD;
-import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalLeft;
-import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalRight;
-import org.teamneutrino.stronghold.robot.autonomous.modes.ChevalHighGoalLeft;
-import org.teamneutrino.stronghold.robot.autonomous.modes.ChevalHighGoalRight;
+import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalLeftTime;
+import org.teamneutrino.stronghold.robot.autonomous.modes.BDHighGoalRightTime;
+import org.teamneutrino.stronghold.robot.autonomous.modes.BDTime;
 import org.teamneutrino.stronghold.robot.autonomous.modes.DoNothing;
-import org.teamneutrino.stronghold.robot.autonomous.modes.LowBar;
 import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarHighGoalTime;
-import org.teamneutrino.stronghold.robot.autonomous.modes.PorticullisHighGoalLeft;
-import org.teamneutrino.stronghold.robot.autonomous.modes.PorticullisHighGoalRight;
+import org.teamneutrino.stronghold.robot.autonomous.modes.LowBarTime;
+import org.teamneutrino.stronghold.robot.autonomous.modes.PortcullisHighGoalLeftTime;
+import org.teamneutrino.stronghold.robot.autonomous.modes.PortcullisHighGoalRightTime;
+import org.teamneutrino.stronghold.robot.autonomous.modes.PortcullisTime;
 import org.teamneutrino.stronghold.robot.sensors.Camera;
 import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.DriveEncoders;
@@ -67,16 +66,14 @@ public class Robot extends SampleRobot
 		// set up auto modes
 		autoController = new AutoController();
 		autoController.assignMode(0, new DoNothing());
-		autoController.assignMode(1, new LowBar(driver, shooter, intake));
-		autoController.assignMode(2, new BD(driver, shooter, intake));
-		autoController.assignMode(3, new LowBarHighGoalTime(driver, shooter, intake, drive));
-		autoController.assignMode(4, new BDHighGoalRight(driver, shooter, intake, drive));
-		autoController.assignMode(5, new BDHighGoalLeft(driver, shooter, intake, drive));
-		autoController.assignMode(6, new ChevalHighGoalRight(driver, shooter, intake, drive));
-		autoController.assignMode(7, new ChevalHighGoalLeft(driver, shooter, intake, drive));
-		autoController.assignMode(8, new PorticullisHighGoalRight(driver, shooter, intake, drive));
-		autoController.assignMode(9, new PorticullisHighGoalLeft(driver, shooter, intake, drive));
-		
+		autoController.assignMode(1, new LowBarTime(driver, shooter, intake));
+		autoController.assignMode(2, new LowBarHighGoalTime(driver, shooter, intake, drive));
+		autoController.assignMode(3, new BDTime(driver, shooter, intake));
+		autoController.assignMode(4, new BDHighGoalLeftTime(driver, shooter, intake, drive));
+		autoController.assignMode(5, new BDHighGoalRightTime(driver, shooter, intake, drive));
+		autoController.assignMode(6, new PortcullisTime(driver, shooter, intake));
+		autoController.assignMode(7, new PortcullisHighGoalLeftTime(driver, shooter, intake));
+		autoController.assignMode(8, new PortcullisHighGoalRightTime(driver, shooter, intake));
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package org.teamneutrino.stronghold.robot.autonomous.modes;
+package org.teamneutrino.stronghold.robot.autonomous.modes.old;
 
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
 import org.teamneutrino.stronghold.robot.autonomous.AutoMode;

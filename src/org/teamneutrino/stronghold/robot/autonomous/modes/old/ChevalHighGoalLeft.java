@@ -1,4 +1,4 @@
-package org.teamneutrino.stronghold.robot.autonomous.modes;
+package org.teamneutrino.stronghold.robot.autonomous.modes.old;
 
 
 import org.teamneutrino.stronghold.robot.autonomous.AutoDriver;
@@ -8,7 +8,7 @@ import org.teamneutrino.stronghold.robot.subsystems.Drive;
 import org.teamneutrino.stronghold.robot.subsystems.Intake;
 import org.teamneutrino.stronghold.robot.subsystems.Shooter;
 
-public class PorticullisHighGoalRight implements AutoMode
+public class ChevalHighGoalLeft implements AutoMode
 
 {	
 	private AutoDriver driver;
@@ -16,7 +16,7 @@ public class PorticullisHighGoalRight implements AutoMode
 	private Intake intake;
 	private Drive drive;
 	
-	public PorticullisHighGoalRight(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
+	public ChevalHighGoalLeft(AutoDriver driver, Shooter shooter, Intake intake, Drive drive)
 	{
 		this.driver = driver;
 		this.shooter = shooter;
@@ -27,7 +27,7 @@ public class PorticullisHighGoalRight implements AutoMode
 	@Override
 	public String getName()
 	{
-		return "Porticullis with High Goal Rotate Right";
+		return "Cheval de Frise with High Goal Rotate Left";
 	}
 
 	@Override
@@ -35,14 +35,14 @@ public class PorticullisHighGoalRight implements AutoMode
 	{
 		try
 		{
-			intake.setTargetPosition(Intake.Position.DOWN);
-			driver.moveDistance(7, .75);
 			intake.setTargetPosition(Intake.Position.UP);
+			driver.moveDistance(7, .75);
+			intake.setTargetPosition(Intake.Position.DOWN);
 			driver.moveDistance(6, 1);
 			shooter.setTargetPosition(Shooter.Position.FRONT);
 			drive.setLeft(0);
 			drive.setRight(0);
-			driver.autonomousAim(4000, .2);
+			driver.autonomousAim(4000, -.2);
 
 			shooter.start();
 
