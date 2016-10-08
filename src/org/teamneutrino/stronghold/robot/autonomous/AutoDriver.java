@@ -58,13 +58,13 @@ public class AutoDriver implements Camera.NewFrameListener
 	private static final double GYRO_UNPLUGGED_THRESHOLD = 10;
 
 	private static final int TIMEOUT_REFRESH_RATE = 7;
-
+	
 	private static final double AIM_ON_TARGET_THRESHOLD = 5;
 
 	public AutoDriver(Drive drive, Shooter shooter, Camera cam, Encoder encLeft, Encoder encRight, LEDManager ledMan)
 	{
 		this.ledMan = ledMan;
-
+		
 		this.drive = drive;
 		this.shooter = shooter;
 		this.cam = cam;
@@ -593,30 +593,11 @@ public class AutoDriver implements Camera.NewFrameListener
 				Constants.CAMERA_TARGET_X_BATTER);
 		double error = currX - targetX;
 		double speed;
-		if(error > 100)
-		{
-			speed = .8;
-		}
-		else if(error > 50)
-		{
-			speed = .6;
-		}
-		else if(error > 0)
-		{
-			speed = .5;
-		}
-		else if(error > -50)
-		{
-			speed = -.5;
-		}
-		else if(error > -100)
-		{
-			speed = -.6;
-		}
-		else
-		{
-			speed = -.8;
-		}
+		System.out.println();
+			if(error > 0)
+				speed = -1/(.01*(error + 105)) + 1;
+			else
+				speed = -(1/(.01*(error - 105)) + 1);
 		System.out.println("Error "+ error);
 		try {
 			Thread.sleep(500);
@@ -630,31 +611,8 @@ public class AutoDriver implements Camera.NewFrameListener
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
-			int time = 0;
-			if (Math.abs(error) > 200){
-				time = 175;
-				System.out.println("bin1");
-			}
-			else if (Math.abs(error) > 100){
-				time = 150;
-				System.out.println("bin2");
-			}
-			else if (Math.abs(error) > 50){
-				time = 50;
-				System.out.println("bin3");
-			}
-			else if (Math.abs(error) > 30){
-				time = 30;
-				System.out.println("bin4");
-			}
-			else if (Math.abs(error) > 10){
-				time = 25;
-				System.out.println("bin5");
-			}
-			else{
-				time = 20;
-				System.out.println("bin6");
-			}
+			int time = (int)( -1/(.00004*( Math.abs(error) + 180)) + 150);
+			System.out.println(time);
 
 			try
 			{
