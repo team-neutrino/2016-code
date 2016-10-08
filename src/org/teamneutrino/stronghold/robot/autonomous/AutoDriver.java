@@ -592,14 +592,69 @@ public class AutoDriver implements Camera.NewFrameListener
 				Constants.CAMERA_TARGET_AREA_BATTER, Constants.CAMERA_TARGET_X_OUTERWORKS,
 				Constants.CAMERA_TARGET_X_BATTER);
 		double error = currX - targetX;
-		double speed = (error < 0 ? -1 : 1) * .5;
+		double speed;
+		if(error > 100)
+		{
+			speed = .8;
+		}
+		else if(error > 50)
+		{
+			speed = .6;
+		}
+		else if(error > 0)
+		{
+			speed = .5;
+		}
+		else if(error > -50)
+		{
+			speed = -.5;
+		}
+		else if(error > -100)
+		{
+			speed = -.6;
+		}
+		else
+		{
+			speed = -.8;
+		}
+		System.out.println("Error "+ error);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		boolean onTarget = Math.abs(error) < AIM_ON_TARGET_THRESHOLD;
 
 		if (!onTarget && aiming)
 		{
 			drive.setLeft(speed);
 			drive.setRight(-speed);
-			int time = Math.abs((int) (error)) / 3 + 15;
+			int time = 0;
+			if (Math.abs(error) > 200){
+				time = 175;
+				System.out.println("bin1");
+			}
+			else if (Math.abs(error) > 100){
+				time = 150;
+				System.out.println("bin2");
+			}
+			else if (Math.abs(error) > 50){
+				time = 50;
+				System.out.println("bin3");
+			}
+			else if (Math.abs(error) > 30){
+				time = 30;
+				System.out.println("bin4");
+			}
+			else if (Math.abs(error) > 10){
+				time = 25;
+				System.out.println("bin5");
+			}
+			else{
+				time = 20;
+				System.out.println("bin6");
+			}
 
 			try
 			{
@@ -615,7 +670,6 @@ public class AutoDriver implements Camera.NewFrameListener
 			drive.setLeft(0);
 			drive.setRight(0);
 		}
-
 		return onTarget;
 	}
 
@@ -640,7 +694,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		double error = currY - targetY;
 		boolean onTarget = (Math.abs(error) < AIM_ON_TARGET_THRESHOLD);
 
-		if (!onTarget && aiming)
+		if (!onTarget && aiming && shooter.getPosition() < 90)
 		{
 			double positionError = error / 30;
 			double newSetpoint = shooter.getPosition() - positionError + .3;
@@ -648,6 +702,12 @@ public class AutoDriver implements Camera.NewFrameListener
 			newSetpoint = Math.min(Math.max(newSetpoint, 20), 90);
 			shooter.setSetpoint(newSetpoint);
 		}
+//		else if(!onTarget && aiming && shooter.getPosition() > 90)
+//		{
+//			double positionError = error/30;
+//			double newSetpoint = shooter.getPosition() + positionError + .3;
+//			newSetpoint = Math
+//		}
 
 		return onTarget;
 	}
