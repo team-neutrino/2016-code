@@ -36,14 +36,14 @@ public class Camera implements Runnable
 	private int currentFrame;
 
 	private int frameCount;
-
+	
 	private ArrayList<Integer> areaValues;
 
 	private NewFrameListener newFrameListener;
 
 	private int AREA_AVRAGE_MAX_SAMPLES = 10;
 	private int AREA_CUTOFF_EDGE = 4000;
-
+	
 	enum OutputMode
 	{
 		RAW_IMAGE, THRESHOLD_IMAGE, RECTANGLE_OVERLAY
@@ -93,7 +93,7 @@ public class Camera implements Runnable
 			DriverStation.reportError("Camera Not Found", false);
 		}
 	}
-
+	
 	public int getFrameNum()
 	{
 		return currentFrame;
@@ -188,7 +188,7 @@ public class Camera implements Runnable
 			DriverStation.reportError("Error setting up camera:" + e.getMessage(), false);
 			e.printStackTrace();
 		}
-
+		ArrayList<Double> myDList = new ArrayList<Double>();
 		while (true)
 		{
 			try
@@ -245,9 +245,11 @@ public class Camera implements Runnable
 				}
 
 				target = largestParticle;
-
+				
 				if (target != null)
 				{
+					double u = (-152.6 * Math.log(0.003888 * target.height));
+					System.out.println("Distance" + u);
 					areaValues.add(target.area);
 				}
 				else

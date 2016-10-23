@@ -27,7 +27,6 @@ public class AutoDriver implements Camera.NewFrameListener
 	private Drive drive;
 	private Shooter shooter;
 	private Camera cam;
-
 	private boolean aiming;
 	private boolean driveAimed;
 	private boolean shooterAimed;
@@ -72,7 +71,7 @@ public class AutoDriver implements Camera.NewFrameListener
 		this.encLeft = encLeft;
 		this.encRight = encRight;
 		gyro = new AnalogGyro(Constants.GYRO_CHANNEL);
-
+		gyro.setSensitivity(.0128);
 		encLeft.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 		encRight.setDistancePerPulse(Constants.ENCODER_DISTANCE_PER_PULSE);
 
@@ -300,7 +299,7 @@ public class AutoDriver implements Camera.NewFrameListener
 	{
 		// if time is negative make it 0
 		time = Math.max(0, time);
-
+		System.out.println(gyro.getAngle());
 		boolean timeout = false;
 		long startTime = System.currentTimeMillis();
 
@@ -344,7 +343,6 @@ public class AutoDriver implements Camera.NewFrameListener
 	 */
 	public void turnDegrees(double degrees, double speed) throws EncoderUnpluggedException, GyroUnpluggedException
 	{
-		gyro.reset();
 		encLeft.reset();
 		encRight.reset();
 
@@ -582,7 +580,6 @@ public class AutoDriver implements Camera.NewFrameListener
 	{
 		double currX = cam.getTargetX();
 		double targetArea = cam.getTargetAreaAverage();
-
 		if (targetArea < 1)
 		{
 			return false;
@@ -716,6 +713,7 @@ public class AutoDriver implements Camera.NewFrameListener
 
 	private boolean aim(boolean aiming, double turn)
 	{
+		
 		if (cam.targetInFrame())
 		{
 			if (!aiming)

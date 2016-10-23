@@ -24,8 +24,8 @@ public class Constants
 
 	// Camera Constants
 	public static final String CAMERA_NAME = "cam0";
-	public static final int CAMERA_DEFAULT_HUE_LOW = 110;
-	public static final int CAMERA_DEFAULT_HUE_HIGH = 140;
+	public static final int CAMERA_DEFAULT_HUE_LOW = 100 ;
+	public static final int CAMERA_DEFAULT_HUE_HIGH = 125;
 	public static final int CAMERA_DEFAULT_SATURATION_LOW = 50;
 	public static final int CAMERA_DEFAULT_SATURATION_HIGH = 255;
 	public static final int CAMERA_DEFAULT_LUMINENCE_LOW = 30;
@@ -37,10 +37,10 @@ public class Constants
 	public static final double CAMERA_IMAGE_CENTER_Y = CAMERA_IMAGE_HIEGHT / 2;
 	
 	// Target Outerworks
-	public static final double CAMERA_TARGET_X_OUTERWORKS = -44;
+	public static final double CAMERA_TARGET_X_OUTERWORKS = -74;
 	public static final double CAMERA_TARGET_Y_OUTERWORKS = 210;
 	public static final double CAMERA_TARGET_AREA_OUTERWORKS = 4500;
-	public static final double CAMERA_TARGET_X_BATTER = -76;
+	public static final double CAMERA_TARGET_X_BATTER = -106;
 	public static final double CAMERA_TARGET_Y_BATTER = 95;
 	public static final double CAMERA_TARGET_AREA_BATTER = 9000;
 	
@@ -116,5 +116,5 @@ public class Constants
 	// Misc Constants
 	public static final int PNEUMATIC_PRESSURE_SENSOR_CHANNEL = 3;
 	public static final int DRIVER_STATION_REFRESH_RATE = 250;
-	public static final boolean USE_TIME_FOR_SHOOTER_AIMING = true;
+	public static final boolean USE_TIME_FOR_SHOOTER_AIMING = false;
 }
